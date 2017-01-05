@@ -1,0 +1,34 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white">
+
+    <include layout="@layout/list_view"/>
+
+    <TextView
+        android:id="@+id/message_list_warning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:drawableTop="@drawable/ic_data"
+        android:gravity="center"
+        android:minHeight="60dp"
+        android:padding="20dp"
+        android:text="@string/app_name"
+        android:textColor="@color/black_95"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:background="@color/white"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fabSize="normal"
+        android:id="@+id/message_list_create_button"
+        android:src="@drawable/ic_plus"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="15dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignBottom="@+id/list_view"/>
+</RelativeLayout>

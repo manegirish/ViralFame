@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "966559394739",
+    "firebase_url": "https://viral-fame.firebaseio.com",
+    "project_id": "viral-fame",
+    "storage_bucket": "viral-fame.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:966559394739:android:88cea548ac3ebd07",
+        "android_client_info": {
+          "package_name": "com.dataappsinfo.viralfame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "966559394739-3ej46nvkcvq584tth0qr996i4ejq4bbl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dataappsinfo.viralfame",
+            "certificate_hash": "6BEBEEEC493F7913DBB0E515585BF6DAB79A658B"
+          }
+        },
+        {
+          "client_id": "966559394739-chb2iv0ninmq0jkmmas7q3ln33jn6kfv.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "966559394739-hmv00enrl497ap9lcst92emoq3ug6c1p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIjztqMcs-OmwcT0h_upWrN4sorFkCS3M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "966559394739-chb2iv0ninmq0jkmmas7q3ln33jn6kfv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,51 @@
+<com.technoindians.views.SquareRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/media_grid_item_icon"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:gravity="center_vertical"
+        android:layout_margin="7dp">
+
+        <ImageView
+            android:id="@+id/media_grid_item_icon_like"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/ic_like_p" />
+
+        <TextView
+            android:id="@+id/media_grid_item_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_banner_shadow"
+            android:gravity="center_vertical|start"
+            android:text="123"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:padding="2dp"
+            android:layout_toRightOf="@+id/media_grid_item_icon_like"
+            android:textStyle="bold"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="3dp"/>
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/media_grid_play_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_play_video"
+        android:layout_centerInParent="true"
+        android:padding="15dp"
+        android:visibility="gone"/>
+</com.technoindians.views.SquareRelativeLayout>

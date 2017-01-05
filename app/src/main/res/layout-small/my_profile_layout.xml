@@ -1,0 +1,209 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/portfolio_main_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:gravity="top">
+        <ImageView
+            android:id="@+id/backdrop"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:fitsSystemWindows="true"
+            android:scaleType="fitXY"
+            app:layout_collapseMode="none" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:background="#90FFFFFF"
+            android:fitsSystemWindows="true"
+            android:scaleType="fitXY"
+            app:layout_collapseMode="none"
+            android:orientation="vertical" />
+
+        <LinearLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:paddingTop="@dimen/activity_horizontal_margin">
+
+
+            <LinearLayout
+                android:id="@+id/portfolio_following_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.25"
+                android:gravity="center_vertical"
+                android:background="@android:color/transparent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/following"
+                    android:textColor="@color/black_95"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/portfolio_following_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text=""
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="21sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:gravity="top|center_horizontal"
+                android:background="@android:color/transparent"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/portfolio_profile_pic"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp">
+
+                    <RelativeLayout
+                        android:layout_width="112dp"
+                        android:layout_height="112dp"
+                        android:background="@drawable/primary_circle"
+                        android:layout_centerInParent="true"
+                        android:padding="2dp">
+
+                        <ImageView
+                            android:id="@+id/portfolio_profile_photo"
+                            android:layout_width="110dp"
+                            android:layout_height="110dp"
+                            android:src="@drawable/ic_profile_pic_circle" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/portfolio_profile_photo_edit"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/circle_white"
+                        android:padding="1dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/primary_circle"
+                            android:padding="6dp"
+                            android:src="@drawable/ic_profile_edit" />
+                    </RelativeLayout>
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/portfolio_profile_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/dummy_name"
+                    android:textColor="@color/black_95"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/portfolio_profile_skill"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/dummy_role"
+                    android:textColor="@color/black_75"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/portfolio_follower_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.25"
+                android:gravity="center"
+                android:background="@android:color/transparent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/follows"
+                    android:textColor="@color/black_95"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/portfolio_follower_count"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text=""
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="21sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/content"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:background="@android:color/transparent"
+            android:paddingBottom="5dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/portfolio_profile_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:layout_gravity="start"
+                android:text="@string/about_me"
+                android:textColor="@color/black_95"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:drawablePadding="10dp"
+                android:drawableRight="@drawable/ic_profile_edit_g"/>
+
+            <TextView
+                android:id="@+id/portfolio_profile_about_me"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start|top"
+                android:text="@string/dummy_text"
+                android:textColor="@color/black_95"
+                android:textSize="13sp"
+                android:layout_marginTop="2dp"
+                android:maxLength="250"
+                android:singleLine="false"
+                android:background="@android:color/transparent"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+</LinearLayout>

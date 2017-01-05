@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2016
+  ~ Girish D Mane (girishmane8692@gmail.com)
+  ~ Gurujot Singh Pandher (gsp11111992@gmail.com)
+  ~ All rights reserved.
+  ~ This application code can not be used directly without prior permission of owners.
+  ~
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey_e6">
+    <com.baoyz.swipemenulistview.SwipeMenuListView
+        android:id="@+id/swipe_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="10dp"
+        android:scrollbarSize="0dp"
+        android:background="@color/grey_e6"/>
+
+    <TextView
+        android:id="@+id/swipe_list_view_layout_warning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:drawableTop="@drawable/ic_data"
+        android:gravity="center"
+        android:minHeight="60dp"
+        android:padding="20dp"
+        android:text="@string/app_name"
+        android:textColor="@color/black_95"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:background="@color/grey_e6"/>
+</RelativeLayout>

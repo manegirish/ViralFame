@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <Button
+        android:id="@+id/dummy_player_play"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:text="Play"/>
+
+    <Button
+        android:id="@+id/dummy_player_stop"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:text="Stop"/>
+</LinearLayout>

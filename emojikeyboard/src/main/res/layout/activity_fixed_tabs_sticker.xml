@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="200dp"
+                android:background="#333">
+
+    <RelativeLayout
+        android:id="@+id/rlEmojirabContainer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
+
+        <!--<com.astuetz.viewpager.extensions.FixedTabsView
+            android:id="@+id/fixed_tabsPopupEmoji"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/ivClearEmoji"
+            android:background="#3C3C3C"/>-->
+
+
+        <ImageView
+            android:id="@+id/ivClearEmoji"
+            android:layout_width="45dip"
+            android:layout_height="45dip"
+            android:layout_alignParentRight="true"
+            android:background="#333"
+            android:padding="8dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/icon_emojibackspace"/>
+
+        <technoindians.viewpager.PagerSlidingTabStrip
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_toLeftOf="@id/ivClearEmoji"
+            android:layout_height="wrap_content"
+            android:background="#3C3C3C" />
+    </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager_popviewPopupEmoji"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/rlEmojirabContainer"
+        />
+
+</RelativeLayout>

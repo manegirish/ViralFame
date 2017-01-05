@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/media_grid_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layoutMode="opticalBounds"
+    android:listSelector="@android:color/transparent"
+    android:longClickable="false"
+    android:numColumns="3"
+    android:smoothScrollbar="true"
+    android:visibility="visible">
+
+</GridView>

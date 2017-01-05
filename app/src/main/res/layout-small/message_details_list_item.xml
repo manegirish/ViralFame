@@ -1,0 +1,72 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black_ee"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/message_details_my_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="@drawable/my_message_rounded_layout"
+        android:padding="5dp"
+        android:layout_margin="10dp"
+        android:orientation="vertical">
+
+        <technoindians.key.emoji.custom.EmojiTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start|top"
+            android:text="@string/dummy_text"
+            android:textColor="@color/black_95"
+            android:textSize="14sp"
+            android:maxWidth="220dp"
+            android:id="@+id/message_details_my_message" />
+        <com.github.curioustechizen.ago.RelativeTimeTextView
+            android:id="@+id/message_details_my_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start|top"
+            android:text="@string/dummy_time_1"
+            android:textColor="@color/black_45"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            android:layout_gravity="end"
+            android:maxWidth="220dp"
+            android:layout_marginTop="-4dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/message_details_from_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:background="@drawable/from_message_rounded_layout"
+        android:padding="5dp"
+        android:layout_margin="10dp"
+        android:orientation="vertical">
+
+        <technoindians.key.emoji.custom.EmojiTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start|top"
+            android:text="@string/dummy_text"
+            android:textColor="@color/black_95"
+            android:textSize="14sp"
+            android:maxWidth="220dp"
+            android:id="@+id/message_details_from_message" />
+        <com.github.curioustechizen.ago.RelativeTimeTextView
+            android:id="@+id/message_details_from_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start|top"
+            android:text="@string/dummy_time_1"
+            android:textColor="@color/black_45"
+            android:textSize="12sp"
+            android:textStyle="normal"
+            android:layout_gravity="end"
+            android:maxWidth="220dp"
+            android:layout_marginTop="-4dp"/>
+    </LinearLayout>
+</LinearLayout>

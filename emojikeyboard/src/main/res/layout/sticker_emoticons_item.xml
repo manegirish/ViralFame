@@ -1,0 +1,17 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:gravity="center"
+    android:orientation="horizontal" >
+
+    <ImageView
+        android:id="@+id/item"
+        android:layout_width="@dimen/sticker_size"
+        android:layout_height="@dimen/sticker_size"
+        android:contentDescription="@string/button_description"
+        android:background="@drawable/bear_1"
+        android:height="@dimen/sticker_size"
+        android:width="@dimen/sticker_size" />
+
+</LinearLayout>

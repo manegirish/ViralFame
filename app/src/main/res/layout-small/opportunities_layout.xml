@@ -1,0 +1,41 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/opportunities_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:elevation="0dp"
+        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:tabMaxWidth="0dp"
+        app:tabGravity="fill"
+        app:tabMode="fixed"
+        app:tabTextColor="@color/black_95"
+        app:tabSelectedTextColor="@android:color/white"
+        android:minHeight="?attr/actionBarSize"
+        android:fillViewport="true"
+        android:layout_alignParentTop="true">
+        </android.support.design.widget.TabLayout>
+
+    <FrameLayout
+        android:id="@+id/opportunities_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/opportunities_tabs"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/create_job_float"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_plus"
+        app:fabSize="normal"
+        android:layout_alignBottom="@+id/opportunities_container"
+        android:layout_alignParentRight="true"
+        android:visibility="visible"
+        android:layout_margin="15dp"/>
+</RelativeLayout>

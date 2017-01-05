@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey_e6">
+
+    <RelativeLayout
+        android:id="@+id/wall_feed_post_box"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_alignParentTop="true"
+        android:layout_margin="5dp"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/wall_feed_message_box"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:text="@string/post_hint"
+            android:paddingBottom="5dp"
+            android:paddingLeft="15dp"
+            android:paddingTop="5dp"
+            android:paddingRight="60dp"
+            android:textColor="@color/colorPrimary"
+            android:textStyle="italic"
+            android:textSize="14sp"
+            android:gravity="center_vertical|start"/>
+    </RelativeLayout>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/wall_feed_list_view_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grey_e6"
+        android:layout_below="@+id/wall_feed_post_box">
+    <ListView
+        android:id="@+id/wall_feed_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grey_e6"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="10dp"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:scrollbarSize="0dp" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+    <TextView
+        android:id="@+id/wall_feed_list_view_warning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/wall_feed_post_box"
+        android:layout_marginTop="25dp"
+        android:drawableTop="@drawable/ic_data"
+        android:gravity="center"
+        android:minHeight="60dp"
+        android:padding="20dp"
+        android:text="@string/app_name"
+        android:textColor="@color/black_95"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+</RelativeLayout>

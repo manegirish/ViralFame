@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#f83d69</color>
+    <color name="colorPrimaryDark">#f83d69</color>
+    <color name="colorAccent">#f83d69</color>
+
+    <color name="white">#fff</color>
+    <color name="grey_e6">#e6e6e6</color>
+    <color name="grey_bf">#bfbfbf</color>
+    <color name="grey_99">#999999</color>
+    <color name="grey_1e">#1e1e1e</color>
+    <color name="black_45">#45000000</color>
+    <color name="black_65">#65000000</color>
+    <color name="black_75">#75000000</color>
+    <color name="black_95">#95000000</color>
+
+    <color name="black_99">#999999</color>
+    <color name="black_7e">#7e7e7e</color>
+    <color name="black_69">#696969</color>
+    <color name="black_c3">#c3c3c3</color>
+    <color name="black_ee">#eeeeee</color>
+    <color name="black_dd">#dddddd</color>
+    <color name="black_ec">#ececec</color>
+    <color name="black_e7">#cccccc</color>
+    <color name="black_f9">#f9f9f9</color>
+    <color name="black_head">#404040</color>
+    <color name="grey_a3">#a3a3a3</color>
+    <color name="grey_a1">#a1a1a1</color>
+    <color name="voilet_circle">#c1a8e9</color>
+    <color name="from_message_box">#feb1c3</color>
+    <color name="green">#4caf50</color>
+    <color name="amber">#ffc107</color>
+    <color name="red">#f44336</color>
+
+    <color name="google_red">#d34836</color>
+    <color name="facebook_blue">#3b5998</color>
+</resources>

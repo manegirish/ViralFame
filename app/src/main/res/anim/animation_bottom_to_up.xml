@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?> <!--
+  ~ Copyright (c) 2016
+  ~ Girish D Mane (girishmane8692@gmail.com)
+  ~ Gurujot Singh Pandher (gsp11111992@gmail.com)
+  ~ All rights reserved.
+  ~ This application code can not be used directly without prior permission of owners.
+  ~
+  -->
+
+<set xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <translate
+        android:duration="@android:integer/config_mediumAnimTime"
+        android:fromYDelta="100%"
+        android:interpolator="@android:anim/accelerate_interpolator"
+        android:toXDelta="0" />
+
+</set>

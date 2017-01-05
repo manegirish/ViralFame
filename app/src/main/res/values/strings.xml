@@ -1,0 +1,99 @@
+<resources>
+    <string name="app_name">Viral Fame</string>
+    <string name="facebook_app_id">1604386543200683</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="artist">Artist</string>
+    <string name="recruiter">Recruiter</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="forgot_password">Forgot Password</string>
+    <string name="runtime_permissions_txt">Please enable ALL permissions from app settings.</string>
+    <string name="add_media">Add media content</string>
+
+    <string name="home">Home</string>
+    <string name="portfolio">Portfolio</string>
+    <string name="opportunities">Opportunities</string>
+    <string name="messages">Messages</string>
+    <string name="setting">Setting</string>
+    <string name="preferences">Preferences</string>
+    <string name="my_people">My People</string>
+    <string name="logout">Logout</string>
+
+    <string name="follows">Followers</string>
+    <string name="following">Following</string>
+    <string name="save">Save</string>
+    <string name="Gallery">Gallery</string>
+    <string name="Camera">Camera</string>
+    <string name="Video">Video</string>
+    <string name="Audio">Audio</string>
+    <string name="notifications">Notifications</string>
+    <string name="about_me">About Me</string>
+
+    <string name="title_hint">Enter title here....</string>
+    <string name="description_hint">Enter description here.....</string>
+    <string name="position_hint">Enter position.....</string>
+    <string name="company_hint">Company Name.....</string>
+    <string name="primary_skill_hint">Primary Skill</string>
+    <string name="secondary_skill_hint">Secondary Skills</string>
+    <string name="enter_number">Enter Number</string>
+    <string name="skill_preferences">Skill Preferences</string>
+
+    <string name="edit">Edit</string>
+    <string name="remove">Remove</string>
+
+
+    <string name="save_media">Save Media</string>
+    <string name="copy_link">Copy Link</string>
+    <string name="share_link">Share Link</string>
+
+    <string name="warning">Warning</string>
+    <string name="guest_login">Guest Login</string>
+    <string name="done">Done</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="post">Post</string>
+    <string name="comment">Comment</string>
+    <string name="search_here">Search here....</string>
+    <string name="comment_hint">Post your comment  here....</string>
+    <string name="post_hint">What you want to say....</string>
+    <string name="message_hint">Type message here.....</string>
+    <string name="reply_hint">Reply here.....</string>
+
+    <string name="dummy_name">Kelly Bensimon</string>
+    <string name="dummy_role">Photographer</string>
+    <string name="dummy_time_1">1min</string>
+    <string name="dummy_text">The hottest day of the summer so far was drawing to a close and a drowsy silence lay over the</string>
+
+    <string name="country_prompt">Code</string>
+    <string-array name="country_arrays">
+        <item>-- Country --</item>
+        <item>(+91) India</item>
+        <item>(+61) Australia</item>
+        <item>(+55) Brazil</item>
+        <item>(+1) U.S.</item>
+        <item>(+44) U.K.</item>
+    </string-array>
+
+    <string name="privacy_prompt">Public</string>
+    <string-array name="privacy_arrays">
+        <item>Public</item>
+        <item>Private</item>
+    </string-array>
+
+
+    <string name="gender_prompt">Gender</string>
+    <string name="no_network_connection_toast">No network connection</string>
+    <string-array name="gender_array">
+        <item>-- Gender --</item>
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+
+    <string name="warning_job_apply_remove">Are you sure you want to withdraw job application?</string>
+    <string name="warning_job_delete">Are you sure you want to remove job posted?</string>
+</resources>

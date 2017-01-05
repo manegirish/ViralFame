@@ -1,0 +1,47 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <include layout="@layout/activity_toolbar_search_back" />
+
+    <include
+        layout="@layout/list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/activity_toolbar_search_layout" />
+
+    <TextView
+        android:id="@+id/liked_list_warning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:drawableTop="@drawable/ic_data"
+        android:gravity="center"
+        android:minHeight="60dp"
+        android:padding="20dp"
+        android:text="@string/app_name"
+        android:textColor="@color/black_95"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_below="@+id/activity_toolbar_search_layout"
+        android:background="@color/white"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/liked_list_float"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_edit_w"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="15dp"
+        android:visibility="gone"
+        android:layout_alignBaseline="@+id/list_view"/>
+
+    <FrameLayout
+        android:id="@+id/liked_list_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</RelativeLayout>

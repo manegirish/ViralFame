@@ -1,0 +1,16 @@
+<!--
+  ~ Copyright (c) 2016
+  ~ Girish D Mane (girishmane8692@gmail.com)
+  ~ Gurujot Singh Pandher (gsp11111992@gmail.com)
+  ~ All rights reserved.
+  ~ This application code can not be used directly without prior permission of owners.
+  ~
+  -->
+
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <translate
+        android:fromYDelta="0"
+        android:toYDelta="0"
+        android:duration="@android:integer/config_mediumAnimTime"
+        />
+</set>

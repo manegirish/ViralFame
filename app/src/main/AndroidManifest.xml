@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.dataappsinfo.viralfame">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+
+    <permission android:name="com.dataappsinfo.viralfame.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="com.dataappsinfo.viralfame.permission.C2D_MESSAGE" />
+
+    <application
+        android:name=".ViralFame"
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        tools:replace="android:icon"
+        android:icon="@drawable/ic_vf_logo"
+        android:largeHeap="true"
+        android:theme="@style/AppTheme">
+
+        <!-- Firebase Notifications -->
+        <service android:name="com.technoindians.firebase.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <service android:name="com.technoindians.firebase.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
+
+        <meta-data android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"/>
+        <activity android:name="com.facebook.FacebookActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
+
+
+        <activity
+            android:name=".SplashActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".LoginActivity" />
+
+        <activity
+            android:name=".MainActivity_new"
+            android:theme="@style/MyMaterialTheme.Base" />
+
+        <activity
+            android:name="com.technoindians.wall.LikedListActivity"
+            android:theme="@style/MyMaterialTheme.Base" />
+
+        <activity
+            android:name="com.technoindians.wall.TimelineMessagePostActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/MyMaterialTheme.Base" />
+        <activity
+            android:name="com.technoindians.message.CreateMessageActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/MyMaterialTheme.Base" />
+        <activity
+            android:name="com.technoindians.message.MessageDetailsActivity"
+            android:theme="@style/MyMaterialTheme.Base" />
+        <activity
+            android:name="com.technoindians.portfolio.CropImageActivity"
+            android:parentActivityName="com.technoindians.portfolio.PortfolioMainActivity"
+            android:theme="@style/MyMaterialTheme.Base" />
+
+        <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
+
+        <activity
+            android:name="com.technoindians.opportunities.OpportunityPostActivity"
+            android:theme="@style/MyMaterialTheme.Base" />
+
+        <activity
+            android:name="com.technoindians.opportunities.OpportunityApplicationsActivity"
+            android:theme="@style/MyMaterialTheme.Base" />
+
+        <activity
+            android:name="com.technoindians.portfolio.PortfolioMainActivity"
+            android:theme="@style/MyMaterialTheme.Base" />
+
+        <activity
+            android:name="com.technoindians.peoples.UserPortfolioActivity"
+            android:theme="@style/MyMaterialTheme.Base" />
+
+        <activity
+            android:name="com.technoindians.portfolio.FeedDetailsActivity"
+            android:theme="@style/BlackMaterialTheme.Base" />
+
+        <activity
+            android:name="com.technoindians.players.MusicAndroidActivity"
+            android:theme="@style/BlackMaterialTheme.Base" />
+    </application>
+
+</manifest>

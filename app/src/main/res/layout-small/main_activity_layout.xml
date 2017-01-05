@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
+
+    <include
+        layout="@layout/app_bar_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <RelativeLayout
+        android:layout_width="280dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:id="@+id/drawer_layout_relative">
+
+        <include
+            layout="@layout/nav_header_main"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="@dimen/nav_header_height"
+            android:background="#95FFFFFF"/>
+        <ListView
+            android:id="@+id/drawer_list_view"
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:choiceMode="singleChoice"
+            android:dividerHeight="1dp"
+            android:childDivider="@android:color/transparent"
+            android:divider="@android:color/transparent"
+            android:background="@android:color/transparent"
+            android:layout_marginTop="@dimen/nav_header_height"
+            android:scrollbars="none">
+        </ListView>
+    </RelativeLayout>
+</android.support.v4.widget.DrawerLayout>

@@ -1,0 +1,66 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <ImageView
+        android:id="@+id/wall_image_view_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_dummy_wall"
+        android:layout_centerInParent="true"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+        <TextView
+            android:id="@+id/wall_image_view_tag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/black_45"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:layout_alignParentTop="true"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="15dp"
+            android:paddingTop="5dp"
+            android:text="@string/dummy_text"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#85FFFFFF"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_below="@+id/wall_image_view_tag"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@+id/wall_image_view_tag"
+            android:padding="15dp">
+            <TextView
+                android:id="@+id/wall_image_view_like"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:drawableLeft="@drawable/ic_like_g"
+                android:gravity="start|center_vertical"
+                android:text="Like"
+                android:textColor="@color/black_65"
+                android:layout_marginLeft="15dp"
+                android:drawablePadding="10dp"/>
+
+            <TextView
+                android:id="@+id/wall_image_view_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/black_65"
+                android:drawableLeft="@drawable/ic_comment_g"
+                android:gravity="start|center_vertical"
+                android:text="Comments"
+                android:layout_marginLeft="15dp"
+                android:drawablePadding="10dp"/>
+        </LinearLayout>
+</RelativeLayout>
+</RelativeLayout>

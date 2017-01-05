@@ -1,0 +1,171 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black_ec"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_margin="7dp"
+        android:background="@android:color/white">
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/preferences_notification_toggle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginStart="15dp"
+            android:background="@android:color/transparent"
+            android:button="@null"
+            android:checked="true"
+            android:text="@string/notifications"
+            android:textAllCaps="false"
+            android:textColor="@color/black_69"
+            android:textOff=""
+            android:textOn=""
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="7dp"
+        android:layout_marginRight="7dp"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp">
+
+            <TextView
+                android:layout_toLeftOf="@+id/preferences_skill_save_button"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/skill_preferences"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:textColor="@color/black_69"
+                android:gravity="start|center_vertical"/>
+
+            <TextView
+                android:id="@+id/preferences_skill_save_button"
+                android:layout_width="70dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:text="@string/save"
+                android:textColor="@color/white"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_centerVertical="true"
+                android:textAllCaps="true"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                android:background="@drawable/enable_rounded_button_2"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/black_ec"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="45dp"
+            android:layout_marginTop="5dp"
+            android:gravity="center_vertical|start"
+            android:text="@string/primary_skill_hint"
+            android:textAllCaps="false"
+            android:textColor="@color/black_69"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <AutoCompleteTextView
+            android:id="@+id/preferences_primary_skill"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="@android:color/transparent"
+            android:gravity="start|center_vertical"
+            android:hint="Primary Skills"
+            android:maxLength="40"
+            android:minHeight="40dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:singleLine="true"
+            android:textColor="@color/black_95"
+            android:textSize="16sp"
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="45dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical|start"
+            android:text="@string/secondary_skill_hint"
+            android:textAllCaps="false"
+            android:textColor="@color/black_69"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+        <com.technoindians.views.SkillAutoCompleteTextView
+            android:id="@+id/preferences_secondary_skill"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start|center_vertical"
+            android:hint="Secondary Skills"
+            android:textAppearance="@color/colorPrimary"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="@android:color/transparent"
+            android:minHeight="40dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="@color/black_95"
+            android:textSize="16sp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"/>
+
+        <!--            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp">
+                <com.technoindians.views.TagsMultiAutoCompleteTextView
+                            android:id="@+id/preferences_secondary_skill"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="start|center_vertical"
+                            android:hint="Secondary Skills"
+                            android:minHeight="45dp"
+                            android:textAppearance="@color/colorPrimary"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:singleLine="true"
+                            android:textColor="@color/black_95"
+                            android:textSize="14sp"
+                            android:background="@drawable/transparent_thin_grey_border_layout"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginRight="78dp"/>
+        </RelativeLayout>-->
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:background="@drawable/primary_rounded_button"
+    android:textColor="@color/white"
+    android:fontFamily="sans-serif-condensed"
+    android:textSize="14sp"
+    android:padding="5dp"
+    android:layout_margin="5dp"
+    android:text="@string/app_name"/>

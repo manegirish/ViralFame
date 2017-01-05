@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/confirmation_dialog_icon"
+            android:layout_width="45dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:padding="10dp"
+            android:src="@drawable/ic_warning_r" />
+
+        <TextView
+            android:id="@+id/confirmation_dialog_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@+id/confirmation_dialog_icon"
+            android:layout_toLeftOf="@+id/confirmation_dialog_close"
+            android:layout_toRightOf="@+id/confirmation_dialog_icon"
+            android:layout_toStartOf="@+id/confirmation_dialog_close"
+            android:gravity="start|center_vertical"
+            android:paddingLeft="5dp"
+            android:text="@string/warning"
+            android:textAllCaps="true"
+            android:textColor="@color/red"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/confirmation_dialog_close"
+            android:layout_width="45dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:padding="12dp"
+            android:src="@drawable/ic_cancel_g"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/red" />
+
+    <TextView
+        android:id="@+id/confirmation_dialog_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:padding="10dp"
+        android:text="@string/app_name"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/black_95"
+        android:textSize="16sp"
+        android:textStyle="normal" />
+
+    <EditText
+        android:id="@+id/confirmation_dialog_number_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start|center_vertical"
+        android:padding="7dp"
+        android:textColor="@color/black_99"
+        android:textSize="14sp"
+        android:layout_margin="10dp"
+        android:hint="@string/enter_number"
+        android:background="@drawable/edit_text_primary_bg"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="15dp">
+
+        <Button
+            android:id="@+id/confirmation_dialog_ok_button"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@color/colorPrimary"
+            android:minWidth="120dp"
+            android:text="@string/ok"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/confirmation_dialog_cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginLeft="20dp"
+            android:background="@color/grey_a3"
+            android:minWidth="120dp"
+            android:text="@string/cancel"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="visible" />
+    </LinearLayout>
+</LinearLayout>

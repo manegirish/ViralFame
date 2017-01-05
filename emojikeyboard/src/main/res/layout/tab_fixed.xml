@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<technoindians.viewpager.ViewPagerTabButton xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="45dip"
+    android:layout_height="45dip"
+    android:background="#2b2b2b"
+    android:gravity="center"
+    android:paddingTop="15dip"
+    android:textColor="#FFF"
+    android:textStyle="bold" />

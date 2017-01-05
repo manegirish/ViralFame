@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.technoindians.views.SlidingRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:paddingBottom="20dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_gravity="top"
+                android:background="@color/colorPrimary">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="15dp"
+                    android:gravity="center_vertical|start"
+                    android:text="@string/sign_up"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/registration_close"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_alignParentRight="true"
+                    android:padding="15dp"
+                    android:src="@drawable/ic_cancel" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="15dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp">
+
+                    <CheckedTextView
+                        android:id="@+id/registration_artist_checkbox"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="14sp"
+                        android:textAllCaps="false"
+                        android:checked="true"
+                        android:drawablePadding="5dp"
+                        android:drawableStart="@drawable/ic_check_text"
+                        android:text="@string/artist"/>
+
+                    <CheckedTextView
+                        android:id="@+id/registration_recruiter_checkbox"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="14sp"
+                        android:drawableStart="@drawable/ic_check_text"
+                        android:textAllCaps="false"
+                        android:drawablePadding="5dp"
+                        android:text="@string/recruiter"/>
+                </LinearLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/registration_layout_first_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/registration_first_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:gravity="start|center_vertical"
+                        android:hint="First Name"
+                        android:maxLength="40"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:singleLine="true"
+                        android:textColor="@color/black_95"
+                        android:textSize="14sp" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/registration_layout_last_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/registration_last_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:gravity="start|center_vertical"
+                        android:hint="Last Name"
+                        android:maxLength="40"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:singleLine="true"
+                        android:textColor="@color/black_95"
+                        android:textSize="14sp" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/registration_layout_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/registration_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:gravity="start|center_vertical"
+                        android:hint="Email"
+                        android:inputType="textWebEmailAddress"
+                        android:maxLength="40"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:singleLine="true"
+                        android:textColor="@color/black_95"
+                        android:textSize="14sp" />
+                </android.support.design.widget.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:orientation="horizontal">
+
+                    <Spinner
+                        android:layout_width="0dp"
+                        android:layout_height="45dp"
+                        android:layout_weight="0.4"
+                        android:entries="@array/country_arrays"
+                        android:prompt="@string/country_prompt" />
+
+                    <EditText
+                        android:id="@+id/registration_number"
+                        android:layout_width="0dp"
+                        android:layout_height="45dp"
+                        android:layout_weight="0.6"
+                        android:gravity="start|center_vertical"
+                        android:hint="Mobile Number"
+                        android:inputType="number"
+                        android:maxLength="13"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:singleLine="true"
+                        android:textColor="@color/black_95"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/registration_layout_city"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/registration_city"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:gravity="start|center_vertical"
+                        android:hint="City"
+                        android:maxLength="40"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:singleLine="true"
+                        android:textColor="@color/black_95"
+                        android:textSize="14sp" />
+                </android.support.design.widget.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Spinner
+                        android:id="@+id/registration_gender"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:layout_weight="1"
+                        android:entries="@array/gender_array"
+                        android:prompt="@string/gender_prompt" />
+
+                    <TextView
+                        android:id="@+id/registration_age"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:layout_weight="1"
+                        android:background="#50e5e5e5"
+                        android:gravity="center"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:singleLine="true"
+                        android:text="Birth Date"
+                        android:textColor="@color/black_95"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <AutoCompleteTextView
+                    android:id="@+id/registration_skills"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:gravity="start|center_vertical"
+                    android:hint="Skills"
+                    android:maxLength="40"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:singleLine="true"
+                    android:textColor="@color/black_95"
+                    android:textSize="14sp" />
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/registration_layout_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/registration_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:gravity="start|center_vertical"
+                        android:hint="Password"
+                        android:inputType="textWebPassword"
+                        android:maxLength="12"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:singleLine="true"
+                        android:textColor="@color/black_95"
+                        android:textSize="14sp" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/registration_layout_confirm_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/registration_confirm_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:gravity="start|center_vertical"
+                        android:hint="Confirm Password"
+                        android:inputType="textWebPassword"
+                        android:maxLength="12"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:singleLine="true"
+                        android:textColor="@color/black_95"
+                        android:textSize="14sp" />
+                </android.support.design.widget.TextInputLayout>
+
+                <Button
+                    android:id="@+id/registration_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_margin="20dp"
+                    android:background="@drawable/primary_rounded_button"
+                    android:gravity="center"
+                    android:text="@string/sign_in"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</com.technoindians.views.SlidingRelativeLayout>
