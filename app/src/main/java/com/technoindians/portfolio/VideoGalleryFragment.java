@@ -131,7 +131,7 @@ public class VideoGalleryFragment extends Fragment {
                     .add(Constants.ACTION, Actions_.GET_VIDEOS)
                     .build();
             try {
-                response = MakeCall.post(Urls.DOMAIN + Urls.PORTFOLIO_OPERATIONS, requestBody);
+                response = MakeCall.post(Urls.DOMAIN + Urls.PORTFOLIO_OPERATIONS, requestBody,TAG);
                 return Portfolio_.galleryResult(response, JsonArrays_.GET_VIDEOS);
             } catch (Exception e) {
                 e.printStackTrace();

@@ -225,7 +225,7 @@ public class OpportunityApplicationsActivity extends AppCompatActivity implement
                     .build();
 
                 try {
-                    response = MakeCall.post(Urls.DOMAIN + Urls.JOB_OPERATIONS, requestBody);
+                    response = MakeCall.post(Urls.DOMAIN + Urls.JOB_OPERATIONS, requestBody, TAG);
                     if (response!=null){
                         result = JobParser_.jobsApplicantResult(response);
                     }

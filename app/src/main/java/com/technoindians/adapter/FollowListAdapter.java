@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,9 @@ import okhttp3.RequestBody;
  */
 
 public class FollowListAdapter extends ArrayAdapter<Follow> {
+
+    private static final String TAG = FollowListAdapter.class.getSimpleName();
+
     private ArrayList<Follow> likeList = null;
     private ArrayList<Follow> list;
     private Activity activity;
@@ -56,8 +60,9 @@ public class FollowListAdapter extends ArrayAdapter<Follow> {
         this.list.addAll(likeList);
     }
 
+    @NonNull
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         final ViewHolder holder;
         View view = convertView;
         Follow follow;
@@ -94,14 +99,22 @@ public class FollowListAdapter extends ArrayAdapter<Follow> {
         holder.icon.setTag(position);
 
         if (Integer.parseInt(follow.getIsFollow()) == 1) {
-            holder.follow.setText("Unfollow");
+            holder.follow.setText(activity.getApplicationContext().getResources().getString(R.string.un_follow));
         } else {
-            holder.follow.setText("Follow");
+            holder.follow.setText(activity.getApplicationContext().getResources().getString(R.string.follow));
         }
         if (Integer.parseInt(follow.getType()) == 2) {
             holder.nameText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_verify_user, 0, 0, 0);
         } else {
             holder.nameText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        }
+        if (follow.getUserId().equalsIgnoreCase(Preferences.get(Constants.USER_ID))) {
+            holder.nameText.setText("Me");
+            holder.follow.setEnabled(false);
+            holder.follow.setVisibility(View.GONE);
+        } else {
+            holder.follow.setEnabled(true);
+            holder.follow.setVisibility(View.VISIBLE);
         }
         holder.skillText.setText(follow.getSkill());
         holder.nameText.setText(follow.getName());
@@ -168,7 +181,7 @@ public class FollowListAdapter extends ArrayAdapter<Follow> {
                     .build();
 
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.FOLLOWER_OPERATIONS, requestBody);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.FOLLOWER_OPERATIONS, requestBody, TAG);
                 if (response != null) {
                     JSONObject jsonObject = new JSONObject(response);
                     if (jsonObject.has(JsonArrays_.FOLLOW_UNFOLLOW)) {
@@ -230,7 +243,7 @@ public class FollowListAdapter extends ArrayAdapter<Follow> {
                 }
             }
         }
-        if (likeList==null||likeList.size()<=0){
+        if (likeList == null || likeList.size() <= 0) {
             Follow follow = new Follow();
             follow.setStatus(2);
             likeList.add(follow);

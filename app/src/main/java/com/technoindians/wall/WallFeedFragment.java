@@ -48,7 +48,7 @@ import okhttp3.RequestBody;
  */
 public class WallFeedFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
-    private String TAG = WallFeedFragment.class.getSimpleName();
+    private static final String  TAG = WallFeedFragment.class.getSimpleName();
 
     private ListView feedListView;
     private TextView warningText, postText;
@@ -218,7 +218,7 @@ public class WallFeedFragment extends Fragment implements View.OnClickListener, 
                     .build();
 
             try {
-                response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody);
+                response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody,TAG);
                 result = Wall_.feedResult(response);
             } catch (Exception e) {
                 result = 11;

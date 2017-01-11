@@ -292,7 +292,7 @@ public class PreferencesFragment extends Fragment implements View.OnClickListene
         protected Integer doInBackground(RequestBody... params) {
             int result = 12;
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.GET_SKILLS, params[0]);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.GET_SKILLS, params[0],TAG);
                 // {"skill_data":{"msg":"succesfully updated.","status":1}}
                 if (response != null) {
                     JSONObject jsonObject = new JSONObject(response);
@@ -347,7 +347,7 @@ public class PreferencesFragment extends Fragment implements View.OnClickListene
                     .build();
 
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.GET_SKILLS, requestBody);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.GET_SKILLS, requestBody,TAG);
                 if (params[0].equals(Actions_.PRIMARY)) {
                     return SkillParser.skill(response, TableList.TABLE_SKILL_PRIMARY, activity.getApplicationContext());
                 } else {

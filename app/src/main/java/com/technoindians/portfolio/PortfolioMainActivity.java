@@ -52,6 +52,8 @@ import okhttp3.RequestBody;
 
 public class PortfolioMainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG = PortfolioMainActivity.class.getSimpleName();
+
     private Toolbar toolbar;
     private ImageView imageView;
     ImageView backButton, profilePhoto;
@@ -291,7 +293,7 @@ public class PortfolioMainActivity extends AppCompatActivity implements View.OnC
                     .add(Constants.ACTION, Actions_.GET_PORTFOLIO)
                     .build();
             try {
-                response = MakeCall.post(Urls.DOMAIN + Urls.PORTFOLIO_OPERATIONS, requestBody);
+                response = MakeCall.post(Urls.DOMAIN + Urls.PORTFOLIO_OPERATIONS, requestBody,TAG);
                 if (response != null) {
                     result = Portfolio_.portfolioResult(response);
                 } else {

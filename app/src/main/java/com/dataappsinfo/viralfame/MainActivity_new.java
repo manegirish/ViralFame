@@ -75,6 +75,8 @@ import okhttp3.RequestBody;
 public class MainActivity_new extends AppCompatActivity
         implements View.OnClickListener {
 
+    private static final String TAG = MainActivity_new.class.getSimpleName();
+
     public static MainActivity_new mainActivity;
     private static boolean isOpen = false;
     public EditText searchBox;
@@ -407,7 +409,7 @@ public class MainActivity_new extends AppCompatActivity
                     .add(Constants.USER_ID, Preferences.get(Constants.USER_ID))
                     .build();
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.LOGOUT_URL, requestBody);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.LOGOUT_URL, requestBody, TAG);
                 if (response!=null){
                     JSONObject jsonObject = new JSONObject(response);
                     if (jsonObject.has(JsonArrays_.LOG_OUT)){

@@ -47,6 +47,7 @@ import okhttp3.RequestBody;
 
 public class FollowersDialogFragment extends DialogFragment implements View.OnClickListener {
 
+    private static final String TAG = FollowersDialogFragment.class.getSimpleName();
     private boolean openSearch = false;
     private boolean isFetch = false;
 
@@ -230,7 +231,7 @@ public class FollowersDialogFragment extends DialogFragment implements View.OnCl
                     .add(Constants.ACTION, Actions_.GET_FOLLOWER)
                     .build();
             try {
-                response = MakeCall.post(Urls.DOMAIN + Urls.FOLLOWER_OPERATIONS, requestBody);
+                response = MakeCall.post(Urls.DOMAIN + Urls.FOLLOWER_OPERATIONS, requestBody, TAG);
                 if (response != null) {
                     return FollowParser_.followResult(response, JsonArrays_.FOLLOWER);
                 }

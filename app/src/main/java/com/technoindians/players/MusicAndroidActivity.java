@@ -33,20 +33,14 @@ public class MusicAndroidActivity extends Activity {
 				mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 				try {
 					mPlayer.setDataSource(url);
-				} catch (IllegalArgumentException e) {
-					ShowToast.toast(getApplicationContext(), "You might not set the URI correctly!");
-				} catch (SecurityException e) {
-					ShowToast.toast(getApplicationContext(), "You might not set the URI correctly!");
-				} catch (IllegalStateException e) {
+				} catch (IllegalArgumentException | SecurityException | IllegalStateException e) {
 					ShowToast.toast(getApplicationContext(), "You might not set the URI correctly!");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 				try {
 					mPlayer.prepare();
-				} catch (IllegalStateException e) {
-					ShowToast.toast(getApplicationContext(), "You might not set the URI correctly!");
-				} catch (IOException e) {
+				} catch (IllegalStateException | IOException e) {
 					ShowToast.toast(getApplicationContext(), "You might not set the URI correctly!");
 				}
 				mPlayer.start();

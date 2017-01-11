@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
+
 import com.dataappsinfo.viralfame.R;
 import com.technoindians.constants.Actions_;
 import com.technoindians.constants.Constants;
@@ -27,11 +28,14 @@ import com.technoindians.network.MakeCall;
 import com.technoindians.network.Urls;
 import com.technoindians.pops.ShowToast;
 import com.technoindians.preferences.Preferences;
+
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
@@ -296,7 +300,7 @@ public class OpportunityPostActivity extends Activity implements View.OnClickLis
                     .add(Constants.ORGANISATION, company)
                     .build();
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.JOB_OPERATIONS, requestBody);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.JOB_OPERATIONS, requestBody, TAG);
                 if (response!=null){
                     JSONObject jsonObject = new JSONObject(response);
                     if (jsonObject.has(JsonArrays_.POST_JOB)){

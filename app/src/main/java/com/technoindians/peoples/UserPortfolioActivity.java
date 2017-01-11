@@ -63,6 +63,8 @@ import okhttp3.RequestBody;
 
 public class UserPortfolioActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG =  UserPortfolioActivity.class.getSimpleName();
+
     private Toolbar toolbar;
     private ImageView imageView;
     private String friend_id, friend_name, friend_photo, friend_skill;
@@ -347,7 +349,7 @@ public class UserPortfolioActivity extends AppCompatActivity implements View.OnC
                     .add(Constants.ACTION, Actions_.GET_PORTFOLIO)
                     .build();
             try {
-                response = MakeCall.post(Urls.DOMAIN + Urls.PORTFOLIO_OPERATIONS, requestBody);
+                response = MakeCall.post(Urls.DOMAIN + Urls.PORTFOLIO_OPERATIONS, requestBody,TAG);
                 if (response != null) {
                     profileMap = Portfolio_.portfolioFriends(response);
                     return Integer.parseInt(profileMap.get(Constants.STATUS));
@@ -386,7 +388,7 @@ public class UserPortfolioActivity extends AppCompatActivity implements View.OnC
                     .build();
 
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.FOLLOWER_OPERATIONS, requestBody);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.FOLLOWER_OPERATIONS, requestBody,TAG);
                 if (response != null) {
                     JSONObject jsonObject = new JSONObject(response);
                     if (jsonObject.has(JsonArrays_.FOLLOW_UNFOLLOW)) {

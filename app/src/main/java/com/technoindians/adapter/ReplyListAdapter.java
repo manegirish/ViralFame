@@ -24,6 +24,7 @@ import technoindians.key.emoji.custom.EmojiTextView;
  */
 
 public class ReplyListAdapter extends ArrayAdapter<Details_> {
+
     private ArrayList<Details_> replyList = new ArrayList<>();
     private Activity activity;
     private ViewHolder holder;

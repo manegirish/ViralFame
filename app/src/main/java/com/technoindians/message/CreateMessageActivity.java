@@ -60,6 +60,7 @@ import technoindians.key.emoji.adapter.EmojiGridviewImageAdapter;
 public class CreateMessageActivity extends AppCompatActivity implements View.OnClickListener,
         EmojiGridviewImageAdapter.EmojiClickInterface {
 
+    private static final String TAG = CreateMessageActivity.class.getSimpleName();
     ImageView searchButton, backButton;
     TextView titleText, warningText, nameText;
     EditText searchBox, messageBox;
@@ -221,7 +222,7 @@ public class CreateMessageActivity extends AppCompatActivity implements View.OnC
                     .add(Constants.ACTION, Actions_.GET_USERS)
                     .build();
             try {
-                response = MakeCall.post(Urls.DOMAIN + Urls.MESSAGE_OPERATIONS, requestBody);
+                response = MakeCall.post(Urls.DOMAIN + Urls.MESSAGE_OPERATIONS, requestBody, TAG);
                 result = Users_.usersResult(response);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -295,7 +296,7 @@ public class CreateMessageActivity extends AppCompatActivity implements View.OnC
                     .add(Constants.ACTION, Actions_.SEND_MESSAGE)
                     .build();
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.MESSAGE_OPERATIONS, requestBody);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.MESSAGE_OPERATIONS, requestBody, TAG);
                 if (response == null) {
                     result = 12;
                 } else {
@@ -352,7 +353,7 @@ public class CreateMessageActivity extends AppCompatActivity implements View.OnC
                 break;
             case R.id.activity_toolbar_search_back:
                 hideKeyboard();
-                smiliKeyBoard.dismissKeyboard();
+                SmileyKeyBoard.dismissKeyboard();
                 if (openSearch == true) {
                     toggleSearch();
                 } else {
@@ -361,7 +362,7 @@ public class CreateMessageActivity extends AppCompatActivity implements View.OnC
                 break;
             case R.id.create_message_send:
                 hideKeyboard();
-                smiliKeyBoard.dismissKeyboard();
+                SmileyKeyBoard.dismissKeyboard();
                 String message = messageBox.getText().toString().trim();
                 if (friend_id != null) {
                     if (isValidMessage(message) == 1) {

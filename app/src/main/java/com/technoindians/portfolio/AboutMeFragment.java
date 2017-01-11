@@ -44,6 +44,7 @@ import okhttp3.RequestBody;
 
 public class AboutMeFragment extends DialogFragment implements View.OnClickListener {
 
+    private static final String TAG = AboutMeFragment.class.getSimpleName();
     private Activity activity;
     private String about_me;
     private EditText aboutBox;
@@ -183,7 +184,7 @@ public class AboutMeFragment extends DialogFragment implements View.OnClickListe
                     .add(Constants.MSG, about)
                     .build();
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.PORTFOLIO_OPERATIONS, requestBody);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.PORTFOLIO_OPERATIONS, requestBody, TAG);
 
                 JSONObject jsonObject = new JSONObject(response);
                 if (jsonObject != null) {

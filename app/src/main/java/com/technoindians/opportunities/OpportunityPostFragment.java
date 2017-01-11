@@ -340,7 +340,7 @@ public class OpportunityPostFragment extends Fragment implements View.OnClickLis
                     .add(Constants.ORGANISATION, company)
                     .build();
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.JOB_OPERATIONS, requestBody);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.JOB_OPERATIONS, requestBody, TAG);
                 if (response!=null){
                     JSONObject jsonObject = new JSONObject(response);
                     if (jsonObject.has(JsonArrays_.POST_JOB)){

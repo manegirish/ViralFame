@@ -191,7 +191,7 @@ public class ReceivedListFragment extends Fragment {
                     .build();
 
             try {
-                response = MakeCall.post(Urls.DOMAIN + Urls.JOB_OPERATIONS, requestBody);
+                response = MakeCall.post(Urls.DOMAIN + Urls.JOB_OPERATIONS, requestBody, TAG);
                 if (response != null) {
                     result = JobParser_.jobsResult(response);
                 }
@@ -268,7 +268,7 @@ public class ReceivedListFragment extends Fragment {
 
             try {
                 //{"hide_job":{"msg":"Job hide Successfully","status":1}}
-                String response = MakeCall.post(Urls.DOMAIN + Urls.JOB_OPERATIONS, requestBody);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.JOB_OPERATIONS, requestBody, TAG);
                 if (response != null) {
                     JSONObject jsonObject = new JSONObject(response);
                     if (jsonObject.has(JsonArrays_.HIDE_JOB)) {

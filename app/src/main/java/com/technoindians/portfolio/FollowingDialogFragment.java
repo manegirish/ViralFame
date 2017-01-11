@@ -48,6 +48,7 @@ public class FollowingDialogFragment extends DialogFragment implements View.OnCl
 
     private boolean openSearch = false;
     private boolean isFetch = false;
+    private static final String TAG = FollowingDialogFragment.class.getSimpleName();
 
     private String user_id;
     private ListView listView;
@@ -218,7 +219,7 @@ public class FollowingDialogFragment extends DialogFragment implements View.OnCl
                     .add(Constants.ACTION, Actions_.GET_FOLLOWING)
                     .build();
             try {
-                response = MakeCall.post(Urls.DOMAIN + Urls.FOLLOWER_OPERATIONS, requestBody);
+                response = MakeCall.post(Urls.DOMAIN + Urls.FOLLOWER_OPERATIONS, requestBody, TAG);
                 if (response != null) {
                     return FollowParser_.followResult(response, JsonArrays_.FOLLOWING);
                 }

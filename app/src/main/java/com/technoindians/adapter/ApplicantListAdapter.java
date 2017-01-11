@@ -43,6 +43,7 @@ import okhttp3.RequestBody;
 
 public class ApplicantListAdapter extends ArrayAdapter<Applicant_> {
 
+    private static final String TAG = ApplicantListAdapter.class.getSimpleName();
     private ArrayList<Applicant_> applicantList = null;
     private ArrayList<Applicant_> list;
     private Activity activity;
@@ -190,7 +191,7 @@ public class ApplicantListAdapter extends ArrayAdapter<Applicant_> {
                     .add(Constants.ID, id)
                     .build();
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.JOB_OPERATIONS, requestBody);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.JOB_OPERATIONS, requestBody,TAG);
 
                 JSONObject jsonObject = new JSONObject(response);
                 if (jsonObject != null) {

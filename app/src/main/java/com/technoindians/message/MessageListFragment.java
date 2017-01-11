@@ -46,6 +46,7 @@ import okhttp3.RequestBody;
 
 public class MessageListFragment extends Fragment implements View.OnClickListener {
 
+    private static final String TAG = MessageListFragment.class.getSimpleName();
     ArrayList<Message_> messageList;
     ListView listView;
     TextView warningText;
@@ -190,7 +191,7 @@ public class MessageListFragment extends Fragment implements View.OnClickListene
                     .add(Constants.ACTION, Actions_.GET_MESSAGES)
                     .build();
             try {
-                response = MakeCall.post(Urls.DOMAIN + Urls.MESSAGE_OPERATIONS, requestBody);
+                response = MakeCall.post(Urls.DOMAIN + Urls.MESSAGE_OPERATIONS, requestBody, TAG);
                 if (response != null) {
                     result = Messages_.messageResult(response);
                 } else {

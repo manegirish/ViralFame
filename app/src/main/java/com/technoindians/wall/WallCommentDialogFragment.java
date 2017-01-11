@@ -190,7 +190,7 @@ public class WallCommentDialogFragment extends DialogFragment implements View.On
                     .add(Constants.ACTION, Actions_.COMMENT)
                     .build();
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL,requestBody);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL,requestBody,TAG);
                 if (response!=null){
                     JSONObject jsonObject = new JSONObject(response);
                     if (jsonObject.has(JsonArrays_.COMMENT)){
@@ -252,7 +252,7 @@ public class WallCommentDialogFragment extends DialogFragment implements View.On
                     .build();
            // Log.e(TAG,"------>");
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL,requestBody);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL,requestBody,TAG);
                 if (response!=null){
                     result = Wall_.commentResult(response);
                     if (result==1){

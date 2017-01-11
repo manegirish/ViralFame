@@ -53,6 +53,8 @@ import okhttp3.RequestBody;
 
 public class ReceivedJobListAdapter extends ArrayAdapter<Jobs_> {
 
+    private static final String TAG = ReceivedJobListAdapter.class.getSimpleName();
+
     private ArrayList<Jobs_> jobList = null;
     private ArrayList<Jobs_> list;
     private Activity activity;
@@ -245,7 +247,7 @@ public class ReceivedJobListAdapter extends ArrayAdapter<Jobs_> {
                     .build();
 
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.JOB_OPERATIONS, requestBody);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.JOB_OPERATIONS, requestBody, TAG);
                 //{"success":"Job applied successfully","status":1}
                 //http://dataappsinfo.com/viral/job_operations.php?id=3&user_id=5&action=apply_job
                 if (response != null) {

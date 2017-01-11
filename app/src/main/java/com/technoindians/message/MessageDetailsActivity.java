@@ -52,6 +52,8 @@ import technoindians.key.emoji.adapter.EmojiGridviewImageAdapter;
 public class MessageDetailsActivity extends AppCompatActivity implements View.OnClickListener,
         EmojiGridviewImageAdapter.EmojiClickInterface {
 
+    private static final String TAG = MessageDetailsActivity.class.getSimpleName();
+
     private ImageView backButton, profilePhoto;
     private TextView nameText, skillText, warningText;
     private EditText messageBox;
@@ -208,7 +210,7 @@ public class MessageDetailsActivity extends AppCompatActivity implements View.On
                     .add(Constants.ACTION, Actions_.GET_MESSAGE_DETAILS)
                     .build();
             try {
-                response = MakeCall.post(Urls.DOMAIN + Urls.MESSAGE_OPERATIONS, requestBody);
+                response = MakeCall.post(Urls.DOMAIN + Urls.MESSAGE_OPERATIONS, requestBody, TAG);
                 result = Messages_.detailsResult(response);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -290,7 +292,7 @@ public class MessageDetailsActivity extends AppCompatActivity implements View.On
                     .add(Constants.ACTION, Actions_.SEND_MESSAGE)
                     .build();
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.MESSAGE_OPERATIONS, requestBody);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.MESSAGE_OPERATIONS, requestBody, TAG);
                 if (response == null) {
                     result = 12;
                 } else {
@@ -340,12 +342,12 @@ public class MessageDetailsActivity extends AppCompatActivity implements View.On
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.activity_toolbar_photo_back:
-                smiliKeyBoard.dismissKeyboard();
+                SmileyKeyBoard.dismissKeyboard();
                 onBackPressed();
                 break;
             case R.id.message_details_send:
                 hideKeyboard();
-                smiliKeyBoard.dismissKeyboard();
+                SmileyKeyBoard.dismissKeyboard();
                 String message = messageBox.getText().toString().trim();
                 if (isValidMessage(message) == 1) {
                     new SendMessage().execute(message);

@@ -276,7 +276,7 @@ public class TimelineMessagePostActivity extends Activity implements View.OnClic
 
                 break;
             case R.id.create_wall_icon_footer:
-                smileyKeyBoard.dismissKeyboard();
+                SmileyKeyBoard.dismissKeyboard();
                 if (isKeyboard) {
                     hideKeyboard();
                 }
@@ -532,7 +532,7 @@ public class TimelineMessagePostActivity extends Activity implements View.OnClic
                     .add(Constants.POST_TYPE, post_type)
                     .build();
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody,TAG);
                 //{"add_post":{"msg":"Posted Successfully","status":1}}
                 if (response != null) {
                     JSONObject jsonObject = new JSONObject(response);
@@ -586,8 +586,8 @@ public class TimelineMessagePostActivity extends Activity implements View.OnClic
 
     @Override
     public void onBackPressed() {
-        if (smileyKeyBoard.isKeyboardVisibile()) {
-            smileyKeyBoard.dismissKeyboard();
+        if (SmileyKeyBoard.isKeyboardVisibile()) {
+            SmileyKeyBoard.dismissKeyboard();
             return;
         }
         if (isKeyboard) {

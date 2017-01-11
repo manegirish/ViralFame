@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.dataappsinfo.viralfame.R;
 import com.technoindians.adapter.LikedListAdapter;
 import com.technoindians.constants.Actions_;
@@ -24,6 +25,7 @@ import com.technoindians.network.Urls;
 import com.technoindians.parser.Wall_;
 import com.technoindians.pops.ShowToast;
 import com.technoindians.preferences.Preferences;
+
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -34,6 +36,8 @@ import okhttp3.RequestBody;
  * Created by trojan on 15/7/16.
  */
 public class LikedListActivity extends AppCompatActivity implements View.OnClickListener{
+
+    private static final String TAG = LikedListActivity.class.getSimpleName();
 
     ImageView searchButton,backButton;
     TextView titleText;
@@ -147,7 +151,7 @@ public class LikedListActivity extends AppCompatActivity implements View.OnClick
                     .build();
 
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody,TAG);
                 result = Wall_.likedResult(response);
                 if (result==1){
                     likedList = Wall_.parseLiked(response);

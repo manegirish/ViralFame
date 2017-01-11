@@ -71,7 +71,9 @@ import okhttp3.RequestBody;
 
 public class RegisterFragment extends Fragment implements View.OnClickListener {
 
-    ImageView closeButton;
+    private static final String TAG = RegisterFragment.class.getSimpleName();
+
+            ImageView closeButton;
     Button registerButton;
     EditText firstBox, lastBox, emailBox, numberBox, cityBox, passwordBox, confirmBox;
     AutoCompleteTextView skillsBox;
@@ -389,7 +391,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                     .build();
 
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.SIGN_UP_URL, requestBody);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.SIGN_UP_URL, requestBody, TAG);
 
                 if (response != null) {
                     JSONObject jsonObject = new JSONObject(response);
@@ -487,7 +489,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                     .build();
 
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.GET_SKILLS, requestBody);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.GET_SKILLS, requestBody, TAG);
                 return SkillParser.skill(response, TableList.TABLE_SKILL_PRIMARY,activity.getApplicationContext());
                 } catch (Exception e) {
                 e.printStackTrace();

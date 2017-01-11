@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.dataappsinfo.viralfame.R;
 import com.technoindians.adapter.ImageGalleryAdapter;
 import com.technoindians.constants.Actions_;
@@ -24,7 +25,9 @@ import com.technoindians.network.Urls;
 import com.technoindians.parser.Portfolio_;
 import com.technoindians.preferences.Preferences;
 import com.technoindians.views.RecyclerItemClickListener;
+
 import java.util.ArrayList;
+
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
@@ -130,7 +133,7 @@ public class ImageGalleryFragment extends Fragment {
                     .add(Constants.ACTION, Actions_.GET_IMAGES)
                     .build();
             try {
-                response = MakeCall.post(Urls.DOMAIN + Urls.PORTFOLIO_OPERATIONS, requestBody);
+                response = MakeCall.post(Urls.DOMAIN + Urls.PORTFOLIO_OPERATIONS, requestBody, TAG);
                 return Portfolio_.galleryResult(response, JsonArrays_.GET_IMAGES);
             } catch (Exception e) {
                 e.printStackTrace();

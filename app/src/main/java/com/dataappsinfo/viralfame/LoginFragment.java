@@ -56,6 +56,8 @@ import okhttp3.RequestBody;
 
 public class LoginFragment extends Fragment implements View.OnClickListener {
 
+    private static final String TAG = LoginFragment.class.getSimpleName();
+
     private Activity activity;
     private boolean isVisible = false;
 
@@ -244,7 +246,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     .build();
 
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.LOGIN_URL, requestBody);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.LOGIN_URL, requestBody, TAG);
                 return Login_.parse(response, activity.getApplicationContext());
             } catch (Exception e) {
                 e.printStackTrace();

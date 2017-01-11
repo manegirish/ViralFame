@@ -216,7 +216,7 @@ public class FeedDetailsActivity extends Activity implements View.OnClickListene
                     .add(Constants.ID, wall_id)
                     .build();
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody,TAG);
                 if (response != null) {
                     JSONObject jsonObject = new JSONObject(response);
                     if (jsonObject.has(JsonArrays_.POST_DETAILS)) {
@@ -347,7 +347,7 @@ public class FeedDetailsActivity extends Activity implements View.OnClickListene
                     .add(Constants.ACTION, Actions_.LIKE_UNLIKE)
                     .build();
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody,TAG);
                 if (response != null) {
                     JSONObject jsonObject = new JSONObject(response);
                     if (jsonObject.has(JsonArrays_.COMMENT)) {

@@ -25,6 +25,7 @@ import com.technoindians.network.MakeCall;
 import com.technoindians.network.Urls;
 import com.technoindians.parser.FollowParser_;
 import com.technoindians.preferences.Preferences;
+
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -37,6 +38,7 @@ import okhttp3.RequestBody;
 
 public class FollowingFragment extends Fragment {
 
+    private static final String TAG = FollowingFragment.class.getSimpleName();
     ListView listView;
     TextView warningText;
     private ArrayList<Follow> followList;
@@ -115,7 +117,7 @@ public class FollowingFragment extends Fragment {
                     .add(Constants.ACTION, Actions_.GET_FOLLOWING)
                     .build();
             try {
-                response = MakeCall.post(Urls.DOMAIN + Urls.FOLLOWER_OPERATIONS, requestBody);
+                response = MakeCall.post(Urls.DOMAIN + Urls.FOLLOWER_OPERATIONS, requestBody,TAG);
                 if (response != null) {
                     return FollowParser_.followResult(response, JsonArrays_.FOLLOWING);
                 }

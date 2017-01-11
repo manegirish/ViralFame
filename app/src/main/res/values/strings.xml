@@ -24,6 +24,8 @@
     <string name="my_people">My People</string>
     <string name="logout">Logout</string>
 
+    <string name="follow">Follow</string>
+    <string name="un_follow">Unfollow</string>
     <string name="follows">Followers</string>
     <string name="following">Following</string>
     <string name="save">Save</string>

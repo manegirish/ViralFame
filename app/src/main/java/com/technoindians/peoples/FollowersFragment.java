@@ -37,6 +37,7 @@ import okhttp3.RequestBody;
  */
 public class FollowersFragment extends Fragment {
 
+    private static final String TAG = FollowersFragment.class.getSimpleName();
     ListView listView;
     TextView warningText;
     private ArrayList<Follow> followList;
@@ -114,7 +115,7 @@ public class FollowersFragment extends Fragment {
                     .add(Constants.ACTION, Actions_.GET_FOLLOWER)
                     .build();
             try {
-                response = MakeCall.post(Urls.DOMAIN + Urls.FOLLOWER_OPERATIONS, requestBody);
+                response = MakeCall.post(Urls.DOMAIN + Urls.FOLLOWER_OPERATIONS, requestBody,TAG);
                 if (response != null) {
                     return FollowParser_.followResult(response, JsonArrays_.FOLLOWER);
                 }

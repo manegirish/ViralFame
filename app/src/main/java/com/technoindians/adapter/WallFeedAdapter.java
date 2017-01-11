@@ -364,7 +364,7 @@ public class WallFeedAdapter extends CursorAdapter {
                     .add(Constants.ACTION, Actions_.LIKE_UNLIKE)
                     .build();
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody, TAG);
                 if (response != null) {
                     JSONObject jsonObject = new JSONObject(response);
                     if (jsonObject.has(JsonArrays_.COMMENT)) {

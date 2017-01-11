@@ -2,6 +2,7 @@ package com.technoindians.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +13,11 @@ import android.widget.TextView;
 
 import com.dataappsinfo.viralfame.R;
 import com.squareup.picasso.Picasso;
+import com.technoindians.constants.Constants;
 import com.technoindians.constants.Warnings;
 import com.technoindians.message.Friends_;
 import com.technoindians.network.Urls;
+import com.technoindians.preferences.Preferences;
 import com.technoindians.views.CircleTransformMain;
 
 import java.util.ArrayList;
@@ -23,7 +26,7 @@ import java.util.Locale;
 /**
  * @author Girish Mane <girishmane8692@gmail.com>
  *         Created on 04-03-2016
- *         Last Modified on 11-04-2016
+ *         Last Modified on 11-07-2017
  */
 
 public class UsersListAdapter extends ArrayAdapter<Friends_> {
@@ -39,8 +42,9 @@ public class UsersListAdapter extends ArrayAdapter<Friends_> {
         this.list.addAll(friendList);
     }
 
+    @NonNull
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         final ViewHolder holder;
         View view = convertView;
         Friends_ friends_;
@@ -70,6 +74,9 @@ public class UsersListAdapter extends ArrayAdapter<Friends_> {
         holder.warningText.setVisibility(View.GONE);
 
         holder.nameText.setText(friends_.getName());
+        if (friends_.getUser_id().equalsIgnoreCase(Preferences.get(Constants.USER_ID))) {
+            holder.nameText.setText("Me");
+        }
         if (Integer.parseInt(friends_.getType()) == 2) {
             holder.nameText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_verify_user, 0, 0, 0);
         } else {
