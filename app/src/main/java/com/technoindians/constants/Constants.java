@@ -32,6 +32,7 @@ public class Constants {
     public static final String COMPANY = "company";
     public static final String DESCRIPTION = "description";
     public static final String ID = "id";
+    public static final String _ID = "_id";
     public static final String TIMESTAMP = "timestamp";
     public static final String TO_ID = "to_id";
     public static final String TO_USER_ID = "to_user_id";

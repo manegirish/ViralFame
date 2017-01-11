@@ -5,11 +5,9 @@ import android.content.ContentValues;
 import com.technoindians.constants.Constants;
 
 /**
- * @author
- * Girish Mane <girishmane8692@gmail.com>
- * Created on 28/7/16.
- * Last modified 27/08/2016
- *
+ * @author Girish Mane <girishmane8692@gmail.com>
+ *         Created on 28/7/16.
+ *         Last modified 27/08/2016
  */
 public class SetValues {
 
@@ -72,11 +70,11 @@ public class SetValues {
     public static ContentValues feed(String id, String user_id, String name, String type, String post_text,
                                      String media_type, String media_file, String media_size, String total_comments,
                                      String total_likes, String is_like, String date_of_post, String last_updated,
-                                     String profile_pic, String skill,String is_follow) {
+                                     String profile_pic, String skill, String is_follow) {
 
         ContentValues feedValues = new ContentValues();
 
-        feedValues.put(Constants.ID, id);
+        feedValues.put(Constants._ID, id);
         feedValues.put(Constants.USER_ID, user_id);
         feedValues.put(Constants.NAME, name);
         feedValues.put(Constants.USER_TYPE, type);
