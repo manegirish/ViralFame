@@ -1,5 +1,6 @@
 package com.technoindians.wall;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.Dialog;
@@ -10,7 +11,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +26,7 @@ import com.technoindians.adapter.CommentListAdapter;
 import com.technoindians.constants.Actions_;
 import com.technoindians.constants.Constants;
 import com.technoindians.constants.Warnings;
+import com.technoindians.database.UpdateOperations;
 import com.technoindians.library.Validator_;
 import com.technoindians.network.JsonArrays_;
 import com.technoindians.network.MakeCall;
@@ -33,8 +34,11 @@ import com.technoindians.network.Urls;
 import com.technoindians.parser.Wall_;
 import com.technoindians.pops.ShowToast;
 import com.technoindians.preferences.Preferences;
+
 import org.json.JSONObject;
+
 import java.util.ArrayList;
+
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
@@ -42,34 +46,37 @@ import okhttp3.RequestBody;
  * @author
  * Girish Mane (girishmane8692@gmail.com)
  * created on 9/7/16
- * last modified 15/7/16
+ * last modified 11/01/17
  */
 
 public class WallCommentDialogFragment extends DialogFragment implements View.OnClickListener{
 
     private static final String TAG = WallCommentDialogFragment.class.getSimpleName();
 
-    ArrayList<Comment_> commentList;
+    ImageView backButton, sendButton;
     RelativeLayout likeListButton;
     private String wall_id;
     private Activity activity;
-    ImageView backButton, sendButton;
-    EditText messageBox;
-    ListView listView;
-    TextView warning;
+    private EditText messageBox;
+    private ListView listView;
+    private TextView warning;
 
-    CommentListAdapter commentListAdapter;
+    private ArrayList<Comment_> commentList;
+
+    private CommentListAdapter commentListAdapter;
+    private UpdateOperations updateOperations;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        @SuppressLint("InflateParams")
         View view = inflater.inflate(R.layout.commet_dialog_layout,null);
 
         activity = getActivity();
-
+        updateOperations = new UpdateOperations(activity.getApplicationContext());
         Preferences.initialize(activity.getApplicationContext());
 
         commentList = new ArrayList<>();
+
         Bundle bundle = getArguments();
         if (bundle!=null){
             wall_id =  bundle.getString(Constants.ID);
@@ -243,7 +250,7 @@ public class WallCommentDialogFragment extends DialogFragment implements View.On
                     .add(Constants.ID, wall_id)
                     .add(Constants.ACTION, Actions_.GET_COMMENT)
                     .build();
-            Log.e(TAG,"------>");
+           // Log.e(TAG,"------>");
             try {
                 String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL,requestBody);
                 if (response!=null){
@@ -275,6 +282,7 @@ public class WallCommentDialogFragment extends DialogFragment implements View.On
                     warning.setVisibility(View.GONE);
                     commentListAdapter = new CommentListAdapter(activity,commentList);
                     listView.setAdapter(commentListAdapter);
+                    updateOperations.updateFeed(wall_id, Constants.TOTAL_COMMENTS, "" + commentList.size());
                     break;
                 case 2:
                     ShowToast.noData(activity.getApplicationContext());
