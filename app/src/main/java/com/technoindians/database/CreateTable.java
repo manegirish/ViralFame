@@ -6,13 +6,12 @@ import com.technoindians.constants.Constants;
  * @author
  * Girish Mane <girishmane8692@gmail.com>
  * Created on 28/07/16.
- * Last modified 28/07/2016
- *
+ * Last modified 11/01/2017
  */
 
 class CreateTable {
 
-    protected static final String CREATE_TABLE_PROFILE = "CREATE TABLE "
+    static final String CREATE_TABLE_PROFILE = "CREATE TABLE "
             + TableList.TABLE_PROFILE + "("
             + Constants.USER_ID + " INTEGER PRIMARY KEY,"
             + Constants.NAME + " VARCHAR(200),"
@@ -24,17 +23,17 @@ class CreateTable {
             + Constants.PROFILE_PIC + " VARCHAR(300),"
             + Constants.LOCAL_PATH + " VARCHAR(300)" + ")";
 
-    protected static final String CREATE_TABLE_SKILL_PRIMARY = "CREATE TABLE "
+    static final String CREATE_TABLE_SKILL_PRIMARY = "CREATE TABLE "
             + TableList.TABLE_SKILL_PRIMARY + "("
             + Constants.ID + " INTEGER PRIMARY KEY,"
             + Constants.SKILL + " VARCHAR(300)" + ")";
 
-    protected static final String CREATE_TABLE_SKILL_SECONDARY = "CREATE TABLE "
+    static final String CREATE_TABLE_SKILL_SECONDARY = "CREATE TABLE "
             + TableList.TABLE_SKILL_SECONDARY + "("
             + Constants.ID + " INTEGER PRIMARY KEY,"
             + Constants.SKILL + " VARCHAR(300)" + ")";
 
-    protected static final String CREATE_TABLE_USERS = "CREATE TABLE "
+    static final String CREATE_TABLE_USERS = "CREATE TABLE "
             + TableList.TABLE_USERS + "("
             + Constants.ID + " INTEGER PRIMARY KEY,"
             + Constants.USER_ID + " INTEGER (100),"
@@ -45,7 +44,7 @@ class CreateTable {
             + Constants.FOLLOWER + " INTEGER(10),"
             + Constants.PROFILE_PIC + " VARCHAR(300)" + ")";
 
-    protected static final String CREATE_TABLE_UTC = "CREATE TABLE "
+    static final String CREATE_TABLE_UTC = "CREATE TABLE "
             + TableList.TABLE_UTC + "("
             + Constants.USER_ID + " INTEGER PRIMARY KEY,"
             + TableList.TABLE_SKILL_PRIMARY + " VARCHAR(150),"
@@ -53,9 +52,9 @@ class CreateTable {
             + TableList.TABLE_PROFILE + " VARCHAR(150),"
             + TableList.TABLE_WALL_FEED + " VARCHAR(150)" + ")";
 
-    protected static final String CREATE_TABLE_WALL_FEED = "CREATE TABLE "
+    static final String CREATE_TABLE_WALL_FEED = "CREATE TABLE "
             + TableList.TABLE_WALL_FEED + "("
-            + Constants.ID + " INTEGER PRIMARY KEY,"
+            + Constants._ID + " INTEGER PRIMARY KEY,"
             + Constants.USER_ID + " INTEGER(50),"
             + Constants.NAME + " VARCHAR(250),"
             + Constants.USER_TYPE + " INTEGER(10),"
@@ -73,7 +72,7 @@ class CreateTable {
             + Constants.PROFILE_PIC + " VARCHAR(500),"
             + Constants.SKILL + " VARCHAR(250)" + ")";
 
-    protected static final String CREATE_TABLE_MESSAGE = "CREATE TABLE "
+    static final String CREATE_TABLE_MESSAGE = "CREATE TABLE "
             + TableList.TABLE_MESSAGE + "("
             + Constants.ID + " INTEGER(100) ,"
             + Constants.USER_ID + " INTEGER(50) PRIMARY KEY,"
