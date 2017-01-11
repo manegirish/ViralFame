@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -33,22 +32,26 @@ import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
 /**
- * Created by trojan on 15/7/16.
+ * @author
+ * Girish M (girishmane8692@gmail.com)
+ * Created on 15/7/16
+ * Last Modified on 11/07/2017
  */
 public class LikedListActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static final String TAG = LikedListActivity.class.getSimpleName();
 
     ImageView searchButton,backButton;
-    TextView titleText;
-    EditText searchBox;
-    private boolean openSearch = false;
-    private String wall_id;
-    ArrayList<Liked_> likedList;
-    ListView listView;
-    TextView warningText;
+    private TextView titleText;
+    private EditText searchBox;
+    private ListView listView;
+    private TextView warningText;
 
-    LikedListAdapter likedListAdapter;
+    private String wall_id;
+    private boolean openSearch = false;
+    private ArrayList<Liked_> likedList;
+
+    private LikedListAdapter likedListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +115,7 @@ public class LikedListActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void toggleSearch(){
-        if (openSearch==false){
+        if (!openSearch){
             openSearch = true;
             searchBox.setVisibility(View.VISIBLE);
             titleText.setVisibility(View.GONE);
@@ -166,11 +169,10 @@ public class LikedListActivity extends AppCompatActivity implements View.OnClick
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
-            Log.e("onPost","result -> "+integer+" size -> "+likedList.size());
+            //Log.e("onPost","result -> "+integer+" size -> "+likedList.size());
             switch (integer){
                 case 0:
-                    setWarning(Warnings.NO_DATA,R.drawable.ic_no_data);
-                    ShowToast.noData(getApplicationContext());
+                    setWarning("",R.drawable.ic_sad);
                     break;
                 case 1:
                     warningText.setVisibility(View.GONE);
@@ -180,8 +182,7 @@ public class LikedListActivity extends AppCompatActivity implements View.OnClick
                     listView.setAdapter(likedListAdapter);
                     break;
                 case 2:
-                    setWarning(Warnings.NO_DATA,R.drawable.ic_no_data);
-                    ShowToast.noData(getApplicationContext());
+                    setWarning("",R.drawable.ic_sad);
                     break;
                 case 11:
                     setWarning(Warnings.NETWORK_ERROR_WARNING,R.drawable.ic_network_problem);
@@ -201,7 +202,7 @@ public class LikedListActivity extends AppCompatActivity implements View.OnClick
                 toggleSearch();
                 break;
             case R.id.activity_toolbar_search_back:
-                if (openSearch == true){
+                if (openSearch){
                     toggleSearch();
                 }else {
                     onBackPressed();

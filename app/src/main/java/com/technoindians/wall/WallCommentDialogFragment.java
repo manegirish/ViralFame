@@ -272,7 +272,7 @@ public class WallCommentDialogFragment extends DialogFragment implements View.On
             super.onPostExecute(integer);
             switch (integer) {
                 case 0:
-                    warning.setVisibility(View.GONE);
+                    setWarning("",R.drawable.ic_sad);
                     break;
                 case 1:
                     commentListAdapter.clear();
@@ -283,7 +283,7 @@ public class WallCommentDialogFragment extends DialogFragment implements View.On
                     updateOperations.updateFeed(wall_id, Constants.TOTAL_COMMENTS, "" + commentList.size());
                     break;
                 case 2:
-                    warning.setVisibility(View.GONE);
+                    setWarning("",R.drawable.ic_sad);
                     break;
                 case 11:
                     ShowToast.networkProblemToast(activity.getApplicationContext());
