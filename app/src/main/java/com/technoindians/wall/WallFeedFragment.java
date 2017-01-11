@@ -14,6 +14,7 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.Fragment;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -21,13 +22,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.dataappsinfo.viralfame.MainActivity_new;
 import com.dataappsinfo.viralfame.R;
-import com.technoindians.adapter.FeedListAdapter;
+import com.technoindians.adapter.WallFeedAdapter;
 import com.technoindians.constants.Actions_;
 import com.technoindians.constants.Constants;
 import com.technoindians.constants.Warnings;
@@ -40,26 +40,25 @@ import com.technoindians.parser.Wall_;
 import com.technoindians.pops.ShowToast;
 import com.technoindians.preferences.Preferences;
 
-import java.util.ArrayList;
-
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
 /**
  * Created by girish on 27/6/16.
  */
-public class WallFeedFragment extends Fragment implements View.OnClickListener, AbsListView.OnScrollListener, SwipeRefreshLayout.OnRefreshListener {
+public class WallFeedFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private String TAG = WallFeedFragment.class.getSimpleName();
 
     private ListView feedListView;
     private TextView warningText, postText;
-    private ArrayList<Feed_> feedsList;
+
     private Activity activity;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private Cursor feedCursor;
 
-    private FeedListAdapter wallFeedListAdapter;
     private RetrieveOperation retrieveOperation;
+    WallFeedAdapter wallFeedAdapter;
 
 
     @Override
@@ -69,13 +68,10 @@ public class WallFeedFragment extends Fragment implements View.OnClickListener, 
 
         activity = getActivity();
 
-        feedsList = new ArrayList<>();
-
         retrieveOperation = new RetrieveOperation(activity.getApplicationContext());
 
         MainActivity_new.mainActivity.setTitle(activity.getApplicationContext()
                 .getResources().getString(R.string.home));
-
         Preferences.initialize(activity.getApplicationContext());
 
         feedListView = (ListView) view.findViewById(R.id.wall_feed_list_view);
@@ -86,16 +82,14 @@ public class WallFeedFragment extends Fragment implements View.OnClickListener, 
         postText = (TextView) view.findViewById(R.id.wall_feed_message_box);
         postText.setOnClickListener(this);
 
-        wallFeedListAdapter = new FeedListAdapter(activity, feedsList);
-        feedListView.setAdapter(wallFeedListAdapter);
-        feedListView.setOnScrollListener(this);
+        //feedListView.setOnScrollListener(this);
 
         return view;
     }
 
-    public void pullFromCache(String id) {
-        Log.e("pullFromCache", "====================>" + feedsList.size());
-        new Load(id, true).execute();
+
+    public void pullFromCache() {
+        new Load().execute();
     }
 
     @Override
@@ -105,12 +99,12 @@ public class WallFeedFragment extends Fragment implements View.OnClickListener, 
             @Override
             public void run() {
                 swipeRefreshLayout.setRefreshing(false);
-                new Load("0", false).execute();
+                pullFromCache();
             }
         });
     }
 
-    @Override
+/*    @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
     }
 
@@ -120,52 +114,21 @@ public class WallFeedFragment extends Fragment implements View.OnClickListener, 
         int size = feedsList.size();
         if ((last_position + 2) == size) {
             Log.e(TAG, "onScroll() => " + feedsList.get(size - 1).getId() + "\nsize -> " + size);
-            pullFromCache(feedsList.get(size - 1).getLast_updated());
+            //pullFromCache(feedsList.get(size - 1).getLast_updated());
         }
-    }
-
-    private boolean isDuplicate(Feed_ newFeed) {
-        boolean duplicate = false;
-        int i = 0;
-        for (Feed_ feed_ : feedsList) {
-            if (feed_.getId().equals(newFeed.getId())) {
-                feedsList.remove(i);
-                feedsList.add(i,newFeed);
-                duplicate = true;
-                Log.e("isDuplicate","i -> "+i);
-                break;
-            }
-            i++;
-        }
-        return duplicate;
-    }
+    }*/
 
     private class Load extends AsyncTask<Void, Void, Integer> {
-        String id;
-        boolean isDown;
-
-        public Load(String id, boolean isDown) {
-            this.id = id;
-            this.isDown = isDown;
-        }
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            setWarning(Warnings.LOADING, R.drawable.ic_data);
         }
 
         @Override
         protected Integer doInBackground(Void... params) {
-            ArrayList<Feed_> list = retrieveOperation.getFeed("5", id);
-            Log.e(TAG, "before size -> " + list.size() + "list -> " + list);
-            for (int i = 0; i < list.size(); i++) {
-                if (isDuplicate(list.get(i))) {
-                    list.remove(i);
-                }
-            }
-            Log.e(TAG, "after size -> " + list.size() + "list -> " + list);
-            if (list != null && list.size() > 0) {
-                feedsList.addAll(list);
+            feedCursor = retrieveOperation.fetchFeed();
+            if (feedCursor != null) {
                 return 1;
             }
             return 0;
@@ -174,23 +137,19 @@ public class WallFeedFragment extends Fragment implements View.OnClickListener, 
         @Override
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
-            if (feedsList == null || feedsList.size() <= 0) {
-                if (!isDown) {
-                    onRefresh();
-                }
-            } else {
+            if (result == 1) {
                 warningText.setVisibility(View.GONE);
                 feedListView.setVisibility(View.VISIBLE);
-                // wallFeedListAdapter.addAll(feedsList);
-                if (result == 1) {
-                    wallFeedListAdapter.notifyDataSetChanged();
-                }
+
+                wallFeedAdapter = new WallFeedAdapter(activity, feedCursor);
+                feedListView.setAdapter(wallFeedAdapter);
+            } else {
+                setWarning(Warnings.NO_DATA, R.drawable.ic_no_data);
             }
         }
     }
 
     protected void setWarning(String message, int image) {
-
         feedListView.setVisibility(View.GONE);
         warningText.setVisibility(View.VISIBLE);
         warningText.setText(message);
@@ -206,8 +165,8 @@ public class WallFeedFragment extends Fragment implements View.OnClickListener, 
                             (activity.getApplicationContext(), R.anim.animation_one, R.anim.animation_two).toBundle();
                     Intent next = new Intent(activity.getApplicationContext(), TimelineMessagePostActivity.class);
                     startActivity(next, nextAnimation);
-                }else {
-                    ShowToast.toast(activity.getApplicationContext(),Warnings.GUEST_LOGIN);
+                } else {
+                    ShowToast.toast(activity.getApplicationContext(), Warnings.GUEST_LOGIN);
                 }
                 break;
         }
@@ -262,6 +221,7 @@ public class WallFeedFragment extends Fragment implements View.OnClickListener, 
                 response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody);
                 result = Wall_.feedResult(response);
             } catch (Exception e) {
+                result = 11;
                 e.printStackTrace();
             }
             return result;
@@ -280,8 +240,13 @@ public class WallFeedFragment extends Fragment implements View.OnClickListener, 
                     }
                     break;
                 case 1:
-                    if (response != null)
-                        new RefreshList().execute(response);
+                    if (response != null) {
+                        Wall_.parseFeed(response, activity.getApplicationContext());
+                        feedCursor = retrieveOperation.fetchFeed();
+                        wallFeedAdapter.changeCursor(feedCursor);
+                        wallFeedAdapter.notifyDataSetChanged();
+                    }
+                    swipeRefreshLayout.setRefreshing(false);
                     break;
                 case 2:
                     swipeRefreshLayout.setRefreshing(false);
@@ -311,7 +276,7 @@ public class WallFeedFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
-    private class RefreshList extends AsyncTask<String, Void, Integer> {
+    /*private class RefreshList extends AsyncTask<String, Void, Integer> {
         ArrayList<Feed_> refreshList = null;
 
         @Override
@@ -343,5 +308,5 @@ public class WallFeedFragment extends Fragment implements View.OnClickListener, 
             }
             swipeRefreshLayout.setRefreshing(false);
         }
-    }
+    }*/
 }
