@@ -73,11 +73,11 @@ public class FollowingDialogFragment extends DialogFragment implements View.OnCl
         followList = new ArrayList<>();
 
         Bundle data = getArguments();
-        if (data!=null&&data.containsKey(Constants.USER_ID)){
+        if (data!=null){
             user_id = data.getString(Constants.USER_ID);
             isFetch = true;
         }else {
-            user_id = Preferences.get(Constants.USER_ID);
+            dismiss();
         }
 
         listView = (ListView) view.findViewById(R.id.layout_list_view);
@@ -142,7 +142,7 @@ public class FollowingDialogFragment extends DialogFragment implements View.OnCl
     }
 
     private void toggleSearch(){
-        if (openSearch==false){
+        if (!openSearch){
             openSearch = true;
             searchBox.setVisibility(View.VISIBLE);
             titleText.setVisibility(View.GONE);
@@ -192,7 +192,7 @@ public class FollowingDialogFragment extends DialogFragment implements View.OnCl
                 toggleSearch();
                 break;
             case R.id.activity_toolbar_search_back:
-                if (openSearch == true){
+                if (openSearch){
                     toggleSearch();
                 }else {
                     dismiss();
@@ -214,7 +214,7 @@ public class FollowingDialogFragment extends DialogFragment implements View.OnCl
         protected Integer doInBackground(Void... params) {
             int result = 12;
             RequestBody requestBody = new FormBody.Builder()
-                    .add(Constants.USER_ID, Preferences.get(Constants.USER_ID))
+                    .add(Constants.USER_ID, user_id)
                     .add(Constants.TIMEZONE, Preferences.get(Constants.TIMEZONE))
                     .add(Constants.ACTION, Actions_.GET_FOLLOWING)
                     .build();

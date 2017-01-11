@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -108,6 +109,8 @@ public class FollowListAdapter extends ArrayAdapter<Follow> {
         } else {
             holder.nameText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }
+        holder.skillText.setText(follow.getSkill());
+        holder.nameText.setText(follow.getName());
         if (follow.getUserId().equalsIgnoreCase(Preferences.get(Constants.USER_ID))) {
             holder.nameText.setText("Me");
             holder.follow.setEnabled(false);
@@ -116,8 +119,6 @@ public class FollowListAdapter extends ArrayAdapter<Follow> {
             holder.follow.setEnabled(true);
             holder.follow.setVisibility(View.VISIBLE);
         }
-        holder.skillText.setText(follow.getSkill());
-        holder.nameText.setText(follow.getName());
 
         Picasso.with(activity.getApplicationContext())
                 .load(Urls.DOMAIN + follow.getPhoto())
@@ -151,6 +152,7 @@ public class FollowListAdapter extends ArrayAdapter<Follow> {
 
                 Intent profileIntent = new Intent(activity.getApplicationContext(), UserPortfolioActivity.class);
                 profileIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                Log.e(TAG, "user_id: " + likeList.get(position).getUserId());
                 profileIntent.putExtra(Constants.USER_ID, likeList.get(position).getUserId());
                 profileIntent.putExtra(Constants.PROFILE_PIC, likeList.get(position).getPhoto());
                 profileIntent.putExtra(Constants.NAME, likeList.get(position).getName());

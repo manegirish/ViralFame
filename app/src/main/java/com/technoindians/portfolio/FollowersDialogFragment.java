@@ -147,7 +147,7 @@ public class FollowersDialogFragment extends DialogFragment implements View.OnCl
     }
 
     private void toggleSearch(){
-        if (openSearch==false){
+        if (!openSearch){
             openSearch = true;
             searchBox.setVisibility(View.VISIBLE);
             titleText.setVisibility(View.GONE);

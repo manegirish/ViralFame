@@ -16,6 +16,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -97,6 +98,7 @@ public class UserPortfolioActivity extends AppCompatActivity implements View.OnC
         Intent data = getIntent();
         if (data != null && data.hasExtra(Constants.USER_ID)) {
             friend_id = data.getStringExtra(Constants.USER_ID);
+            Log.e(TAG,"friend_id: "+friend_id);
             friend_name = data.getStringExtra(Constants.NAME);
             friend_photo = data.getStringExtra(Constants.PROFILE_PIC);
             friend_skill = data.getStringExtra(Constants.SKILL);
@@ -288,7 +290,7 @@ public class UserPortfolioActivity extends AppCompatActivity implements View.OnC
     }
 
     private class TabPagerAdapter extends FragmentStatePagerAdapter {
-        public TabPagerAdapter(FragmentManager fm) {
+        TabPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 

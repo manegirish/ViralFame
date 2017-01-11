@@ -38,7 +38,8 @@ import okhttp3.RequestBody;
 public class FollowersFragment extends Fragment {
 
     private static final String TAG = FollowersFragment.class.getSimpleName();
-    ListView listView;
+
+            ListView listView;
     TextView warningText;
     private ArrayList<Follow> followList;
     private FollowListAdapter followListAdapter;

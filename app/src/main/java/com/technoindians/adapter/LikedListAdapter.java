@@ -3,6 +3,7 @@ package com.technoindians.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,8 +54,9 @@ public class LikedListAdapter extends ArrayAdapter<Liked_> {
         this.list.addAll(likeList);
     }
 
+    @NonNull
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         final ViewHolder holder;
         View view = convertView;
         Liked_ liked_;
@@ -85,7 +87,10 @@ public class LikedListAdapter extends ArrayAdapter<Liked_> {
         } else {
             holder.nameText.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }
-        if (liked_.getId().equalsIgnoreCase(Preferences.get(Constants.USER_ID))) {
+        holder.skillText.setText(liked_.getSkill());
+        holder.nameText.setText(liked_.getName());
+        holder.follow.setOnClickListener(onClickListener);
+        if (liked_.getUserId().equalsIgnoreCase(Preferences.get(Constants.USER_ID))) {
             holder.nameText.setText("Me");
             holder.follow.setEnabled(false);
             holder.follow.setVisibility(View.GONE);
@@ -93,9 +98,7 @@ public class LikedListAdapter extends ArrayAdapter<Liked_> {
             holder.follow.setEnabled(true);
             holder.follow.setVisibility(View.VISIBLE);
         }
-        holder.skillText.setText(liked_.getSkill());
-        holder.nameText.setText(liked_.getName());
-        holder.follow.setOnClickListener(onClickListener);
+
         Picasso.with(activity.getApplicationContext())
                 .load(Urls.DOMAIN + liked_.getProfile_pic())
                 .transform(new CircleTransformMain())
