@@ -169,7 +169,6 @@ public class LikedListActivity extends AppCompatActivity implements View.OnClick
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
-            //Log.e("onPost","result -> "+integer+" size -> "+likedList.size());
             switch (integer){
                 case 0:
                     setWarning("",R.drawable.ic_sad);
