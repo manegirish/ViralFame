@@ -134,33 +134,31 @@ public class Wall_ {
         ArrayList<Comment_> commentList = new ArrayList<>();
         //network error
         int result = 11;
-        JSONObject jsonObject = null;
+        JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(response);
-            if (jsonObject != null) {
-                if (jsonObject.has(JsonArrays_.GET_COMMENTS)) {
-                    JSONArray jsonArray = jsonObject.getJSONArray(JsonArrays_.GET_COMMENTS);
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject responseObject = jsonArray.getJSONObject(i);
-                        result = responseObject.getInt(Constants.STATUS);
-                        if (result == 1) {
-                            String id = responseObject.getString(Constants.ID);
-                            String comment = responseObject.getString(Constants.COMMENT);
-                            String user_id = responseObject.getString(Constants.USER_ID);
-                            String name = responseObject.getString(Constants.NAME);
-                            String last_updated = responseObject.getString(Constants.DATE_OF_POST);
-                            String profile_pic = responseObject.getString(Constants.PROFILE_PIC);
+            if (jsonObject.has(JsonArrays_.GET_COMMENTS)) {
+                JSONArray jsonArray = jsonObject.getJSONArray(JsonArrays_.GET_COMMENTS);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject responseObject = jsonArray.getJSONObject(i);
+                    result = responseObject.getInt(Constants.STATUS);
+                    if (result == 1) {
+                        String id = responseObject.getString(Constants.ID);
+                        String comment = responseObject.getString(Constants.COMMENT);
+                        String user_id = responseObject.getString(Constants.USER_ID);
+                        String name = responseObject.getString(Constants.NAME);
+                        String last_updated = responseObject.getString(Constants.DATE_OF_POST);
+                        String profile_pic = responseObject.getString(Constants.PROFILE_PIC);
 
-                            Comment_ comment_ = new Comment_();
-                            comment_.setId(id);
-                            comment_.setUserId(user_id);
-                            comment_.setName(name);
-                            comment_.setComment(comment);
-                            comment_.setProfile_pic(profile_pic);
-                            comment_.setLast_updated(last_updated);
+                        Comment_ comment_ = new Comment_();
+                        comment_.setId(id);
+                        comment_.setUserId(user_id);
+                        comment_.setName(name);
+                        comment_.setComment(comment);
+                        comment_.setProfile_pic(profile_pic);
+                        comment_.setLast_updated(last_updated);
 
-                            commentList.add(comment_);
-                        }
+                        commentList.add(comment_);
                     }
                 }
             }
