@@ -59,7 +59,10 @@ import technoindians.key.emoji.SmileyKeyBoard;
 import technoindians.key.emoji.adapter.EmojiGridviewImageAdapter;
 
 /**
- * Created by girish on 18/7/16.
+ * @author
+ * Girish M (girishmane8692@gmail.com)
+ * Created on 18/7/16
+ * Last Modified 11/01/2017
  */
 
 public class TimelineMessagePostActivity extends Activity implements View.OnClickListener,
@@ -71,13 +74,18 @@ public class TimelineMessagePostActivity extends Activity implements View.OnClic
     private String uploadUrl = "";
     private int postType = 0;
     private int messageType = 0;
-    private TextView postButton, audioName, audioSize, audioTime, sendButton;
-    private ImageView backButton, smileyButton, thumbnail, removeButton;
+    private boolean isKeyboard = false;
+
+    TextView postButton;
+    ImageView backButton, smileyButton, removeButton;
+    Spinner spinner;
+    LinearLayout galleryButton, cameraButton, videoButton, audioButton;
+    private TextView audioName, audioSize, audioTime, sendButton;
+    private ImageView thumbnail;
+    private LinearLayout audioLayout, iconFooter, footerLayout;
     private EditText messageBox;
     private RelativeLayout mediaLayout;
-    private Spinner spinner;
-    private LinearLayout galleryButton, cameraButton, videoButton, audioButton, audioLayout, iconFooter, footerLayout;
-    private boolean isKeyboard = false;
+
     private RelativeLayout chatFooter;
     private ShowLoader showLoader;
     private SmileyKeyBoard smileyKeyBoard;
@@ -288,8 +296,8 @@ public class TimelineMessagePostActivity extends Activity implements View.OnClic
                 break;
             case R.id.create_wall_post_button:
                 String message = messageBox.getText().toString().trim();
-                if (message == null || message.length() <= 3) {
-                    messageBox.setError("Invalid Message \n min char 3");
+                if (message.length() < 0 && postType == 0) {
+                    messageBox.setError("Min 3 char required");
                 } else {
                     new MakePost(message, uploadUrl, "" + messageType, "", "" + postType).execute();
                 }
@@ -532,7 +540,7 @@ public class TimelineMessagePostActivity extends Activity implements View.OnClic
                     .add(Constants.POST_TYPE, post_type)
                     .build();
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody,TAG);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody, TAG);
                 //{"add_post":{"msg":"Posted Successfully","status":1}}
                 if (response != null) {
                     JSONObject jsonObject = new JSONObject(response);
