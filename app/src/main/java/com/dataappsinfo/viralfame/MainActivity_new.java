@@ -75,21 +75,34 @@ import okhttp3.RequestBody;
 public class MainActivity_new extends AppCompatActivity
         implements View.OnClickListener {
 
+    public static MainActivity_new mainActivity;
+    private static boolean isOpen = false;
+    public EditText searchBox;
     TextView titleText, nameText, skillText;
     ImageView createPost, profilePhoto;
     RelativeLayout headerLayout;
-    public EditText searchBox;
-
-    private static boolean isOpen = false;
-    public static MainActivity_new mainActivity;
+    RelativeLayout drawerLayout;
+    DrawerListAdapter drawerListAdapter;
     private ArrayList<String> menuList;
-
     private ArrayList<Integer> counterList;
     private DrawerLayout drawer;
     private ListView listView;
     private ShowLoader showLoader;
-    RelativeLayout drawerLayout;
-    DrawerListAdapter drawerListAdapter;
+    private DrawerLayout.DrawerListener mDrawerListener = new DrawerLayout.DrawerListener() {
+        @Override
+        public void onDrawerStateChanged(int status) {
+        }
+        @Override
+        public void onDrawerSlide(View view, float slideArg) {
+        }
+        @Override
+        public void onDrawerOpened(View view) {
+            invalidateOptionsMenu();
+        }
+        @Override
+        public void onDrawerClosed(View drawerView) {
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,7 +152,7 @@ public class MainActivity_new extends AppCompatActivity
     }
 
     private void toggleSearch() {
-        if (isOpen == false) {
+        if (!isOpen) {
             searchBox.setText("");
             isOpen = true;
             searchBox.setVisibility(View.VISIBLE);
@@ -157,22 +170,6 @@ public class MainActivity_new extends AppCompatActivity
         titleText.setVisibility(View.VISIBLE);
         createPost.setImageResource(R.drawable.ic_search_white);
     }
-
-    private DrawerLayout.DrawerListener mDrawerListener = new DrawerLayout.DrawerListener() {
-        @Override
-        public void onDrawerStateChanged(int status) {
-        }
-        @Override
-        public void onDrawerSlide(View view, float slideArg) {
-        }
-        @Override
-        public void onDrawerOpened(View view) {
-            invalidateOptionsMenu();
-        }
-        @Override
-        public void onDrawerClosed(View drawerView) {
-        }
-    };
 
     public void setTitle(String title) {
         titleText.setText(title);
@@ -234,7 +231,7 @@ public class MainActivity_new extends AppCompatActivity
         switch (v.getId()) {
             case R.id.app_bar_main_add_post:
                 toggleSearch();
-                if (isOpen == true) {
+                if (isOpen) {
                     showSoftKeyboard(searchBox);
                 } else {
                     searchBox.setText("");
@@ -280,64 +277,6 @@ public class MainActivity_new extends AppCompatActivity
                 break;
         }
         return fragment;
-    }
-
-    private class LoginOut extends AsyncTask<Void, Void, Integer> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            showLoader.sendLoadingDialog();
-        }
-
-        @Override
-        protected Integer doInBackground(Void... params) {
-            RequestBody requestBody = new FormBody.Builder()
-                    .add(Constants.USER_ID, Preferences.get(Constants.USER_ID))
-                    .build();
-            try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.LOGOUT_URL, requestBody);
-                if (response!=null){
-                    JSONObject jsonObject = new JSONObject(response);
-                    if (jsonObject.has(JsonArrays_.LOG_OUT)){
-                        JSONObject responseObject = jsonObject.getJSONObject(JsonArrays_.LOG_OUT);
-                        return responseObject.getInt(Constants.STATUS);
-                    }else {
-                        return 11;
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                return 12;
-            }
-            return 12;
-        }
-        @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
-            switch (integer) {
-                case 0:
-                    ShowToast.networkProblemToast(getApplicationContext());
-                    break;
-                case 1:
-                    Make_.makeDirectories();
-                    ShowToast.toast(getApplicationContext(), Warnings.SUCCESSFUL);
-                    logout();
-                    break;
-                case 2:
-                    ShowToast.actionFailed(getApplicationContext());
-                    break;
-                case 11:
-                    ShowToast.networkProblemToast(getApplicationContext());
-                    break;
-                case 12:
-                    ShowToast.internalErrorToast(getApplicationContext());
-                    break;
-                default:
-                    ShowToast.actionFailed(getApplicationContext());
-                    break;
-            }
-            showLoader.dismissSendingDialog();
-        }
     }
 
     private void setUpDrawer() {
@@ -388,7 +327,6 @@ public class MainActivity_new extends AppCompatActivity
 
         return iconSet;
     }
-
 
     public void setHeader() {
         nameText.setText(Preferences.get(Constants.NAME));
@@ -453,6 +391,64 @@ public class MainActivity_new extends AppCompatActivity
         if (view != null) {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    private class LoginOut extends AsyncTask<Void, Void, Integer> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            showLoader.sendLoadingDialog();
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            RequestBody requestBody = new FormBody.Builder()
+                    .add(Constants.USER_ID, Preferences.get(Constants.USER_ID))
+                    .build();
+            try {
+                String response = MakeCall.post(Urls.DOMAIN + Urls.LOGOUT_URL, requestBody);
+                if (response!=null){
+                    JSONObject jsonObject = new JSONObject(response);
+                    if (jsonObject.has(JsonArrays_.LOG_OUT)){
+                        JSONObject responseObject = jsonObject.getJSONObject(JsonArrays_.LOG_OUT);
+                        return responseObject.getInt(Constants.STATUS);
+                    }else {
+                        return 11;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return 12;
+            }
+            return 12;
+        }
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+            switch (integer) {
+                case 0:
+                    ShowToast.networkProblemToast(getApplicationContext());
+                    break;
+                case 1:
+                    Make_.makeDirectories();
+                    ShowToast.toast(getApplicationContext(), Warnings.SUCCESSFUL);
+                    logout();
+                    break;
+                case 2:
+                    ShowToast.actionFailed(getApplicationContext());
+                    break;
+                case 11:
+                    ShowToast.networkProblemToast(getApplicationContext());
+                    break;
+                case 12:
+                    ShowToast.internalErrorToast(getApplicationContext());
+                    break;
+                default:
+                    ShowToast.actionFailed(getApplicationContext());
+                    break;
+            }
+            showLoader.dismissSendingDialog();
         }
     }
 }
