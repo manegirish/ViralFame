@@ -1,19 +1,23 @@
 package com.technoindians.peoples;
 
 /**
- * Created by girish on 12/8/16.
+ * @author
+ * Girish M(girishmane8692@gmail.com)
+ * Created on 12/08/16.
+ * Last modified 04/08/2016
  */
+
 public class Follow {
 
-    int status;
-    String id;
-    String user_id;
-    String name;
-    String user_type;
-    String profile_pic;
-    String last_updated;
-    String is_follow;
-    String skill;
+    private int status;
+    private String id;
+    private String user_id;
+    private String name;
+    private String user_type;
+    private String profile_pic;
+    private String last_updated;
+    private String is_follow;
+    private String skill;
 
     public void setStatus(int status) {
         this.status = status;
@@ -50,7 +54,6 @@ public class Follow {
     public void setSkill(String skill) {
         this.skill = skill;
     }
-/**/
 
     public String getId() {
         return this.id;
