@@ -1,8 +1,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:id="@+id/message_list_layout_main">
 
     <include layout="@layout/list_view"/>
 
@@ -29,6 +31,6 @@
         android:src="@drawable/ic_plus"
         android:layout_alignParentEnd="true"
         android:layout_margin="15dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignBottom="@+id/list_view"/>
+        android:layout_alignBottom="@+id/list_view"
+        tools:ignore="RelativeOverlap,UnknownIdInLayout" />
 </RelativeLayout>

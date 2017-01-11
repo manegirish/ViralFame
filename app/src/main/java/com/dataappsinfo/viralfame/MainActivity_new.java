@@ -94,13 +94,16 @@ public class MainActivity_new extends AppCompatActivity
         @Override
         public void onDrawerStateChanged(int status) {
         }
+
         @Override
         public void onDrawerSlide(View view, float slideArg) {
         }
+
         @Override
         public void onDrawerOpened(View view) {
             invalidateOptionsMenu();
         }
+
         @Override
         public void onDrawerClosed(View drawerView) {
         }
@@ -137,7 +140,9 @@ public class MainActivity_new extends AppCompatActivity
         nameText = (TextView) findViewById(R.id.nav_header_name);
         skillText = (TextView) findViewById(R.id.nav_header_skill);
         profilePhoto = (ImageView) findViewById(R.id.nav_header_photo);
+
         headerLayout = (RelativeLayout) findViewById(R.id.nav_header_main_layout);
+        headerLayout.setOnClickListener(this);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout = (RelativeLayout) findViewById(R.id.drawer_layout_relative);
@@ -239,7 +244,11 @@ public class MainActivity_new extends AppCompatActivity
                     searchBox.setText("");
                     hideKeyboard();
                 }
-            break;
+                break;
+            case R.id.nav_header_main_layout:
+                hideKeyboard();
+                getFragment(1);
+                break;
         }
     }
 
@@ -290,8 +299,8 @@ public class MainActivity_new extends AppCompatActivity
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position==2&&CheckUserType.isGuest()){
-                    ShowToast.toast(getApplicationContext(),Warnings.GUEST_LOGIN);
+                if (position == 2 && CheckUserType.isGuest()) {
+                    ShowToast.toast(getApplicationContext(), Warnings.GUEST_LOGIN);
                     return;
                 }
                 replaceFragment(getFragment(position));
@@ -410,12 +419,12 @@ public class MainActivity_new extends AppCompatActivity
                     .build();
             try {
                 String response = MakeCall.post(Urls.DOMAIN + Urls.LOGOUT_URL, requestBody, TAG);
-                if (response!=null){
+                if (response != null) {
                     JSONObject jsonObject = new JSONObject(response);
-                    if (jsonObject.has(JsonArrays_.LOG_OUT)){
+                    if (jsonObject.has(JsonArrays_.LOG_OUT)) {
                         JSONObject responseObject = jsonObject.getJSONObject(JsonArrays_.LOG_OUT);
                         return responseObject.getInt(Constants.STATUS);
-                    }else {
+                    } else {
                         return 11;
                     }
                 }
@@ -425,6 +434,7 @@ public class MainActivity_new extends AppCompatActivity
             }
             return 12;
         }
+
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);

@@ -19,7 +19,7 @@ import com.technoindians.constants.Fragment_;
 import com.technoindians.preferences.Preferences;
 
 /**
- * Created by shonali on 27/6/16.
+ * Created by Girish M on 27/6/16.
  */
 public class OpportunitiesMainFragment extends Fragment {
 
