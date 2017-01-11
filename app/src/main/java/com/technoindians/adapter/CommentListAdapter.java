@@ -2,6 +2,7 @@ package com.technoindians.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,49 +11,49 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dataappsinfo.viralfame.R;
+import com.squareup.picasso.Picasso;
 import com.technoindians.library.TimeConverter;
+import com.technoindians.network.Urls;
+import com.technoindians.views.CircleTransformMain;
 import com.technoindians.wall.Comment_;
 
 import java.util.ArrayList;
 
 /**
- * @author
- * Girish Mane <girishmane8692@gmail.com>
+ * @author Girish Mane <girishmane8692@gmail.com>
  * Created on 04-03-2016
- * Last Modified on 11-04-2016
+ * Last Modified on 11-01-2017
  */
 
-public class CommentListAdapter extends ArrayAdapter<Comment_>
-{
-	private ArrayList<Comment_> feedList = new ArrayList<>();
-	private Activity activity;
+public class CommentListAdapter extends ArrayAdapter<Comment_> {
+    private ArrayList<Comment_> feedList = new ArrayList<>();
+    private Activity activity;
 
-	public CommentListAdapter(Activity activity, ArrayList<Comment_> feedList) {
-		super(activity, 0,feedList);
-		this.feedList=feedList;
-		this.activity=activity;
-	}
+    public CommentListAdapter(Activity activity, ArrayList<Comment_> feedList) {
+        super(activity, 0, feedList);
+        this.feedList = feedList;
+        this.activity = activity;
+    }
 
-   @Override
-   public View getView(final int position, View convertView, ViewGroup parrent)
-   	{
-		final ViewHolder holder;
-		View view=convertView;
-		Comment_ comment_;
-       if (view==null)
-       	{
-    	   LayoutInflater layoutInflater = (LayoutInflater) activity.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-           view=layoutInflater.inflate(R.layout.comment_item_layout, parrent, false);
-           holder=new ViewHolder();
+    @NonNull
+    @Override
+    public View getView(final int position, View convertView, ViewGroup parrent) {
+        final ViewHolder holder;
+        View view = convertView;
+        Comment_ comment_;
+        if (view == null) {
+            LayoutInflater layoutInflater = (LayoutInflater) activity.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            view = layoutInflater.inflate(R.layout.comment_item_layout, parrent, false);
+            holder = new ViewHolder();
 
-			holder.commentText = (TextView)view.findViewById(R.id.comment_item_text);
-            holder.postImage = (ImageView)view.findViewById(R.id.comment_item_icon);
-            holder.timeText = (TextView)view.findViewById(R.id.comment_item_time);
+            holder.commentText = (TextView) view.findViewById(R.id.comment_item_text);
+            holder.postImage = (ImageView) view.findViewById(R.id.comment_item_icon);
+            holder.timeText = (TextView) view.findViewById(R.id.comment_item_time);
 
-           view.setTag(holder);
-       }else{
-    	   holder=(ViewHolder)view.getTag();
-       }
+            view.setTag(holder);
+        } else {
+            holder = (ViewHolder) view.getTag();
+        }
         comment_ = feedList.get(position);
 
         String time = TimeConverter.getWallTime(Long.parseLong(comment_.getLast_updated()));
@@ -60,13 +61,20 @@ public class CommentListAdapter extends ArrayAdapter<Comment_>
 
         holder.commentText.setTag(position);
         holder.commentText.setText(comment_.getComment());
-
+        Picasso.with(activity.getApplicationContext())
+                .load(Urls.DOMAIN + comment_.getProfile_pic())
+                .resize(100, 100)
+                .onlyScaleDown()
+                .transform(new CircleTransformMain())
+                .placeholder(R.drawable.ic_avtar)
+                .error(R.drawable.ic_avtar)
+                .into(holder.postImage);
         return view;
     }
 
 
-	private class ViewHolder {
-		TextView commentText,nameText,timeText;
+    private class ViewHolder {
+        TextView commentText, timeText;
         ImageView postImage;
-	}
+    }
 }
