@@ -48,6 +48,7 @@ import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.technoindians.constants.Constants;
 import com.technoindians.library.ShowLoader;
+import com.technoindians.pops.ShowToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,33 +65,27 @@ import java.util.Arrays;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener{
 
-    TextView loginButton,registerButton;
-    RelativeLayout facebookButton,googleButton;
-
     private static final String TAG = LoginActivity.class.getSimpleName();
     private static final int RC_SIGN_IN = 007;
-    private GoogleApiClient mGoogleApiClient;
-    private ShowLoader showLoader;
-    private LoginManager loginManager;
+    TextView loginButton,registerButton;
+    RelativeLayout facebookButton,googleButton;
     CallbackManager callbackManager;
-    private AccessTokenTracker accessTokenTracker;
-    private ProfileTracker profileTracker;
     AccessToken accessToken;
     Profile profile;
+    private GoogleApiClient mGoogleApiClient;
+    private LoginManager loginManager;
+    private AccessTokenTracker accessTokenTracker;
+    private ProfileTracker profileTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
-
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.login_layout);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-        showLoader = new ShowLoader(LoginActivity.this);
 
         loginButton = (TextView)findViewById(R.id.login_button);
         loginButton.setOnClickListener(this);
@@ -299,23 +294,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (requestCode == RC_SIGN_IN) {
            /* GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);*/
-            if (requestCode == RC_SIGN_IN) {
-                GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-                handleSignInResult(result);
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
 
-                // G+
-                Person person  = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+            // G+
+            Person person  = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
 
-                Log.i(TAG, "--------------------------------"+person.getUrls());
-                Log.e(TAG, "Name: " + person.getName());
-                Log.e(TAG, "Display Name: " + person.getDisplayName());
-                Log.e(TAG, "Gender: " + person.getGender());
-                Log.e(TAG, "AboutMe: " + person.getAboutMe());
-                Log.e(TAG, "Birthday: " + person.getBirthday());
-                Log.e(TAG, "Places Lived Location: " + person.getPlacesLived());
-                Log.e(TAG, "Current Location: " + person.getCurrentLocation());
-                Log.e(TAG, "Language: " + person.getLanguage());
-            }
+            Log.i(TAG, "--------------------------------"+person.getUrls());
+            Log.e(TAG, "Name: " + person.getName());
+            Log.e(TAG, "Display Name: " + person.getDisplayName());
+            Log.e(TAG, "Gender: " + person.getGender());
+            Log.e(TAG, "AboutMe: " + person.getAboutMe());
+            Log.e(TAG, "Birthday: " + person.getBirthday());
+            Log.e(TAG, "Places Lived Location: " + person.getPlacesLived());
+            Log.e(TAG, "Current Location: " + person.getCurrentLocation());
+            Log.e(TAG, "Language: " + person.getLanguage());
         }
     }
 
@@ -326,21 +319,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         profileTracker.startTracking();
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
         if (opr.isDone()) {
-            // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
-            // and the GoogleSignInResult will be available instantly.
-            Log.d(TAG, "Got cached sign-in");
             GoogleSignInResult result = opr.get();
             handleSignInResult(result);
         } else {
-            // If the user has not previously signed in on this device or the sign-in has expired,
-            // this asynchronous branch will attempt to sign in the user silently.  Cross-device
-            // single sign-on will occur in this branch.
-            //showProgressDialog();
-            showLoader.sendLoadingDialog();
             opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
                 @Override
                 public void onResult(GoogleSignInResult googleSignInResult) {
-                    showLoader.dismissLoadingDialog();
+                   // showLoader.dismissLoadingDialog();
                     handleSignInResult(googleSignInResult);
                 }
             });
@@ -349,8 +334,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        // An unresolvable error has occurred and Google APIs (including Sign-In) will not
-        // be available.
+        //ShowToast.toast(getApplicationContext(),"Something went wrong restart application");
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
     }
 
