@@ -89,7 +89,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    public void insertSkill(String id, String skill, String tableName) {
+    void insertSkill(String id, String skill, String tableName) {
         openDB();
         long result = 0;
         Cursor cursor = database.rawQuery(GetQuery.countWhere(tableName,
@@ -103,17 +103,17 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
             result = database.update(tableName, SetValues.primarySkill(id, skill),
                     Constants.ID + "=" + id, null);
         }
-        Log.e("insertSkillPrimary", "result -> " + result);
+        // Log.e("insertSkillPrimary", "result -> " + result);
     }
 
-    public ArrayList<HashMap<String, String>> getSkills(String tableName) {
+    ArrayList<HashMap<String, String>> getSkills(String tableName) {
         openDB();
         ArrayList<HashMap<String, String>> skillArray = new ArrayList<>();
         String sql = "SELECT * FROM " + tableName;
         Cursor mCursor = database.rawQuery(sql, null);
         if (mCursor != null) {
             if (mCursor.moveToFirst()) {
-                while (mCursor.isAfterLast() == false) {
+                while (!mCursor.isAfterLast()) {
                     HashMap<String, String> map = new HashMap<>();
                     map.put(Constants.STATUS, "1");
                     map.put(Constants.ID, mCursor.getString(mCursor.getColumnIndex(Constants.ID)));
@@ -124,17 +124,18 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
             }
         }
         Collections.reverse(skillArray);
+        assert mCursor != null;
         mCursor.close();
         return skillArray;
     }
 
-    public void insertUser(String id, String user_id, String name, String skill_primary,
-                           String user_type, String is_follow, String follower, String profile_pic) {
+    void insertUser(String id, String user_id, String name, String skill_primary,
+                    String user_type, String is_follow, String follower, String profile_pic) {
 
         openDB();
         long result = 0;
         Cursor cursor = database.rawQuery(GetQuery.countWhere(TableList.TABLE_USERS,
-                Constants.ID + "=" + id), null);
+                Constants.USER_ID + "=" + user_id), null);
         cursor.moveToFirst();
         int count = cursor.getInt(0);
         if (count <= 0) {
@@ -142,19 +143,21 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
                     SetValues.users(id, user_id, name, skill_primary, user_type,
                             is_follow, follower, profile_pic));
         } else {
-            result = database.update(TableList.TABLE_USERS, SetValues.users(id, user_id, name, skill_primary, user_type,
-                    is_follow, follower, profile_pic),
+            result = database.update(TableList.TABLE_USERS,
+                    SetValues.users(id, user_id, name, skill_primary, user_type,
+                            is_follow, follower, profile_pic),
                     Constants.ID + "=" + id, null);
         }
-        Log.e("insertUser", "result -> " + result);
+        cursor.close();
+        Log.e(TAG, "insertUser() \nresult: " + result+" count: "+count);
     }
 
-    public ArrayList<Follow> getUsers(int type) {
+    ArrayList<Follow> getUsers(int type) {
         openDB();
         ArrayList<Follow> followList = new ArrayList<>();
         String sql = "SELECT * FROM " + TableList.TABLE_USERS + " WHERE " + Constants.FOLLOWER + " = " + type;
         Cursor mCursor = database.rawQuery(sql, null);
-        if (mCursor != null) {
+        if (mCursor!=null){
             followList = FollowParser_.parseDatabaseUsers(mCursor);
         }
         mCursor.close();
@@ -188,37 +191,37 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
 
     public void updateUtc(String utc, String user_id, String column) {
         openDB();
-        Cursor cursor = database.rawQuery(UpdateQuery.updateUtc(utc, user_id, column), null);
+        Cursor cursor = database.rawQuery(UpdateQuery.updateUtc(utc,user_id,column), null);
         cursor.moveToFirst();
         cursor.close();
     }
 
-    public String getUtc(String column, String user_id) {
+    String getUtc(String column, String user_id){
 
         openDB();
-        String sql = GetQuery.utc(column, user_id);
-        Log.e("get utc", "sql => " + sql);
+        String sql = GetQuery.utc(column,user_id);
+        Log.e("get utc","sql => "+sql);
         Cursor mCursor = database.rawQuery(sql, null);
         mCursor.moveToFirst();
         String date = "0";
-        if (mCursor != null) {
+        if (mCursor!=null){
             date = mCursor.getString(0);
         }
-        Log.e("utc()", "date => " + date);
+        Log.e("utc()","date => "+date);
         mCursor.close();
         return date;
     }
 
-    public void updateProfile(String user_id, String column, String value) {
+    void updateProfile(String user_id, String column, String value) {
         openDB();
-        Cursor cursor = database.rawQuery(UpdateQuery.profile(user_id, column, value), null);
+        Cursor cursor = database.rawQuery(UpdateQuery.profile(user_id,column,value), null);
         cursor.moveToFirst();
         cursor.close();
     }
 
-    public void insertFeed(String id, String user_id, String name, String type, String post_text, String media_type,
-                           String media_file, String media_size, String total_comments, String total_likes,
-                           String is_like, String date_of_post, String last_updated, String profile_pic, String skill, String is_follow) {
+    public void insertFeed(String id, String user_id, String name, String type, String post_text,String media_type,
+                           String media_file, String media_size, String total_comments,String total_likes,
+                           String is_like, String date_of_post, String last_updated,String profile_pic, String skill,String is_follow) {
 
         long result;
         openDB();
@@ -239,15 +242,15 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         Log.e("insertFeed()", "count => " + count + " result => " + result);
     }
 
-    public ArrayList<Feed_> getFeed(String count, String id) {
+    public ArrayList<Feed_> getFeed(String count,String id){
 
         openDB();
         ArrayList<Feed_> feedList = new ArrayList<>();
 
-        String sql = GetQuery.feed(count, id);
-        Log.e("get feed", "sql => " + sql);
+        String sql = GetQuery.feed(count,id);
+        Log.e("get feed","sql => "+sql);
         Cursor mCursor = database.rawQuery(sql, null);
-        if (mCursor != null) {
+        if (mCursor!=null){
             feedList = Wall_.databaseFeed(mCursor);
         }
         mCursor.close();

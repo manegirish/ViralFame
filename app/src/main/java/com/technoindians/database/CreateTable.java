@@ -35,8 +35,8 @@ class CreateTable {
 
     static final String CREATE_TABLE_USERS = "CREATE TABLE "
             + TableList.TABLE_USERS + "("
-            + Constants.ID + " INTEGER PRIMARY KEY,"
-            + Constants.USER_ID + " INTEGER (100),"
+            + Constants.ID + " INTEGER,"
+            + Constants.USER_ID + " INTEGER (100) PRIMARY KEY,"
             + Constants.NAME + " VARCHAR(200),"
             + Constants.PRIMARY_SKILL + " VARCHAR(200),"
             + Constants.USER_TYPE + " INTEGER(10),"

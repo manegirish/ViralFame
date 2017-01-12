@@ -18,37 +18,45 @@ import java.util.HashMap;
 
 public class RetrieveOperation {
 
+    private Context context;
     private MainDatabaseHelper mainDatabaseHelper;
 
-    public RetrieveOperation(Context context) {
-        mainDatabaseHelper = new MainDatabaseHelper(context);
+    public RetrieveOperation(Context context){
+        this.context=context;
+        mainDatabaseHelper = new MainDatabaseHelper(this.context);
     }
 
-    public ArrayList<HashMap<String, String>> getSkill(String tableName) {
-        ArrayList<HashMap<String, String>> skillArray = mainDatabaseHelper.getSkills(tableName);
+    public ArrayList<HashMap<String,String>> getSkill(String tableName){
+        ArrayList<HashMap<String,String>> skillArray = mainDatabaseHelper.getSkills(tableName);
         mainDatabaseHelper.closeDB();
 
         return skillArray;
     }
 
-    public ArrayList<Follow> getUsers(int type) {
+    public ArrayList<Follow> getUsers(int type){
         ArrayList<Follow> followList = mainDatabaseHelper.getUsers(type);
         mainDatabaseHelper.closeDB();
         return followList;
     }
 
-    public ArrayList<Message_> getMessage(String count) {
+    public ArrayList<Message_> getMessage(String count){
         ArrayList<Message_> messageList = mainDatabaseHelper.getMessage(count);
         mainDatabaseHelper.closeDB();
         return messageList;
     }
 
-    public ArrayList<Feed_> getFeed(String count, String id) {
-        ArrayList<Feed_> feedList = mainDatabaseHelper.getFeed(count, id);
+    public ArrayList<Feed_> getFeed(String count, String id){
+        ArrayList<Feed_> feedList = mainDatabaseHelper.getFeed(count,id);
         mainDatabaseHelper.closeDB();
         return feedList;
     }
+    public String getUtc(String column,String user_id) {
 
+        String date = mainDatabaseHelper.getUtc(column,user_id);
+        mainDatabaseHelper.closeDB();
+
+        return date;
+    }
     public Cursor fetchFeed() {
         mainDatabaseHelper.openDB();
         return mainDatabaseHelper.fetchFeed();
@@ -59,17 +67,9 @@ public class RetrieveOperation {
         return mainDatabaseHelper.fetchSingleFeed(column, _id);
     }
 
-    public String getUtc(String column, String user_id) {
+    public String getFeedItem(String column,String id){
 
-        String date = mainDatabaseHelper.getUtc(column, user_id);
-        mainDatabaseHelper.closeDB();
-
-        return date;
-    }
-
-    public String getFeedItem(String column, String id) {
-
-        String value = mainDatabaseHelper.getFeedItem(column, id);
+        String value = mainDatabaseHelper.getFeedItem(column,id);
         mainDatabaseHelper.closeDB();
 
         return value;

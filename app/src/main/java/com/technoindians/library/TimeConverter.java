@@ -21,13 +21,12 @@ public class TimeConverter {
     private static final int MONTHS_MILLIS = 30 * DAY_MILLIS;
 
     @SuppressLint("SimpleDateFormat")
-    protected static long getCurrentTimestamp() throws java.text.ParseException {
+    public static long getCurrentTimestamp() throws java.text.ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm a");
         Date now = new Date();
         String strDate = sdf.format(now);
         Date date = sdf.parse(strDate);
-        long dateInMillis = date.getTime();
-        return dateInMillis;
+        return date.getTime();
     }
 
     public static String getWallTime(long time) {
