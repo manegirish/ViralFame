@@ -24,7 +24,7 @@ class GetQuery {
         return "SELECT * FROM " + TableList.TABLE_MESSAGE + " ORDER BY " + Constants.LAST_UPDATED +
                 " DESC LIMIT " + count;
     }
-
+/*
     static String feed(String count, String last_updated) {
         //SELECT * FROM wall_feed WHERE id > 21 ORDER BY last_updated DESC LIMIT 5
         if (last_updated.equalsIgnoreCase("0")) {
@@ -34,11 +34,11 @@ class GetQuery {
             return "SELECT * FROM " + TableList.TABLE_WALL_FEED + " WHERE " + Constants.LAST_UPDATED + "<" + last_updated + " ORDER BY " + Constants.LAST_UPDATED +
                     " DESC LIMIT " + count;
         }
-    }
+    }*/
 
     //SELECT media_duration FROM wall_feed WHERE id=7
     static String feedItem(String column, String id) {
-        return "SELECT " + column + " FROM " + TableList.TABLE_WALL_FEED + " WHERE " + Constants.ID +
+        return "SELECT " + column + " FROM " + TableList.TABLE_WALL_FEED + " WHERE " + Constants._ID +
                 " = " + id;
     }
 

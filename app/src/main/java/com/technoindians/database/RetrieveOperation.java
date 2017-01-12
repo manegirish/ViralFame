@@ -5,7 +5,6 @@ import android.database.Cursor;
 
 import com.technoindians.message.Message_;
 import com.technoindians.peoples.Follow;
-import com.technoindians.wall.Feed_;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,11 +44,6 @@ public class RetrieveOperation {
         return messageList;
     }
 
-    public ArrayList<Feed_> getFeed(String count, String id){
-        ArrayList<Feed_> feedList = mainDatabaseHelper.getFeed(count,id);
-        mainDatabaseHelper.closeDB();
-        return feedList;
-    }
     public String getUtc(String column,String user_id) {
 
         String date = mainDatabaseHelper.getUtc(column,user_id);

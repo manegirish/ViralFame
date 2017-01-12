@@ -71,30 +71,21 @@ public class SplashActivity extends RuntimePermissionsActivity {
 
         Preferences.initialize(getApplicationContext());
 
-        if (Preferences.contains(Constants.LOGIN)) {
+        if (Preferences.contains(Constants.LOGIN) && Preferences.contains(Constants.USER_ID)) {
             login = Integer.parseInt(Preferences.get(Constants.LOGIN));
         }
 
-        appName = (TextView)findViewById(R.id.splash_app_name);
+        appName = (TextView) findViewById(R.id.splash_app_name);
         icon = (ImageView) findViewById(R.id.ic_logo);
         startAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-
-                // checking for type intent filter
                 if (intent.getAction().equals(Config.REGISTRATION_COMPLETE)) {
-                    // gcm successfully registered
-                    // now subscribe to `global` topic to receive app wide notifications
                     FirebaseMessaging.getInstance().subscribeToTopic(Config.TOPIC_GLOBAL);
-
                     displayFirebaseRegId();
-
                 } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
-                    // new push notification is received
-
                     String message = intent.getStringExtra("message");
-
                     Toast.makeText(getApplicationContext(), "Push notification: " + message, Toast.LENGTH_LONG).show();
                 }
             }
@@ -108,8 +99,7 @@ public class SplashActivity extends RuntimePermissionsActivity {
             for (Signature signature : info.signatures) {
                 MessageDigest md = MessageDigest.getInstance("SHA");
                 md.update(signature.toByteArray());
-                //   Log.d("YourKeyHash :", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-                Log.e(TAG,"YourKeyHash: "+Base64.encodeToString(md.digest(), Base64.DEFAULT));
+                Log.e(TAG, "YourKeyHash: " + Base64.encodeToString(md.digest(), Base64.DEFAULT));
             }
         } catch (PackageManager.NameNotFoundException | NoSuchAlgorithmException ignored) {
 

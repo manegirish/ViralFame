@@ -9,23 +9,24 @@
 
 package com.technoindians.firebase;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
+import com.technoindians.constants.Constants;
 import com.technoindians.preferences.Preferences;
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     private static final String TAG = MyFirebaseInstanceIDService.class.getSimpleName();
 
-    public static String getToken() {
+    public static String getToken(Context context) {
+        Preferences.initialize(context);
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-
         // Saving reg id to shared preferences
         storeRegIdInPref(refreshedToken);
-
         // sending reg id to your server
         sendRegistrationToServer(refreshedToken);
         Log.e(TAG, "refreshedToken: " + refreshedToken);
@@ -47,9 +48,14 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     public void onTokenRefresh() {
         super.onTokenRefresh();
         Preferences.initialize(getApplicationContext());
-        String refreshedToken = getToken();
-        Intent registrationComplete = new Intent(Config.REGISTRATION_COMPLETE);
-        registrationComplete.putExtra("token", refreshedToken);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(registrationComplete);
+        if (Preferences.contains(Constants.USER_ID) && Preferences.get(Constants.USER_ID) != null) {
+            if (!Preferences.get(Constants.USER_ID).equalsIgnoreCase("0")) {
+                Log.e(TAG, "onTokenRefresh: ");
+                String refreshedToken = getToken(getApplicationContext());
+                Intent registrationComplete = new Intent(Config.REGISTRATION_COMPLETE);
+                registrationComplete.putExtra("token", refreshedToken);
+                LocalBroadcastManager.getInstance(this).sendBroadcast(registrationComplete);
+            }
+        }
     }
 }

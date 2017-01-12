@@ -180,8 +180,11 @@ public class MainActivity_new extends AppCompatActivity
                     // gcm successfully registered
                     // now subscribe to `global` topic to receive app wide notifications
                     FirebaseMessaging.getInstance().subscribeToTopic(Config.TOPIC_GLOBAL);
-
-                    displayFirebaseRegId();
+                    Log.e(TAG, "USER_ID: " + Preferences.get(Constants.USER_ID));
+                    if (Preferences.contains(Constants.USER_ID) && Preferences.get(Constants.USER_ID) != null) {
+                        if (!Preferences.get(Constants.USER_ID).equalsIgnoreCase("0"))
+                            displayFirebaseRegId();
+                    }
 
                 } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
                     // new push notification is received
@@ -511,8 +514,8 @@ public class MainActivity_new extends AppCompatActivity
         Preferences.initialize(getApplicationContext());
         String regId = Preferences.get("regId");
         Log.e(TAG, "Firebase reg id: " + regId);
-        if (regId == null) {
-            MyFirebaseInstanceIDService.getToken();
+        if (regId != null) {
+            MyFirebaseInstanceIDService.getToken(getApplicationContext());
         }
     }
 

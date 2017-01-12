@@ -80,7 +80,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Resources r = getResources();
         Notification notification = new android.support.v7.app.NotificationCompat.Builder(this)
                 .setTicker(r.getString(R.string.app_name))
-                .setSmallIcon(android.R.drawable.ic_menu_report_image)
+                .setSmallIcon(R.drawable.ic_vf_logo)
                 .setContentTitle(r.getString(R.string.app_name))
                 .setContentText(r.getString(R.string.action_settings))
                 .setContentIntent(pi)

@@ -10,10 +10,8 @@ import com.technoindians.constants.Constants;
 import com.technoindians.message.Message_;
 import com.technoindians.parser.FollowParser_;
 import com.technoindians.parser.Messages_;
-import com.technoindians.parser.Wall_;
 import com.technoindians.peoples.Follow;
 import com.technoindians.preferences.Preferences;
-import com.technoindians.wall.Feed_;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -242,7 +240,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         Log.e("insertFeed()", "count => " + count + " result => " + result);
     }
 
-    public ArrayList<Feed_> getFeed(String count,String id){
+/*    public ArrayList<Feed_> getFeed(String count,String id){
 
         openDB();
         ArrayList<Feed_> feedList = new ArrayList<>();
@@ -255,7 +253,7 @@ public class MainDatabaseHelper extends SQLiteOpenHelper {
         }
         mCursor.close();
         return feedList;
-    }
+    }*/
 
     Cursor fetchFeed() {
         openDB();
