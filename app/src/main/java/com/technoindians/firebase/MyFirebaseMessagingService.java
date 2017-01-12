@@ -9,23 +9,25 @@
 
 package com.technoindians.firebase;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.dataappsinfo.viralfame.MainActivity_new;
+import com.dataappsinfo.viralfame.R;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 
-/**
- * Created by Ravi Tamada on 08/08/16.
- * www.androidhive.info
- */
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = MyFirebaseMessagingService.class.getSimpleName();
@@ -35,7 +37,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Log.e(TAG, "From: " + remoteMessage.getFrom());
-
+        showNotification();
         if (remoteMessage == null)
             return;
 
@@ -71,6 +73,22 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }else{
             // If the app is in background, firebase itself handles the notification
         }
+    }
+
+    public void showNotification() {
+        PendingIntent pi = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity_new.class), 0);
+        Resources r = getResources();
+        Notification notification = new android.support.v7.app.NotificationCompat.Builder(this)
+                .setTicker(r.getString(R.string.app_name))
+                .setSmallIcon(android.R.drawable.ic_menu_report_image)
+                .setContentTitle(r.getString(R.string.app_name))
+                .setContentText(r.getString(R.string.action_settings))
+                .setContentIntent(pi)
+                .setAutoCancel(true)
+                .build();
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(0, notification);
     }
 
     private void handleDataMessage(JSONObject json) {
