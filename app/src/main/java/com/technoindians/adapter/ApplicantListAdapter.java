@@ -19,10 +19,12 @@ import com.squareup.picasso.Picasso;
 import com.technoindians.constants.Actions_;
 import com.technoindians.constants.Constants;
 import com.technoindians.constants.Warnings;
+import com.technoindians.network.CheckInternet;
 import com.technoindians.network.MakeCall;
 import com.technoindians.network.Urls;
 import com.technoindians.opportunities.Applicant_;
 import com.technoindians.peoples.UserPortfolioActivity;
+import com.technoindians.pops.ShowSnack;
 import com.technoindians.pops.ShowToast;
 import com.technoindians.preferences.Preferences;
 import com.technoindians.views.CircleTransformMain;
@@ -47,6 +49,33 @@ public class ApplicantListAdapter extends ArrayAdapter<Applicant_> {
     private ArrayList<Applicant_> applicantList = null;
     private ArrayList<Applicant_> list;
     private Activity activity;
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (CheckInternet.check()) {
+                int position = (Integer) v.getTag();
+                String id = applicantList.get(position).getApplicationId();
+                switch (v.getId()) {
+                    case R.id.applicant_list_item_action_accept:
+                        new Operations(id, Actions_.ACCEPT_APPLICATION, position).execute();
+                        break;
+
+                    case R.id.applicant_list_item_action_reject:
+                        new Operations(id, Actions_.REJECT_APPLICATION, position).execute();
+                        break;
+
+                    case R.id.applicant_list_item_info_layout:
+                        intentNext(position);
+                        break;
+                    case R.id.applicant_list_item_icon:
+                        intentNext(position);
+                        break;
+                }
+            } else {
+                ShowSnack.noInternet(v);
+            }
+        }
+    };
 
     public ApplicantListAdapter(Activity activity, ArrayList<Applicant_> applicantList) {
         super(activity, 0, applicantList);
@@ -103,8 +132,8 @@ public class ApplicantListAdapter extends ArrayAdapter<Applicant_> {
         Picasso.with(activity.getApplicationContext())
                 .load(Urls.DOMAIN + applicant_.getPic())
                 .transform(new CircleTransformMain())
-                .placeholder(R.drawable.ic_avtar)
-                .error(R.drawable.ic_avtar)
+                .placeholder(R.drawable.ic_avatar)
+                .error(R.drawable.ic_avatar)
                 .into(holder.icon);
         holder.accept.setOnClickListener(onClickListener);
         holder.reject.setOnClickListener(onClickListener);
@@ -113,30 +142,6 @@ public class ApplicantListAdapter extends ArrayAdapter<Applicant_> {
 
         return view;
     }
-
-    View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            int position = (Integer) v.getTag();
-            String id = applicantList.get(position).getApplicationId();
-            switch (v.getId()) {
-                case R.id.applicant_list_item_action_accept:
-                    new Operations(id, Actions_.ACCEPT_APPLICATION, position).execute();
-                    break;
-
-                case R.id.applicant_list_item_action_reject:
-                    new Operations(id, Actions_.REJECT_APPLICATION, position).execute();
-                    break;
-
-                case R.id.applicant_list_item_info_layout:
-                    intentNext(position);
-                    break;
-                case R.id.applicant_list_item_icon:
-                    intentNext(position);
-                    break;
-            }
-        }
-    };
 
     private void intentNext(int position) {
         Bundle nextAnimation = ActivityOptions.makeCustomAnimation

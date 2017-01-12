@@ -20,6 +20,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,9 +35,12 @@ import com.technoindians.constants.Actions_;
 import com.technoindians.constants.Constants;
 import com.technoindians.constants.Warnings;
 import com.technoindians.directory.Make_;
+import com.technoindians.library.HideKeyboard;
+import com.technoindians.network.CheckInternet;
 import com.technoindians.network.MakeCall;
 import com.technoindians.network.Urls;
 import com.technoindians.parser.Login_;
+import com.technoindians.pops.ShowSnack;
 import com.technoindians.pops.ShowToast;
 import com.technoindians.preferences.Preferences;
 import com.technoindians.validation.LoginValidation_;
@@ -57,18 +61,22 @@ import okhttp3.RequestBody;
 public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = LoginFragment.class.getSimpleName();
-
-    private Activity activity;
-    private boolean isVisible = false;
-
     ImageView closeButton;
-    TextView showButton, guestButton;
+    TextView showButton, guestButton, forgotButton;
     EditText numberBox, passwordBox;
     Button loginButton;
     SlidingRelativeLayout mainLayout;
+    private Activity activity;
+    private boolean isVisible = false;
     private TextInputLayout emailLayout, passwordLayout;
 
     private ProgressDialog nDialog;
+
+    protected static String getTimeZone() {
+        Calendar cal = Calendar.getInstance();
+        TimeZone tz = cal.getTimeZone();
+        return tz.getID();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -96,6 +104,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         guestButton = (TextView) view.findViewById(R.id.login_fragment_guest_button);
         guestButton.setOnClickListener(this);
+
+        forgotButton = (TextView) view.findViewById(R.id.login_fragment_forgot_button);
+        forgotButton.setOnClickListener(this);
+
         return view;
     }
 
@@ -130,28 +142,56 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.login_fragment_guest_button:
-                deleteConfirmation();
+                HideKeyboard.hide(activity);
+                if (CheckInternet.check()) {
+                    deleteConfirmation();
+                } else {
+                    ShowSnack.noInternet(v);
+                }
                 break;
             case R.id.login_fragment_close:
+                HideKeyboard.hide(activity);
                 removeFragment();
                 break;
-            case R.id.login_fragment_button:
-                String email = numberBox.getText().toString().trim();
-                String password = passwordBox.getText().toString();
-
-                if (isUsername(email, password) != 1) {
-                    if (LoginValidation_.isEmail(email) == 0) {
-                        emailLayout.setError("Invalid email");
-                    } else if (isUsername(email, password) == 3) {
-                        emailLayout.setError("Invalid number");
+            case R.id.login_fragment_forgot_button:
+                HideKeyboard.hide(activity);
+                String reset_email = numberBox.getText().toString().trim();
+                if (CheckInternet.check()) {
+                    if (reset_email.length() <= 0) {
+                        emailLayout.setError("Enter email");
+                    } else {
+                        if (LoginValidation_.isEmail(reset_email) == 0) {
+                            emailLayout.setError("Invalid email");
+                        } else {
+                            new ResetPassword().execute(reset_email);
+                        }
                     }
                 } else {
-                    new LoginCall(email, password, Actions_.LOGIN).execute();
+                    ShowSnack.noInternet(v);
+                }
+                break;
+            case R.id.login_fragment_button:
+                HideKeyboard.hide(activity);
+                if (CheckInternet.check()) {
+                    String email = numberBox.getText().toString().trim();
+                    String password = passwordBox.getText().toString();
+
+                    if (isUsername(email, password) != 1) {
+                        if (LoginValidation_.isEmail(email) == 0) {
+                            emailLayout.setError("Invalid email");
+                        } else if (isUsername(email, password) == 3) {
+                            emailLayout.setError("Invalid number");
+                        }
+                    } else {
+                        new LoginCall(email, password, Actions_.LOGIN).execute();
+                    }
+                } else {
+                    ShowSnack.noInternet(v);
                 }
                 break;
             case R.id.login_fragment_password_toggle:
                 String pass = passwordBox.getText().toString();
-                if (isVisible == false) {
+                if (!isVisible) {
                     isVisible = true;
                     showButton.setText("Hide");
                     passwordBox.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -160,9 +200,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                     passwordBox.setInputType(129);
                     showButton.setText("Show");
                 }
-                if (pass != null || pass.length() > 0) {
-                    passwordBox.setSelection(pass.length());
-                }
+                passwordBox.setSelection(pass.length());
                 break;
             case R.id.login_fragment_layout:
                 break;
@@ -181,7 +219,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         warning = (TextView) dialog.findViewById(R.id.confirmation_dialog_description);
         warning.setText("Guest Login will not have full features enabled!");
         fwdAccept = (Button) dialog.findViewById(R.id.confirmation_dialog_ok_button);
-        final EditText numberBox = (EditText)dialog.findViewById(R.id.confirmation_dialog_number_box);
+        final EditText numberBox = (EditText) dialog.findViewById(R.id.confirmation_dialog_number_box);
 
         fwdAccept.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -208,6 +246,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         dialog.show();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.e(TAG,"onStart()");
+        if (!CheckInternet.check()) {
+            ShowToast.noNetwork(activity.getApplicationContext());
+            removeFragment();
+        }
+    }
+
     private void nextActivity() {
         Intent next = new Intent(activity, MainActivity_new.class);
         next.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -215,8 +263,23 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         getActivity().finish();
     }
 
-    private class LoginCall extends AsyncTask<Void, Void, Integer> {
+    private class ResetPassword extends AsyncTask<String, Void, Integer> {
+        @Override
+        protected Integer doInBackground(String... params) {
+            RequestBody requestBody = new FormBody.Builder()
+                    .add(Constants.EMAIL, params[0])
+                    .add(Constants.ACTION, Actions_.FORGOT_PASSWORD)
+                    .build();
+            try {
+                String response = MakeCall.post(Urls.DOMAIN + Urls.SETTING, requestBody, TAG);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
 
+    private class LoginCall extends AsyncTask<Void, Void, Integer> {
         String email, password, action;
 
         public LoginCall(String email, String password, String action) {
@@ -287,12 +350,5 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 nDialog.dismiss();
             }
         }
-    }
-
-    protected static String getTimeZone() {
-        Calendar cal = Calendar.getInstance();
-        TimeZone tz = cal.getTimeZone();
-        String name = tz.getID();
-        return name;
     }
 }

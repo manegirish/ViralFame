@@ -115,8 +115,8 @@ public class MessageListAdapter extends ArrayAdapter<Message_>
 		Picasso.with(activity.getApplicationContext())
 				.load(Urls.DOMAIN+messages_.getProfile_pic())
 				.transform(new CircleTransformMain())
-				.placeholder(R.drawable.ic_avtar)
-				.error(R.drawable.ic_avtar)
+				.placeholder(R.drawable.ic_avatar)
+				.error(R.drawable.ic_avatar)
 				.into(holder.icon);
 
         return view;

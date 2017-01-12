@@ -11,7 +11,7 @@
         android:layout_centerInParent="true"
         android:minHeight="250dp"
         android:minWidth="250dp"
-        android:src="@drawable/ic_avtar"/>
+        android:src="@drawable/ic_avatar"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,25 +23,25 @@
         android:id="@+id/SelectImageBtn"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:background="@color/colorPrimary"
-        android:textSize="18sp"
-        android:layout_weight="1"
         android:layout_margin="10dp"
+        android:layout_weight="1"
+        android:background="@color/colorPrimary"
         android:text="Select"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
         android:textStyle="bold"/>
 
     <Button
         android:id="@+id/UploadImageBtn"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/white"
-        android:background="@color/colorPrimary"
-        android:textSize="18sp"
-        android:layout_weight="1"
-        android:textStyle="bold"
         android:layout_margin="10dp"
-        android:text="Upload" />
+        android:layout_weight="1"
+        android:background="@color/colorPrimary"
+        android:text="Upload"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="bold" />
     </LinearLayout>
 
     <ImageView

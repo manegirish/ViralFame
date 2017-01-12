@@ -23,12 +23,21 @@ public class ShowToast {
         toast.show();
     }
 
+    public static void noNetwork(Context context) {
+        Toast toast = Toast.makeText(context, Warnings.NO_INTERNET,
+                Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 90);
+        toast.show();
+    }
+
     public static void actionFailed(Context context) {
         Toast toast = Toast.makeText(context, "Action Failed",
                 Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 90);
         toast.show();
     }
+
+
 
     public static void noData(Context context) {
         Toast toast = Toast.makeText(context, "No data",

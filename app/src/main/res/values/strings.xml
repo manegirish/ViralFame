@@ -24,8 +24,10 @@
     <string name="my_people">My People</string>
     <string name="logout">Logout</string>
 
+
     <string name="follow">Follow</string>
-    <string name="un_follow">Unfollow</string>
+    <string name="unfollow">Unfollow</string>
+
     <string name="follows">Followers</string>
     <string name="following">Following</string>
     <string name="save">Save</string>
@@ -45,13 +47,21 @@
     <string name="enter_number">Enter Number</string>
     <string name="skill_preferences">Skill Preferences</string>
 
+    <string name="details">Details</string>
+    <string name="download">Download</string>
     <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
     <string name="remove">Remove</string>
-
+    <string name="loading">Loading...</string>
 
     <string name="save_media">Save Media</string>
     <string name="copy_link">Copy Link</string>
     <string name="share_link">Share Link</string>
+    <string name="share">Share</string>
+    <string name="show_earlier">Show earlier</string>
+
+    <string name="facebook">Facebook</string>
+    <string name="google">Google</string>
 
     <string name="warning">Warning</string>
     <string name="guest_login">Guest Login</string>
@@ -65,6 +75,7 @@
     <string name="post_hint">What you want to say....</string>
     <string name="message_hint">Type message here.....</string>
     <string name="reply_hint">Reply here.....</string>
+    <string name="tag_line">Build your portfolio\nGrab your dream Job\nStay Connected to Your Ideals</string>
 
     <string name="dummy_name">Kelly Bensimon</string>
     <string name="dummy_role">Photographer</string>

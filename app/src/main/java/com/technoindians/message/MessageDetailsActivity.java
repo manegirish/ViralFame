@@ -53,18 +53,21 @@ public class MessageDetailsActivity extends AppCompatActivity implements View.On
         EmojiGridviewImageAdapter.EmojiClickInterface {
 
     private static final String TAG = MessageDetailsActivity.class.getSimpleName();
+    AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+        }
+    };
     private ImageView backButton, profilePhoto;
     private TextView nameText, skillText, warningText;
     private EditText messageBox;
     private ImageView sendButton, smileyButton;
     private ListView listView;
     private String name, skill, profile_pic,friend_id;
-
     private ShowLoader showLoader;
     private ArrayList<Details_> replyList;
     private RelativeLayout chatFooter;
-
     private ReplyListAdapter replyListAdapter;
     private SmileyKeyBoard smiliKeyBoard;
 
@@ -131,17 +134,10 @@ public class MessageDetailsActivity extends AppCompatActivity implements View.On
         Picasso.with(getApplicationContext())
                 .load(Urls.DOMAIN + profile_pic)
                 .transform(new CircleTransform())
-                .placeholder(R.drawable.ic_avtar)
-                .error(R.drawable.ic_avtar)
+                .placeholder(R.drawable.ic_avatar)
+                .error(R.drawable.ic_avatar)
                 .into(profilePhoto);
     }
-
-    AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-        }
-    };
 
     @Override
     public void getClickedEmoji(int gridviewItemPosition) {
@@ -190,6 +186,74 @@ public class MessageDetailsActivity extends AppCompatActivity implements View.On
         outState.putSerializable(JsonArrays_.MESSAGE_DETAILS,replyList);
     }
 */
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.activity_toolbar_photo_back:
+                SmileyKeyBoard.dismissKeyboard();
+                onBackPressed();
+                break;
+            case R.id.message_details_send:
+                hideKeyboard();
+                SmileyKeyBoard.dismissKeyboard();
+                String message = messageBox.getText().toString().trim();
+                if (isValidMessage(message) == 1) {
+                    new SendMessage().execute(message);
+                }
+                break;
+            case R.id.message_details_smiley:
+                smiliKeyBoard.showKeyboard(chatFooter);
+                break;
+            case R.id.activity_toolbar_photo:
+                Bundle nextAnimation = ActivityOptions.makeCustomAnimation
+                        (getApplicationContext(), R.anim.animation_one,R.anim.animation_two).toBundle();
+                Intent profileIntent = new Intent(getApplicationContext(), UserPortfolioActivity.class);
+                profileIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                profileIntent.putExtra(Constants.USER_ID, friend_id);
+                profileIntent.putExtra(Constants.PROFILE_PIC, profile_pic);
+                profileIntent.putExtra(Constants.NAME, name);
+                profileIntent.putExtra(Constants.SKILL, skill);
+                startActivity(profileIntent,nextAnimation);
+                break;
+        }
+    }
+
+    private int isValidMessage(String message) {
+        if (message == null || message.length() <= 0) {
+            messageBox.setError(Warnings.INVALID_DATA);
+            return 0;
+        }
+        if (message.length() > 250) {
+            messageBox.setError(Warnings.MESSAGE_MAXIMUM_CHAR);
+            return 0;
+        }
+        return 1;
+    }
+
+    public void addMessage(Details_ newMessage) {
+        boolean duplicate = false;
+        for (Details_ message : replyList) {
+            if (message.getId().equals(newMessage.getId())) {
+                duplicate = true;
+                break;
+            }
+        }
+        if (!duplicate) {
+            replyList.add(newMessage);
+            replyListAdapter.notifyDataSetChanged();
+            listView.setSelection(replyListAdapter.getCount() - 1);
+        }
+
+    }
+
+    private void hideKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
 
     private class GetDetails extends AsyncTask<Void, Void, Integer> {
         String response;
@@ -334,75 +398,6 @@ public class MessageDetailsActivity extends AppCompatActivity implements View.On
                     break;
             }
             showLoader.dismissSendingDialog();
-        }
-    }
-
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.activity_toolbar_photo_back:
-                SmileyKeyBoard.dismissKeyboard();
-                onBackPressed();
-                break;
-            case R.id.message_details_send:
-                hideKeyboard();
-                SmileyKeyBoard.dismissKeyboard();
-                String message = messageBox.getText().toString().trim();
-                if (isValidMessage(message) == 1) {
-                    new SendMessage().execute(message);
-                }
-                break;
-            case R.id.message_details_smiley:
-                smiliKeyBoard.showKeyboard(chatFooter);
-                break;
-            case R.id.activity_toolbar_photo:
-                Bundle nextAnimation = ActivityOptions.makeCustomAnimation
-                        (getApplicationContext(), R.anim.animation_one,R.anim.animation_two).toBundle();
-                Intent profileIntent = new Intent(getApplicationContext(), UserPortfolioActivity.class);
-                profileIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                profileIntent.putExtra(Constants.USER_ID, friend_id);
-                profileIntent.putExtra(Constants.PROFILE_PIC, profile_pic);
-                profileIntent.putExtra(Constants.NAME, name);
-                profileIntent.putExtra(Constants.SKILL, skill);
-                startActivity(profileIntent,nextAnimation);
-                break;
-        }
-    }
-
-    private int isValidMessage(String message) {
-        if (message == null || message.length() <= 0) {
-            messageBox.setError(Warnings.INVALID_DATA);
-            return 0;
-        }
-        if (message.length() > 250) {
-            messageBox.setError(Warnings.MESSAGE_MAXIMUM_CHAR);
-            return 0;
-        }
-        return 1;
-    }
-
-    public void addMessage(Details_ newMessage) {
-        boolean duplicate = false;
-        for (Details_ message : replyList) {
-            if (message.getId().equals(newMessage.getId())) {
-                duplicate = true;
-                break;
-            }
-        }
-        if (!duplicate) {
-            replyList.add(newMessage);
-            replyListAdapter.notifyDataSetChanged();
-            listView.setSelection(replyListAdapter.getCount() - 1);
-        }
-
-    }
-
-    private void hideKeyboard() {
-        View view = this.getCurrentFocus();
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 }

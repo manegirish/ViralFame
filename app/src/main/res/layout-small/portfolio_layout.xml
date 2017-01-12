@@ -15,19 +15,19 @@
             android:id="@+id/backdrop"
             android:layout_width="match_parent"
             android:layout_height="340dp"
+            android:background="@drawable/ic_avatar"
             android:fitsSystemWindows="true"
             android:scaleType="fitXY"
-            app:layout_collapseMode="none"
-            android:background="@drawable/ic_avtar"/>
+            app:layout_collapseMode="none"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="340dp"
             android:background="#90FFFFFF"
             android:fitsSystemWindows="true"
+            android:orientation="vertical"
             android:scaleType="fitXY"
-            app:layout_collapseMode="none"
-            android:orientation="vertical" />
+            app:layout_collapseMode="none" />
 
         <LinearLayout
             android:id="@+id/content"
@@ -47,8 +47,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
-                android:gravity="center_vertical"
                 android:background="@android:color/transparent"
+                android:gravity="center_vertical"
                 android:orientation="vertical">
 
                 <TextView
@@ -75,8 +75,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
-                android:gravity="top|center_horizontal"
                 android:background="@android:color/transparent"
+                android:gravity="top|center_horizontal"
                 android:orientation="vertical">
 
                 <RelativeLayout
@@ -87,15 +87,15 @@
                     <RelativeLayout
                         android:layout_width="112dp"
                         android:layout_height="112dp"
-                        android:background="@drawable/primary_circle"
                         android:layout_centerInParent="true"
+                        android:background="@drawable/primary_circle"
                         android:padding="2dp">
 
                         <ImageView
                             android:id="@+id/portfolio_profile_photo"
                             android:layout_width="110dp"
                             android:layout_height="110dp"
-                            android:src="@drawable/ic_avtar" />
+                            android:src="@drawable/ic_avatar" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -139,15 +139,15 @@
                     android:id="@+id/portfolio_profile_follow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:background="@drawable/follow_button"
                     android:gravity="center"
                     android:minWidth="80dp"
                     android:padding="7dp"
                     android:text="UnFollow"
-                    android:layout_marginTop="5dp"
-                    android:visibility="visible"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:visibility="visible" />
             </LinearLayout>
 
 
@@ -156,8 +156,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
-                android:gravity="center"
                 android:background="@android:color/transparent"
+                android:gravity="center"
                 android:orientation="vertical">
 
                 <TextView
@@ -185,39 +185,39 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/content"
-            android:orientation="vertical"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
             android:background="@android:color/transparent"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
             android:paddingBottom="5dp"
-            android:gravity="center_vertical">
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
 
             <TextView
                 android:id="@+id/portfolio_profile_tag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="start"
                 android:layout_gravity="start"
+                android:drawablePadding="10dp"
+                android:drawableRight="@drawable/ic_profile_edit_g"
+                android:gravity="start"
                 android:text="@string/about_me"
                 android:textColor="@color/black_95"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:drawablePadding="10dp"
-                android:drawableRight="@drawable/ic_profile_edit_g"/>
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/portfolio_profile_about_me"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:background="@android:color/transparent"
                 android:gravity="start|top"
+                android:maxLength="250"
+                android:paddingBottom="2dp"
+                android:singleLine="false"
                 android:text="@string/dummy_text"
                 android:textColor="@color/black_95"
-                android:textSize="13sp"
-                android:layout_marginTop="2dp"
-                android:paddingBottom="2dp"
-                android:maxLength="250"
-                android:singleLine="false"
-                android:background="@android:color/transparent"/>
+                android:textSize="13sp"/>
         </LinearLayout>
     </RelativeLayout>
 

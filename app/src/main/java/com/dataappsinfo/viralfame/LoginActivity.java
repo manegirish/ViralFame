@@ -13,7 +13,9 @@ package com.dataappsinfo.viralfame;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -47,8 +49,11 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.technoindians.constants.Constants;
-import com.technoindians.library.ShowLoader;
+import com.technoindians.network.CheckInternet;
+import com.technoindians.network.ConnectivityReceiver;
+import com.technoindians.pops.ShowSnack;
 import com.technoindians.pops.ShowToast;
+import com.technoindians.preferences.Preferences;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,14 +61,13 @@ import org.json.JSONObject;
 import java.util.Arrays;
 
 /**
- * @author
- * Girish M
- * Created on 21/6/16.
- * Last modified 01/08/2016
- *
+ * @author Girish M
+ *         Created on 21/6/16.
+ *         Last modified 01/08/2016
  */
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener{
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener,
+        GoogleApiClient.OnConnectionFailedListener, ConnectivityReceiver.ConnectivityReceiverListener {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
     private static final int RC_SIGN_IN = 007;
@@ -87,15 +91,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        loginButton = (TextView)findViewById(R.id.login_button);
+        TextView tagText = (TextView)findViewById(R.id.login_tag_line);
+        Typeface tf = Typeface.createFromAsset(getApplicationContext().getAssets(),
+                "century_gothic.ttf");
+        tagText.setTypeface(tf);
+        loginButton = (TextView) findViewById(R.id.login_button);
         loginButton.setOnClickListener(this);
-        registerButton = (TextView)findViewById(R.id.register_button);
+        registerButton = (TextView) findViewById(R.id.register_button);
         registerButton.setOnClickListener(this);
 
-        facebookButton = (RelativeLayout)findViewById(R.id.login_facebook);
+        facebookButton = (RelativeLayout) findViewById(R.id.login_facebook);
         facebookButton.setOnClickListener(this);
 
-        googleButton = (RelativeLayout)findViewById(R.id.login_google);
+        googleButton = (RelativeLayout) findViewById(R.id.login_google);
         googleButton.setOnClickListener(this);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -116,7 +124,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         loginManager.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-               Log.e(TAG,"onSuccess : "+loginResult.getAccessToken().getToken());
+                Log.e(TAG, "onSuccess : " + loginResult.getAccessToken().getToken());
 
                 GraphRequest request = GraphRequest.newMeRequest(
                         accessToken,
@@ -126,7 +134,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     JSONObject object,
                                     GraphResponse response) {
                                 try {
-                                    getFacebookPorfile(object);
+                                    getFacebookProfile(object);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -140,18 +148,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             @Override
             public void onCancel() {
-                Log.e(TAG,"onCancel : ");
+                Log.e(TAG, "onCancel : ");
             }
 
             @Override
             public void onError(FacebookException e) {
-                Log.e(TAG,"onError : "+e.toString());
+                Log.e(TAG, "onError : " + e.toString());
             }
         });
-        accessTokenTracker= new AccessTokenTracker() {
+        accessTokenTracker = new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldToken, AccessToken newToken) {
-                Log.e(TAG,"onCurrentAccessTokenChanged"+", oldToken: "+oldToken.getToken()+", newToken: "+newToken);
+                if (oldToken != null) {
+                    Log.e(TAG, "onCurrentAccessTokenChanged" + ", oldToken: " + oldToken.getToken() + ", newToken: " + newToken);
+                }
                 accessToken = newToken;
             }
         };
@@ -159,9 +169,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         profileTracker = new ProfileTracker() {
             @Override
             protected void onCurrentProfileChanged(Profile oldProfile, Profile newProfile) {
-               // displayMessage(newProfile);
+                // displayMessage(newProfile);
                 profile = newProfile;
-                Log.e(TAG,"onCurrentProfileChanged");
+                Log.e(TAG, "onCurrentProfileChanged");
             }
         };
 
@@ -169,16 +179,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         accessToken = AccessToken.getCurrentAccessToken();
     }
 
-    private void getFacebookPorfile(JSONObject object) throws JSONException {
+    private void getFacebookProfile(JSONObject object) throws JSONException {
         String first_name = profile.getFirstName();
         String last_name = profile.getLastName();
         String fb_id = profile.getId();
-        String fb_pic = profile.getProfilePictureUri(256,256).toString();
+
+        String fb_pic = profile.getProfilePictureUri(256, 256).toString();
         String location = object.getString("location");
         String email = object.getString(Constants.EMAIL);
-        String gendar = object.getString(Constants.GENDER);
-
+        String gender = object.getString(Constants.GENDER);
+        JSONObject jsonObject = new JSONObject(location);
+        Preferences.save(Constants.FIRST_NAME, first_name);
+        Preferences.save(Constants.LAST_NAME, last_name);
+        Preferences.save(Constants.EMAIL, email);
+        Preferences.save(Constants.GENDER, gender);
+        Preferences.save(Constants.PROFILE_PHOTO, fb_pic);
+        Preferences.save(Constants.CITY, jsonObject.getString("name"));
+        Preferences.save(Constants.FACEBOOK, fb_id);
+        Log.e(TAG, "object: " + object);
+        registerFragment("register");
     }
+
     @Override
     public void onStop() {
         super.onStop();
@@ -196,7 +217,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             R.animator.slide_down,
                             R.animator.slide_up,
                             R.animator.slide_down)
-                    .add(R.id.login_container, RegisterFragment.instantiate(this, RegisterFragment.class.getName()),tag).addToBackStack(null).commit();
+                    .add(R.id.login_container, RegisterFragment.instantiate(this, RegisterFragment.class.getName()), tag).addToBackStack(null).commit();
         }
     }
 
@@ -211,26 +232,30 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             R.animator.slide_up,
                             R.animator.slide_down)
                     .add(R.id.login_container, LoginFragment.instantiate(this,
-                            LoginFragment.class.getName()),tag).addToBackStack(null).commit();
+                            LoginFragment.class.getName()), tag).addToBackStack(null).commit();
         }
     }
 
 
     @Override
     public void onClick(View v) {
-     switch (v.getId()){
-         case R.id.login_button:
-             replaceFragment("login");
-             break;
-         case R.id.register_button:
-             registerFragment("register");
-             break;
-         case R.id.login_google:
-            signIn();
-             break;
-         case R.id.login_facebook:
-             facebookLogin();
-             break;
+        if (CheckInternet.check()) {
+            switch (v.getId()) {
+                case R.id.login_button:
+                    replaceFragment("login");
+                    break;
+                case R.id.register_button:
+                    registerFragment("register");
+                    break;
+                case R.id.login_google:
+                    signIn();
+                    break;
+                case R.id.login_facebook:
+                    facebookLogin();
+                    break;
+            }
+        } else {
+            ShowSnack.noInternet(v);
         }
     }
 
@@ -245,8 +270,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(Status status) {
-                        Log.e(TAG,"signOut()"+status);
-                        updateUI(false);
+                        Log.e(TAG, "signOut()" + status);
+                        //   updateUI(false);
                     }
                 });
     }
@@ -267,8 +292,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             String getGivenName = acct.getGivenName();
 
             Log.e(TAG, "Name: " + personName + ", email: " + email
-                    + ", Image: " + personPhotoUrl+", id:"+id+", getFamilyName: "
-                    +getFamilyName+", getGivenName:"+getGivenName+", IdToken: "+acct.getIdToken());
+                    + ", Image: " + personPhotoUrl + ", id:" + id + ", getFamilyName: "
+                    + getFamilyName + ", getGivenName:" + getGivenName + ", IdToken: " + acct.getIdToken());
 /*
 
             Glide.with(getApplicationContext()).load(personPhotoUrl)
@@ -278,10 +303,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     .into(imgProfilePic);
 */
 
-            updateUI(true);
+            //    updateUI(true);
         } else {
             // Signed out, show unauthenticated UI.
-            updateUI(false);
+            //   updateUI(false);
         }
     }
 
@@ -289,26 +314,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
-        Log.e("onActivityResult"," => ");
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
-           /* GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleSignInResult(result);*/
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
-
-            // G+
-            Person person  = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-
-            Log.i(TAG, "--------------------------------"+person.getUrls());
-            Log.e(TAG, "Name: " + person.getName());
-            Log.e(TAG, "Display Name: " + person.getDisplayName());
-            Log.e(TAG, "Gender: " + person.getGender());
-            Log.e(TAG, "AboutMe: " + person.getAboutMe());
-            Log.e(TAG, "Birthday: " + person.getBirthday());
-            Log.e(TAG, "Places Lived Location: " + person.getPlacesLived());
-            Log.e(TAG, "Current Location: " + person.getCurrentLocation());
-            Log.e(TAG, "Language: " + person.getLanguage());
+            if (!mGoogleApiClient.isConnecting()) {
+                if (mGoogleApiClient.hasConnectedApi(Plus.API)) {
+                    Person person = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+                    Log.i(TAG, "--------------------------------" + person.getUrls());
+                    Log.e(TAG, "Name: " + person.getName());
+                    Log.e(TAG, "Display Name: " + person.getDisplayName());
+                    Log.e(TAG, "Gender: " + person.getGender());
+                    Log.e(TAG, "AboutMe: " + person.getAboutMe());
+                    Log.e(TAG, "Birthday: " + person.getBirthday());
+                    Log.e(TAG, "Places Lived Location: " + person.getPlacesLived());
+                    Log.e(TAG, "Current Location: " + person.getCurrentLocation());
+                    Log.e(TAG, "Language: " + person.getLanguage());
+                } else {
+                    ShowToast.toast(getApplicationContext(), "Failed to Connect");
+                }
+            } else {
+                ShowToast.toast(getApplicationContext(), "Failed to Connect");
+            }
         }
     }
 
@@ -319,13 +345,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         profileTracker.startTracking();
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
         if (opr.isDone()) {
+            // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
+            // and the GoogleSignInResult will be available instantly.
+            Log.e(TAG, "Got cached sign-in");
             GoogleSignInResult result = opr.get();
             handleSignInResult(result);
         } else {
             opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
                 @Override
                 public void onResult(GoogleSignInResult googleSignInResult) {
-                   // showLoader.dismissLoadingDialog();
+                    // showLoader.dismissLoadingDialog();
                     handleSignInResult(googleSignInResult);
                 }
             });
@@ -333,26 +362,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        //ShowToast.toast(getApplicationContext(),"Something went wrong restart application");
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
     }
 
-    private void updateUI(boolean isSignedIn) {
-/*        if (isSignedIn) {
-            btnSignIn.setVisibility(View.GONE);
-            btnSignOut.setVisibility(View.VISIBLE);
-            btnRevokeAccess.setVisibility(View.VISIBLE);
-            llProfileLayout.setVisibility(View.VISIBLE);
-        } else {
-            btnSignIn.setVisibility(View.VISIBLE);
-            btnSignOut.setVisibility(View.GONE);
-            btnRevokeAccess.setVisibility(View.GONE);
-            llProfileLayout.setVisibility(View.GONE);
-        }*/
+    private void facebookLogin() {
+        loginManager.logInWithReadPermissions(LoginActivity.this, Arrays.asList("email", "public_profile", "user_birthday", "user_location"));
     }
-    private void facebookLogin(){
-        loginManager.logInWithReadPermissions(LoginActivity.this, Arrays.asList("email", "public_profile", "user_birthday","user_location"));
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ViralFame.getInstance().setConnectivityListener(this);
+        if (!CheckInternet.check())
+            ShowToast.noNetwork(getApplicationContext());
+    }
+
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        if (!isConnected)
+            ShowToast.noNetwork(getApplicationContext());
     }
 }

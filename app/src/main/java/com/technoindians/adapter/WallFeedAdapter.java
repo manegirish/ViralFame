@@ -59,6 +59,64 @@ public class WallFeedAdapter extends CursorAdapter {
     private UpdateOperations updateOperations;
 
     private Cursor originalCursor;
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Bundle nextAnimation = ActivityOptions.makeCustomAnimation
+                    (context, R.anim.animation_one, R.anim.animation_two).toBundle();
+            String id = (String) v.getTag();
+            Cursor selectedCursor = retrieveOperation.fetchSingleFeed("*", id);
+            if (selectedCursor == null) {
+                return;
+            }
+            selectedCursor.moveToFirst();
+            switch (v.getId()) {
+                case R.id.wall_feed_item_comment:
+                    openCommentDialog(id);
+                    break;
+                case R.id.wall_feed_item_like:
+                    new Operations().execute(id);
+                    break;
+                case R.id.wall_feed_item_image:
+                    Intent imageIntent = new Intent(context, FeedDetailsActivity.class);
+                    imageIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    imageIntent.putExtra(Constants.MEDIA_FILE, selectedCursor.getString(selectedCursor.getColumnIndex(Constants.MEDIA_FILE)));
+                    imageIntent.putExtra(Constants.WALL_ID, id);
+                    imageIntent.putExtra(Constants.MEDIA_TYPE, Constants.TYPE_IMAGE);
+                    activity.startActivity(imageIntent, nextAnimation);
+                    break;
+                case R.id.wall_post_media_audio:
+                    int media_type = Integer.parseInt(selectedCursor.getString(selectedCursor.getColumnIndex(Constants.MEDIA_TYPE)));
+                    if (media_type == Constants.INTENT_AUDIO) {
+                        Intent audioIntent = new Intent(context, FeedDetailsActivity.class);
+                        audioIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        audioIntent.putExtra(Constants.MEDIA_FILE, selectedCursor.getString(selectedCursor.getColumnIndex(Constants.MEDIA_FILE)));
+                        audioIntent.putExtra(Constants.WALL_ID, id);
+                        audioIntent.putExtra(Constants.MEDIA_TYPE, Constants.TYPE_AUDIO);
+                        activity.startActivity(audioIntent, nextAnimation);
+                    } else if (media_type == Constants.INTENT_VIDEO) {
+                        Intent videoIntent = new Intent(context, FeedDetailsActivity.class);
+                        videoIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        videoIntent.putExtra(Constants.MEDIA_FILE, selectedCursor.getString(selectedCursor.getColumnIndex(Constants.MEDIA_FILE)));
+                        videoIntent.putExtra(Constants.WALL_ID, id);
+                        videoIntent.putExtra(Constants.MEDIA_TYPE, Constants.TYPE_VIDEO);
+                        activity.startActivity(videoIntent, nextAnimation);
+                    }
+                    break;
+                case R.id.wall_feed_item_photo:
+
+                    Intent profileIntent = new Intent(context, UserPortfolioActivity.class);
+                    profileIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    profileIntent.putExtra(Constants.USER_ID, selectedCursor.getString(selectedCursor.getColumnIndex(Constants.USER_ID)));
+                    profileIntent.putExtra(Constants.PROFILE_PIC, selectedCursor.getString(selectedCursor.getColumnIndex(Constants.PROFILE_PIC)));
+                    profileIntent.putExtra(Constants.NAME, selectedCursor.getString(selectedCursor.getColumnIndex(Constants.NAME)));
+                    profileIntent.putExtra(Constants.SKILL, selectedCursor.getString(selectedCursor.getColumnIndex(Constants.SKILL)));
+                    profileIntent.putExtra(Constants.IS_FOLLOW, selectedCursor.getString(selectedCursor.getColumnIndex(Constants.IS_FOLLOW)));
+                    activity.startActivity(profileIntent, nextAnimation);
+                    break;
+            }
+        }
+    };
 
     public WallFeedAdapter(Activity activity, Cursor cursor) {
         super(activity, cursor);
@@ -170,8 +228,8 @@ public class WallFeedAdapter extends CursorAdapter {
                 .resize(100, 100)
                 .onlyScaleDown()
                 .transform(new CircleTransformMain())
-                .placeholder(R.drawable.ic_avtar)
-                .error(R.drawable.ic_avtar)
+                .placeholder(R.drawable.ic_avatar)
+                .error(R.drawable.ic_avatar)
                 .into(profilePhoto);
 
         switch (Integer.parseInt(media_type)) {
@@ -248,65 +306,6 @@ public class WallFeedAdapter extends CursorAdapter {
         }
         audioTime.setText(time);
     }
-
-    private View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Bundle nextAnimation = ActivityOptions.makeCustomAnimation
-                    (context, R.anim.animation_one, R.anim.animation_two).toBundle();
-            String id = (String) v.getTag();
-            Cursor selectedCursor = retrieveOperation.fetchSingleFeed("*", id);
-            if (selectedCursor == null) {
-                return;
-            }
-            selectedCursor.moveToFirst();
-            switch (v.getId()) {
-                case R.id.wall_feed_item_comment:
-                    openCommentDialog(id);
-                    break;
-                case R.id.wall_feed_item_like:
-                    new Operations().execute(id);
-                    break;
-                case R.id.wall_feed_item_image:
-                    Intent imageIntent = new Intent(context, FeedDetailsActivity.class);
-                    imageIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    imageIntent.putExtra(Constants.MEDIA_FILE, selectedCursor.getString(selectedCursor.getColumnIndex(Constants.MEDIA_FILE)));
-                    imageIntent.putExtra(Constants.WALL_ID, id);
-                    imageIntent.putExtra(Constants.MEDIA_TYPE, Constants.TYPE_IMAGE);
-                    activity.startActivity(imageIntent, nextAnimation);
-                    break;
-                case R.id.wall_post_media_audio:
-                    int media_type = Integer.parseInt(selectedCursor.getString(selectedCursor.getColumnIndex(Constants.MEDIA_TYPE)));
-                    if (media_type == Constants.INTENT_AUDIO) {
-                        Intent audioIntent = new Intent(context, FeedDetailsActivity.class);
-                        audioIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                        audioIntent.putExtra(Constants.MEDIA_FILE, selectedCursor.getString(selectedCursor.getColumnIndex(Constants.MEDIA_FILE)));
-                        audioIntent.putExtra(Constants.WALL_ID, id);
-                        audioIntent.putExtra(Constants.MEDIA_TYPE, Constants.TYPE_AUDIO);
-                        activity.startActivity(audioIntent, nextAnimation);
-                    } else if (media_type == Constants.INTENT_VIDEO) {
-                        Intent videoIntent = new Intent(context, FeedDetailsActivity.class);
-                        videoIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                        videoIntent.putExtra(Constants.MEDIA_FILE, selectedCursor.getString(selectedCursor.getColumnIndex(Constants.MEDIA_FILE)));
-                        videoIntent.putExtra(Constants.WALL_ID, id);
-                        videoIntent.putExtra(Constants.MEDIA_TYPE, Constants.TYPE_VIDEO);
-                        activity.startActivity(videoIntent, nextAnimation);
-                    }
-                    break;
-                case R.id.wall_feed_item_photo:
-
-                    Intent profileIntent = new Intent(context, UserPortfolioActivity.class);
-                    profileIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    profileIntent.putExtra(Constants.USER_ID, selectedCursor.getString(selectedCursor.getColumnIndex(Constants.USER_ID)));
-                    profileIntent.putExtra(Constants.PROFILE_PIC, selectedCursor.getString(selectedCursor.getColumnIndex(Constants.PROFILE_PIC)));
-                    profileIntent.putExtra(Constants.NAME, selectedCursor.getString(selectedCursor.getColumnIndex(Constants.NAME)));
-                    profileIntent.putExtra(Constants.SKILL, selectedCursor.getString(selectedCursor.getColumnIndex(Constants.SKILL)));
-                    profileIntent.putExtra(Constants.IS_FOLLOW, selectedCursor.getString(selectedCursor.getColumnIndex(Constants.IS_FOLLOW)));
-                    activity.startActivity(profileIntent, nextAnimation);
-                    break;
-            }
-        }
-    };
 
     private boolean removeCommentDialog() {
         FragmentManager fragmentManager = activity.getFragmentManager();

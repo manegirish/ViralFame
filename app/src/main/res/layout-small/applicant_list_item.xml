@@ -18,7 +18,7 @@
             android:id="@+id/applicant_list_item_icon"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/ic_avtar" />
+            android:src="@drawable/ic_avatar" />
 
         <RelativeLayout
             android:layout_width="match_parent"

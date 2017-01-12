@@ -2,33 +2,65 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/white"
         android:orientation="vertical">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.60"
+            android:layout_weight="0.58"
             android:background="@drawable/ic_vf_bg_001">
 
-        </LinearLayout>
+            <ImageView
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                android:src="@drawable/ic_vf_logo_large" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:gravity="start|bottom"
+                android:orientation="vertical"
+                android:padding="15dp">
+
+                <TextView
+                    android:id="@+id/login_tag_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-condensed"
+                    android:gravity="start|center_vertical"
+                    android:text="@string/tag_line"
+                    android:textColor="@color/white"
+                    android:textSize="21sp"
+                    android:textStyle="italic" />
+            </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.40"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_weight="0.42"
             android:background="@color/white"
             android:gravity="center"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/login_button"
-                android:layout_width="240dp"
+                android:layout_width="match_parent"
                 android:layout_height="45dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/primary_rounded_button"
                 android:gravity="center"
                 android:text="@string/sign_in"
@@ -39,9 +71,9 @@
 
             <TextView
                 android:id="@+id/register_button"
-                android:layout_width="240dp"
+                android:layout_width="match_parent"
                 android:layout_height="45dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/transparent_rounded_button"
                 android:gravity="center"
                 android:text="@string/sign_up"
@@ -51,12 +83,44 @@
                 android:textStyle="bold" />
 
             <LinearLayout
-                android:layout_width="280dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:gravity="center_vertical"
+                android:minHeight="15dp"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0.5dp"
+                    android:layout_weight="0.46"
+                    android:background="@color/grey_e6" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.08"
+                    android:gravity="center"
+                    android:text="OR"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0.5dp"
+                    android:layout_weight="0.46"
+                    android:background="@color/grey_e6" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="35dp"
-                android:layout_marginTop="20dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginTop="10dp"
                 android:background="@color/white"
                 android:baselineAligned="false"
-                android:layout_gravity="bottom|center_horizontal"
                 android:orientation="horizontal">
 
                 <RelativeLayout
@@ -64,23 +128,23 @@
                     android:layout_width="0dp"
                     android:layout_height="35dp"
                     android:layout_weight="1"
-                    android:background="@color/google_red">
+                    android:background="@drawable/google_rounded_button">
 
                     <ImageView
                         android:layout_width="35dp"
                         android:layout_height="35dp"
                         android:layout_margin="1dp"
-                        android:background="@color/white"
+                        android:background="@drawable/circle_white"
+                        android:padding="6dp"
                         android:src="@drawable/ic_google" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="45dp"
                         android:layout_marginStart="45dp"
-                        android:gravity="center"
-                        android:text="@string/sign_in"
-                        android:textAllCaps="true"
+                        android:gravity="start|center_vertical"
+                        android:text="@string/google"
+                        android:textAllCaps="false"
                         android:textColor="@color/white"
                         android:textSize="14sp"
                         android:textStyle="bold" />
@@ -90,27 +154,25 @@
                     android:id="@+id/login_facebook"
                     android:layout_width="0dp"
                     android:layout_height="35dp"
-                    android:layout_marginLeft="20dp"
                     android:layout_marginStart="20dp"
                     android:layout_weight="1"
-                    android:background="@color/facebook_blue">
+                    android:background="@drawable/facebook_rounded_button">
 
                     <ImageView
                         android:layout_width="35dp"
                         android:layout_height="35dp"
                         android:layout_margin="1dp"
-                        android:background="@color/white"
+                        android:background="@drawable/circle_white"
                         android:padding="6dp"
                         android:src="@drawable/ic_facebook" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="45dp"
                         android:layout_marginStart="45dp"
-                        android:gravity="center"
-                        android:text="@string/sign_in"
-                        android:textAllCaps="true"
+                        android:gravity="start|center_vertical"
+                        android:text="@string/facebook"
+                        android:textAllCaps="false"
                         android:textColor="@color/white"
                         android:textSize="14sp"
                         android:textStyle="bold" />

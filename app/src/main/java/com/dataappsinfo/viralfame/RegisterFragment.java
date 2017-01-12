@@ -10,6 +10,7 @@
 
 package com.dataappsinfo.viralfame;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Fragment;
@@ -42,11 +43,14 @@ import com.technoindians.database.TableList;
 import com.technoindians.library.Age;
 import com.technoindians.library.AgeCalculator;
 import com.technoindians.library.SkillSet;
+import com.technoindians.network.CheckInternet;
 import com.technoindians.network.JsonArrays_;
 import com.technoindians.network.MakeCall;
 import com.technoindians.network.Urls;
 import com.technoindians.parser.SkillParser;
+import com.technoindians.pops.ShowSnack;
 import com.technoindians.pops.ShowToast;
+import com.technoindians.preferences.Preferences;
 import com.technoindians.validation.LoginValidation_;
 
 import org.json.JSONArray;
@@ -73,25 +77,54 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = RegisterFragment.class.getSimpleName();
 
-            ImageView closeButton;
+    ImageView closeButton;
     Button registerButton;
     EditText firstBox, lastBox, emailBox, numberBox, cityBox, passwordBox, confirmBox;
     AutoCompleteTextView skillsBox;
-    private CheckedTextView artist,recruiter;
     TextView ageText;
     Spinner genderSpinner;
+    ArrayList<HashMap<String, String>> skillArray;
+    ArrayList<String> skill;
+    Calendar c;
+    private CheckedTextView artist, recruiter;
     private String gender, age;
+    AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if (position != 0) {
+                gender = parent.getItemAtPosition(position).toString();
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            gender = null;
+        }
+    };
     private String skills = null;
     private int skill_id = -1;
+    AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            skills = (String) parent.getItemAtPosition(position);
+            Log.e("skills", "-> " + skills);
+            String selection = (String) parent.getItemAtPosition(position);
+            skill_id = -1;
+
+            for (int i = 0; i < skill.size(); i++) {
+                if (skill.get(i).equals(selection)) {
+                    Log.e("skill i -> " + i, "skill.size() -> " + skill.size() + " skillArray.size() -> " + skillArray.size());
+                    skill_id = Integer.parseInt(skillArray.get(i).get(Constants.ID));
+                    Log.e("skill_id", "-> " + skill_id);
+                    break;
+                }
+            }
+        }
+    };
     private int sYear, sMonth, sDay;
     private int mYear = 0, mMonth = 0, mDay = 0;
-    private TextInputLayout inputLayoutFirstName,inputLayoutLastName,
-            inputLayoutEmail,inputLayoutPass,inputLayoutConfirmPass,inputLayoutCity;
-
-    ArrayList<HashMap<String,String>> skillArray;
-    ArrayList<String> skill;
-
-    Calendar c;
+    private TextInputLayout inputLayoutFirstName, inputLayoutLastName,
+            inputLayoutEmail, inputLayoutPass, inputLayoutConfirmPass, inputLayoutCity;
     private RetrieveOperation retrieveOperation;
     private Activity activity;
 
@@ -112,12 +145,12 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         registerButton = (Button) view.findViewById(R.id.registration_button);
         registerButton.setOnClickListener(this);
 
-        inputLayoutFirstName = (TextInputLayout)view.findViewById(R.id.registration_layout_first_name);
-        inputLayoutCity = (TextInputLayout)view.findViewById(R.id.registration_layout_city);
-        inputLayoutLastName = (TextInputLayout)view.findViewById(R.id.registration_layout_last_name);
-        inputLayoutEmail = (TextInputLayout)view.findViewById(R.id.registration_layout_email);
-        inputLayoutPass = (TextInputLayout)view.findViewById(R.id.registration_layout_password);
-        inputLayoutConfirmPass = (TextInputLayout)view.findViewById(R.id.registration_layout_confirm_password);
+        inputLayoutFirstName = (TextInputLayout) view.findViewById(R.id.registration_layout_first_name);
+        inputLayoutCity = (TextInputLayout) view.findViewById(R.id.registration_layout_city);
+        inputLayoutLastName = (TextInputLayout) view.findViewById(R.id.registration_layout_last_name);
+        inputLayoutEmail = (TextInputLayout) view.findViewById(R.id.registration_layout_email);
+        inputLayoutPass = (TextInputLayout) view.findViewById(R.id.registration_layout_password);
+        inputLayoutConfirmPass = (TextInputLayout) view.findViewById(R.id.registration_layout_confirm_password);
 
         firstBox = (EditText) view.findViewById(R.id.registration_first_name);
         lastBox = (EditText) view.findViewById(R.id.registration_last_name);
@@ -128,9 +161,9 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         passwordBox = (EditText) view.findViewById(R.id.registration_password);
         confirmBox = (EditText) view.findViewById(R.id.registration_confirm_password);
 
-        artist = (CheckedTextView)view.findViewById(R.id.registration_artist_checkbox);
+        artist = (CheckedTextView) view.findViewById(R.id.registration_artist_checkbox);
         artist.setOnClickListener(this);
-        recruiter = (CheckedTextView)view.findViewById(R.id.registration_recruiter_checkbox);
+        recruiter = (CheckedTextView) view.findViewById(R.id.registration_recruiter_checkbox);
         recruiter.setOnClickListener(this);
 
         genderSpinner = (Spinner) view.findViewById(R.id.registration_gender);
@@ -165,39 +198,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
-
-    AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            skills = (String) parent.getItemAtPosition(position);
-            Log.e("skills", "-> " + skills);
-            String selection = (String) parent.getItemAtPosition(position);
-            skill_id = -1;
-
-            for (int i = 0; i < skill.size(); i++) {
-                if (skill.get(i).equals(selection)) {
-                    Log.e("skill i -> "+i, "skill.size() -> " + skill.size()+" skillArray.size() -> "+skillArray.size());
-                    skill_id = Integer.parseInt(skillArray.get(i).get(Constants.ID));
-                    Log.e("skill_id", "-> " + skill_id);
-                    break;
-                }
-            }
-        }
-    };
-    AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            if (position != 0) {
-                gender = parent.getItemAtPosition(position).toString();
-            }
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {
-            gender = null;
-        }
-    };
-
     private void requestFocus(View view) {
         if (view.requestFocus()) {
             activity.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
@@ -208,31 +208,31 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         getFragmentManager().popBackStack();
     }
 
-    private void loginCall(String f_name,String l_name,String email,String number,String city,
-                           String password,String confirm_password){
-        if (!artist.isChecked()&&!recruiter.isChecked()){
-            ShowToast.toast(activity.getApplicationContext(),"Provide Login Type");
+    private void loginCall(String f_name, String l_name, String email, String number, String city,
+                           String password, String confirm_password) {
+        if (!artist.isChecked() && !recruiter.isChecked()) {
+            ShowToast.toast(activity.getApplicationContext(), "Provide Login Type");
             return;
         }
         if (LoginValidation_.isName(f_name) == 0) {
             inputLayoutFirstName.setError("Invalid First Name");
             requestFocus(firstBox);
             return;
-        }else {
+        } else {
             inputLayoutFirstName.setErrorEnabled(false);
         }
         if (LoginValidation_.isName(l_name) == 0) {
             inputLayoutLastName.setError("Invalid Last Name");
             requestFocus(lastBox);
             return;
-        }else {
+        } else {
             inputLayoutLastName.setErrorEnabled(false);
         }
         if (LoginValidation_.isEmail(email) == 0) {
             inputLayoutEmail.setError("Invalid Email");
             requestFocus(emailBox);
             return;
-        }else {
+        } else {
             inputLayoutEmail.setErrorEnabled(false);
         }
         if (LoginValidation_.isMobile(number) == 0) {
@@ -243,7 +243,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             inputLayoutCity.setError("Invalid City");
             requestFocus(cityBox);
             return;
-        }else {
+        } else {
             inputLayoutCity.setErrorEnabled(false);
         }
         if (age == null) {
@@ -259,36 +259,38 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
             return;
         }
         if (LoginValidation_.isPassword(password) == 0) {
-            inputLayoutPass.setError("Invalid Password");
+            inputLayoutPass.setError("Invalid Password\n Password should contain following:\n1.Capital letter" +
+                    "\n2.Special Character\n3.One Number\n4.Min 6 char and max 10 char");
             requestFocus(passwordBox);
             return;
-        }else {
+        } else {
             inputLayoutPass.setErrorEnabled(false);
         }
-        if (password.equals(confirm_password) == false) {
+        if (!password.equals(confirm_password)) {
             inputLayoutConfirmPass.setError("Password not matching");
             requestFocus(confirmBox);
             return;
-        }else {
+        } else {
             inputLayoutConfirmPass.setErrorEnabled(false);
         }
         new RegisterCall(f_name, l_name, email, number, city, gender, age, password, confirm_password).execute();
     }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.registration_artist_checkbox:
-                if (artist.isChecked()){
+                if (artist.isChecked()) {
                     artist.setChecked(false);
-                }else {
+                } else {
                     artist.setChecked(true);
                     recruiter.setChecked(false);
                 }
                 break;
             case R.id.registration_recruiter_checkbox:
-                if (recruiter.isChecked()){
+                if (recruiter.isChecked()) {
                     recruiter.setChecked(false);
-                }else {
+                } else {
                     recruiter.setChecked(true);
                     artist.setChecked(false);
                 }
@@ -304,7 +306,11 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 String city = cityBox.getText().toString().trim();
                 String password = passwordBox.getText().toString().trim();
                 String confirm_password = confirmBox.getText().toString().trim();
-                loginCall(f_name,l_name,email,number,city, password, confirm_password);
+                if (CheckInternet.check()) {
+                    loginCall(f_name, l_name, email, number, city, password, confirm_password);
+                }else {
+                    ShowSnack.noInternet(v);
+                }
                 break;
             case R.id.registration_age:
                 DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
@@ -342,12 +348,76 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    private String checkDigit(int number) {
+        return number <= 9 ? "0" + number : String.valueOf(number);
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private String formatDate(String dob) {
+        String date = null;
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            Date d = inputFormat.parse(dob);
+            date = outputFormat.format(d);
+        } catch (Exception e) {
+            date = null;
+        }
+        return date;
+    }
+
+    private int getAge(String dob) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date birthDate = null; //Yeh !! It's my date of birth :-)
+        try {
+            birthDate = sdf.parse(dob);
+            Age age = AgeCalculator.calculateAge(birthDate);
+            Log.e("age", " -> " + age);
+            if (age.getYears() >= 18 && age.getYears() < 100) {
+                return 1;
+            } else if (age.getYears() < 18) {
+                return 2;
+            } else if (age.getYears() > 99) {
+                return 3;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0;
+        }
+        return 0;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (!CheckInternet.check()){
+            ShowToast.noNetwork(activity.getApplicationContext());
+            removeFragment();
+            return;
+        }
+        if (Preferences.contains(Constants.FACEBOOK) && Preferences.get(Constants.FACEBOOK) != null) {
+            firstBox.setText(Preferences.get(Constants.FIRST_NAME));
+            lastBox.setText(Preferences.get(Constants.LAST_NAME));
+            cityBox.setText(Preferences.get(Constants.CITY));
+            emailBox.setText(Preferences.get(Constants.EMAIL));
+            Log.e("RegisterFragment", "" + Preferences.get(Constants.GENDER));
+            if (Preferences.get(Constants.GENDER).equalsIgnoreCase("male")) {
+                genderSpinner.setSelection(0);
+                gender = "Male";
+            } else {
+                gender = "Female";
+                genderSpinner.setSelection(1);
+            }
+        }
+        new GetSkills().execute();
+    }
+
     private class RegisterCall extends AsyncTask<Void, Void, Integer> {
 
-        String f_name, l_name, email, number, city, gender, dob, password, confirm_password,type;
+        String f_name, l_name, email, number, city, gender, dob, password, confirm_password, type;
 
-        public RegisterCall(String f_name, String l_name, String email, String number,
-                            String city, String gender, String dob, String password, String confirm_password) {
+        RegisterCall(String f_name, String l_name, String email, String number,
+                     String city, String gender, String dob, String password, String confirm_password) {
             Log.e("RegisterCall", " -> " + dob);
             this.f_name = f_name;
             this.l_name = l_name;
@@ -363,10 +433,10 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            if (artist.isChecked()){
+            if (artist.isChecked()) {
                 type = "1";
             }
-            if (recruiter.isChecked()){
+            if (recruiter.isChecked()) {
                 type = "2";
             }
         }
@@ -437,50 +507,6 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private String checkDigit(int number) {
-        return number <= 9 ? "0" + number : String.valueOf(number);
-    }
-
-    private String formatDate(String dob) {
-        String date = null;
-        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
-        try {
-            Date d = inputFormat.parse(dob);
-            date = outputFormat.format(d);
-        } catch (Exception e) {
-            date = null;
-        }
-        return date;
-    }
-
-    private int getAge(String dob) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date birthDate = null; //Yeh !! It's my date of birth :-)
-        try {
-            birthDate = sdf.parse(dob);
-            Age age = AgeCalculator.calculateAge(birthDate);
-            Log.e("age", " -> " + age);
-            if (age.getYears() >= 18 && age.getYears() < 100) {
-                return 1;
-            } else if (age.getYears() < 18) {
-                return 2;
-            } else if (age.getYears() > 99) {
-                return 3;
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return 0;
-        }
-        return 0;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        new GetSkills().execute();
-    }
-
     private class GetSkills extends AsyncTask<Void, Void, Integer> {
         @Override
         protected Integer doInBackground(Void... params) {
@@ -490,8 +516,8 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
 
             try {
                 String response = MakeCall.post(Urls.DOMAIN + Urls.GET_SKILLS, requestBody, TAG);
-                return SkillParser.skill(response, TableList.TABLE_SKILL_PRIMARY,activity.getApplicationContext());
-                } catch (Exception e) {
+                return SkillParser.skill(response, TableList.TABLE_SKILL_PRIMARY, activity.getApplicationContext());
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return 12;
@@ -500,7 +526,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         @Override
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
-            switch (result){
+            switch (result) {
                 case 0:
                     ShowToast.internalErrorToast(activity.getApplicationContext());
                     registerButton.setEnabled(false);

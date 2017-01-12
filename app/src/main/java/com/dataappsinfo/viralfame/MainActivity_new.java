@@ -14,20 +14,20 @@ import android.app.ActivityOptions;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -36,26 +36,37 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 import com.technoindians.adapter.DrawerListAdapter;
 import com.technoindians.constants.Constants;
 import com.technoindians.constants.Fragment_;
 import com.technoindians.constants.Warnings;
-import com.technoindians.directory.Make_;
-import com.technoindians.library.BlurBuilder;
+import com.technoindians.firebase.Config;
+import com.technoindians.firebase.MyFirebaseInstanceIDService;
+import com.technoindians.firebase.NotificationUtils;
 import com.technoindians.library.CheckUserType;
 import com.technoindians.library.FileCheck;
 import com.technoindians.library.ImageDownloader;
+import com.technoindians.library.SearchUser;
 import com.technoindians.library.ShowLoader;
 import com.technoindians.message.MessageListFragment;
+import com.technoindians.network.CheckInternet;
+import com.technoindians.network.ConnectivityReceiver;
 import com.technoindians.network.JsonArrays_;
 import com.technoindians.network.MakeCall;
 import com.technoindians.network.Urls;
 import com.technoindians.opportunities.OpportunitiesMainFragment;
 import com.technoindians.opportunities.ReceivedListFragment;
 import com.technoindians.peoples.PeopleMainFragment;
+import com.technoindians.pops.ShowSnack;
 import com.technoindians.pops.ShowToast;
 import com.technoindians.portfolio.PortfolioMainActivity;
 import com.technoindians.preferences.Preferences;
@@ -69,27 +80,28 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import jp.wasabeef.glide.transformations.BlurTransformation;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 
 public class MainActivity_new extends AppCompatActivity
-        implements View.OnClickListener {
+        implements View.OnClickListener, ConnectivityReceiver.ConnectivityReceiverListener {
 
     private static final String TAG = MainActivity_new.class.getSimpleName();
-
     public static MainActivity_new mainActivity;
     private static boolean isOpen = false;
     public EditText searchBox;
     TextView titleText, nameText, skillText;
-    ImageView createPost, profilePhoto;
-    RelativeLayout headerLayout;
+    ImageView createPost, profilePhoto, backgroundPhoto;
+    ListView listView;
     RelativeLayout drawerLayout;
     DrawerListAdapter drawerListAdapter;
     private ArrayList<String> menuList;
     private ArrayList<Integer> counterList;
     private DrawerLayout drawer;
-    private ListView listView;
     private ShowLoader showLoader;
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
+    private GoogleApiClient client;
     private DrawerLayout.DrawerListener mDrawerListener = new DrawerLayout.DrawerListener() {
         @Override
         public void onDrawerStateChanged(int status) {
@@ -102,6 +114,9 @@ public class MainActivity_new extends AppCompatActivity
         @Override
         public void onDrawerOpened(View view) {
             invalidateOptionsMenu();
+            if (Preferences.contains(Constants.CHANGE_IN_PHOTO))
+                if (Preferences.get(Constants.CHANGE_IN_PHOTO).equalsIgnoreCase("1"))
+                    setHeader();
         }
 
         @Override
@@ -134,15 +149,15 @@ public class MainActivity_new extends AppCompatActivity
         searchBox = (EditText) toolbar.findViewById(R.id.app_bar_main_search);
         searchBox.setVisibility(View.GONE);
 
-        createPost = (ImageView) toolbar.findViewById(R.id.app_bar_main_add_post);
+        createPost = (ImageView) toolbar.findViewById(R.id.app_bar_main_search_button);
         createPost.setOnClickListener(this);
 
         nameText = (TextView) findViewById(R.id.nav_header_name);
         skillText = (TextView) findViewById(R.id.nav_header_skill);
         profilePhoto = (ImageView) findViewById(R.id.nav_header_photo);
-
-        headerLayout = (RelativeLayout) findViewById(R.id.nav_header_main_layout);
-        headerLayout.setOnClickListener(this);
+        profilePhoto.setOnClickListener(this);
+        backgroundPhoto = (ImageView) findViewById(R.id.nav_header_background_photo);
+        backgroundPhoto.setOnClickListener(this);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout = (RelativeLayout) findViewById(R.id.drawer_layout_relative);
@@ -156,20 +171,42 @@ public class MainActivity_new extends AppCompatActivity
         replaceFragment(new WallFeedFragment());
         setTitle(getApplicationContext().getResources().getString(R.string.app_name));
         setUpDrawer();
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                // checking for type intent filter
+                if (intent.getAction().equals(Config.REGISTRATION_COMPLETE)) {
+                    // gcm successfully registered
+                    // now subscribe to `global` topic to receive app wide notifications
+                    FirebaseMessaging.getInstance().subscribeToTopic(Config.TOPIC_GLOBAL);
+
+                    displayFirebaseRegId();
+
+                } else if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
+                    // new push notification is received
+
+                    String message = intent.getStringExtra("message");
+
+                    Toast.makeText(getApplicationContext(), "Push notification: " + message, Toast.LENGTH_LONG).show();
+                }
+            }
+        };
+
     }
 
-    private void toggleSearch() {
-        if (!isOpen) {
-            searchBox.setText("");
-            isOpen = true;
-            searchBox.setVisibility(View.VISIBLE);
-            titleText.setVisibility(View.GONE);
-            createPost.setImageResource(R.drawable.ic_cancel);
-        } else {
-            closeSearch();
-        }
-    }
-
+    /* private void toggleSearch() {
+         if (!isOpen) {
+             searchBox.setText("");
+             isOpen = true;
+             searchBox.setVisibility(View.VISIBLE);
+             titleText.setVisibility(View.GONE);
+             createPost.setImageResource(R.drawable.ic_cancel);
+         } else {
+             closeSearch();
+         }
+     }
+ */
     public void closeSearch() {
         isOpen = false;
         searchBox.setText("");
@@ -198,10 +235,14 @@ public class MainActivity_new extends AppCompatActivity
         logoutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(logoutIntent);
         finish();
+        Preferences.clear();
         Preferences.save(Constants.LOGIN, "0");
     }
 
     public void replaceFragment(Fragment fragment) {
+        if (fragment == null) {
+            return;
+        }
         FragmentManager fm = getFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
@@ -236,17 +277,20 @@ public class MainActivity_new extends AppCompatActivity
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.app_bar_main_add_post:
-                toggleSearch();
-                if (isOpen) {
-                    showSoftKeyboard(searchBox);
+            case R.id.app_bar_main_search_button:
+                if (!isOpen) {
+                    isOpen = true;
+                    searchBox.setVisibility(View.VISIBLE);
+                    titleText.setVisibility(View.GONE);
                 } else {
-                    searchBox.setText("");
+                    SearchUser.search(searchBox.getText().toString().trim());
                     hideKeyboard();
                 }
                 break;
-            case R.id.nav_header_main_layout:
-                hideKeyboard();
+            case R.id.nav_header_background_photo:
+                break;
+            case R.id.nav_header_photo:
+                drawer.closeDrawer(GravityCompat.START);
                 getFragment(1);
                 break;
         }
@@ -284,10 +328,40 @@ public class MainActivity_new extends AppCompatActivity
                 fragment = new PreferencesFragment();
                 break;
             case 6:
-                new LoginOut().execute();
+                shareApplication();
+                break;
+            case 7:
+                if (CheckInternet.check()) {
+                    new Logout().execute();
+                } else {
+                    ShowSnack.noInternet(drawerLayout);
+                }
                 break;
         }
-        return fragment;
+        if (position != 6 && position != 7) {
+            return fragment;
+        } else {
+            return null;
+        }
+    }
+
+    private void shareApplication() {
+        try {
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("text/plain");
+            i.putExtra(Intent.EXTRA_SUBJECT, "Are you artist? Grab this opportunity!");
+            String sAux = "\nLet me recommend you this application for all type of artist\n\n";
+            sAux = sAux + "https://play.google.com/store/apps/details?id=com.dataappsinfo.viralfame\n\n";
+            i.putExtra(Intent.EXTRA_TEXT, sAux);
+            startActivity(Intent.createChooser(i, "Choose one"));
+        } catch (Exception e) {
+        }
+    }
+
+    @Override
+    public void onNetworkConnectionChanged(boolean isConnected) {
+        if (!isConnected)
+            ShowToast.noNetwork(getApplicationContext());
     }
 
     private void setUpDrawer() {
@@ -316,18 +390,21 @@ public class MainActivity_new extends AppCompatActivity
         menuList.add(getApplicationContext().getResources().getString(R.string.messages));
         menuList.add(getApplicationContext().getResources().getString(R.string.my_people));
         menuList.add(getApplicationContext().getResources().getString(R.string.preferences));
+        menuList.add(getApplicationContext().getResources().getString(R.string.share));
         menuList.add(getApplicationContext().getResources().getString(R.string.logout));
 
         int[] iconSet = {
-                R.drawable.ic_home,
+                R.drawable.ic_home_d,
                 R.drawable.ic_portfolio,
                 R.drawable.ic_opportunity,
                 R.drawable.ic_message,
-                R.drawable.ic_people,
+                R.drawable.ic_people_d,
                 R.drawable.ic_settings,
+                R.drawable.ic_share_n,
                 R.drawable.ic_logout
         };
 
+        counterList.add(0);
         counterList.add(0);
         counterList.add(0);
         counterList.add(0);
@@ -340,38 +417,19 @@ public class MainActivity_new extends AppCompatActivity
     }
 
     public void setHeader() {
+        Preferences.save(Constants.CHANGE_IN_PHOTO, "0");
         nameText.setText(Preferences.get(Constants.NAME));
         skillText.setText(Preferences.get(Constants.PRIMARY_SKILL));
-
-        if (Preferences.get(Constants.LOCAL_PATH) != null) {
-            if (new File(Preferences.get(Constants.LOCAL_PATH)).exists()) {
-                Picasso.with(getApplicationContext())
-                        .load(new File(Preferences.get(Constants.LOCAL_PATH)))
-                        .transform(new CircleTransform())
-                        .memoryPolicy(MemoryPolicy.NO_STORE)
-                        .placeholder(R.drawable.ic_avtar)
-                        .error(R.drawable.ic_avtar)
-                        .into(profilePhoto);
-                Bitmap myBitmap = BitmapFactory.decodeFile(Preferences.get(Constants.LOCAL_PATH));
-                Bitmap blurredBitmap = BlurBuilder.blur(MainActivity_new.this, myBitmap);
-                Drawable drawable = new BitmapDrawable(getResources(), blurredBitmap);
-                headerLayout.setBackgroundDrawable(drawable);
-            } else {
-                if (Preferences.contains(Constants.PROFILE_PIC)) {
-                    try {
-                        ImageDownloader.downloadImage(Urls.DOMAIN + Preferences.get(Constants.PROFILE_PIC),
-                                FileCheck.getFileName(Preferences.get(Constants.PROFILE_PIC)), true, getApplicationContext(), 1);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                profilePhoto.setImageResource(R.drawable.ic_avtar);
-                Bitmap myBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_avtar_square);
-                Bitmap blurredBitmap = BlurBuilder.blur(MainActivity_new.this, myBitmap);
-                Drawable drawable = new BitmapDrawable(getResources(), blurredBitmap);
-                headerLayout.setBackgroundDrawable(drawable);
-            }
+        if (Preferences.get(Constants.LOCAL_PATH) != null &&
+                new File(Preferences.get(Constants.LOCAL_PATH)).exists()) {
+            Picasso.with(getApplicationContext())
+                    .load(new File(Preferences.get(Constants.LOCAL_PATH)))
+                    .transform(new CircleTransform())
+                    .memoryPolicy(MemoryPolicy.NO_STORE)
+                    .placeholder(R.drawable.ic_avatar)
+                    .error(R.drawable.ic_avatar)
+                    .into(profilePhoto);
+            setBackground(true);
         } else {
 
             if (Preferences.contains(Constants.PROFILE_PIC)) {
@@ -382,19 +440,63 @@ public class MainActivity_new extends AppCompatActivity
                     e.printStackTrace();
                 }
             }
-
-            profilePhoto.setImageResource(R.drawable.ic_avtar);
-            Bitmap myBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_avtar_square);
-            Bitmap blurredBitmap = BlurBuilder.blur(MainActivity_new.this, myBitmap);
-            Drawable drawable = new BitmapDrawable(getResources(), blurredBitmap);
-            headerLayout.setBackgroundDrawable(drawable);
+            setBackground(false);
         }
     }
 
-    public void showSoftKeyboard(View view) {
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        view.requestFocus();
-        inputMethodManager.showSoftInput(view, 0);
+    private void setBackground(boolean exists) {
+        backgroundPhoto.invalidate();
+        backgroundPhoto.setImageDrawable(null);
+        if (exists) {
+            GlideDrawableImageViewTarget ivTarget = new GlideDrawableImageViewTarget(backgroundPhoto);
+            Glide.with(this)
+                    .load(new File(Preferences.get(Constants.LOCAL_PATH)))
+                    .bitmapTransform(new BlurTransformation(getApplicationContext()))
+                    .crossFade()
+                    .placeholder(R.drawable.ic_avatar)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .into(ivTarget);
+        } else {
+            Glide.with(this).load(R.drawable.ic_avatar)
+                    .bitmapTransform(new BlurTransformation(getApplicationContext()))
+                    .placeholder(R.drawable.ic_avatar)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .into(backgroundPhoto);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        displayFirebaseRegId();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // register GCM registration complete receiver
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(Config.REGISTRATION_COMPLETE));
+
+        // register new push message receiver
+        // by doing this, the activity will be notified each time a new message arrives
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(Config.PUSH_NOTIFICATION));
+
+        // clear the notification area when the app is opened
+        NotificationUtils.clearNotifications(getApplicationContext());
+
+        ViralFame.getInstance().setConnectivityListener(this);
+        if (!CheckInternet.check())
+            ShowToast.noNetwork(getApplicationContext());
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        super.onPause();
     }
 
     private void hideKeyboard() {
@@ -405,7 +507,16 @@ public class MainActivity_new extends AppCompatActivity
         }
     }
 
-    private class LoginOut extends AsyncTask<Void, Void, Integer> {
+    private void displayFirebaseRegId() {
+        Preferences.initialize(getApplicationContext());
+        String regId = Preferences.get("regId");
+        Log.e(TAG, "Firebase reg id: " + regId);
+        if (regId == null) {
+            MyFirebaseInstanceIDService.getToken();
+        }
+    }
+
+    private class Logout extends AsyncTask<Void, Void, Integer> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -443,7 +554,6 @@ public class MainActivity_new extends AppCompatActivity
                     ShowToast.networkProblemToast(getApplicationContext());
                     break;
                 case 1:
-                    Make_.makeDirectories();
                     ShowToast.toast(getApplicationContext(), Warnings.SUCCESSFUL);
                     logout();
                     break;

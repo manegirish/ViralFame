@@ -53,22 +53,20 @@ import okhttp3.RequestBody;
 public class PortfolioMainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = PortfolioMainActivity.class.getSimpleName();
-
-    private Toolbar toolbar;
-    private ImageView imageView;
+    protected static PortfolioMainActivity portfolioMainActivity;
     ImageView backButton, profilePhoto;
     TextView nameText, skillText, aboutTag, followerCountText, followingCountText;
     TextView aboutText;
     RelativeLayout profilePicLayout;
     LinearLayout followerButton, followingButton;
+    private Toolbar toolbar;
+    private ImageView imageView;
     private HashMap<String, String> profileMap;
-
     private CollapsingToolbarLayout collapsingToolbar;
     private TabPagerAdapter tabPagerAdapter;
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
     private ShowLoader showLoader;
-    protected static PortfolioMainActivity portfolioMainActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,7 +153,7 @@ public class PortfolioMainActivity extends AppCompatActivity implements View.OnC
     }
 
     private void setImage() {
-        Bitmap myBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_avtar_square);
+        Bitmap myBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_avatar_square);
         if (new File(Preferences.get(Constants.LOCAL_PATH)).exists()) {
             myBitmap = BitmapFactory.decodeFile(Preferences.get(Constants.LOCAL_PATH));
         }
@@ -166,8 +164,8 @@ public class PortfolioMainActivity extends AppCompatActivity implements View.OnC
                 .load(new File(Preferences.get(Constants.LOCAL_PATH)))
                 .transform(new CircleTransformMain())
                 .memoryPolicy(MemoryPolicy.NO_CACHE)
-                .placeholder(R.drawable.ic_avtar)
-                .error(R.drawable.ic_avtar)
+                .placeholder(R.drawable.ic_avatar)
+                .error(R.drawable.ic_avatar)
                 .into(profilePhoto);
         nameText.setText(Preferences.get(Constants.NAME));
         skillText.setText(Preferences.get(Constants.PRIMARY_SKILL));
@@ -204,6 +202,77 @@ public class PortfolioMainActivity extends AppCompatActivity implements View.OnC
 
     private void toggleTag() {
         openDialog(aboutText.getText().toString());
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        new GetPortfolio().execute();
+        setImage();
+    }
+
+    public void changeDp() {
+/*
+        profilePhoto.invalidate();
+        imageView.invalidate();
+        profilePhoto.setImageDrawable(null);
+        imageView.setBackgroundDrawable(null);*/
+
+        Bitmap myBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_avatar_square);
+        if (new File(Preferences.get(Constants.LOCAL_PATH)).exists()) {
+            myBitmap = BitmapFactory.decodeFile(Preferences.get(Constants.LOCAL_PATH));
+        }
+        Bitmap blurredBitmap = BlurBuilder.blur(PortfolioMainActivity.this, myBitmap);
+        imageView.setBackgroundDrawable(new BitmapDrawable(getResources(), blurredBitmap));
+
+        Picasso.with(getApplicationContext())
+                .load(new File(Preferences.get(Constants.LOCAL_PATH)))
+                .transform(new CircleTransformMain())
+                .memoryPolicy(MemoryPolicy.NO_CACHE)
+                .placeholder(R.drawable.ic_avatar)
+                .error(R.drawable.ic_avatar)
+                .into(profilePhoto);
+
+    }
+
+    private void openFragment(DialogFragment openFragment) {
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+        android.app.Fragment fragment = fragmentManager.findFragmentByTag(Fragment_.FOLLOWERS);
+        if (fragment != null) {
+            fragmentManager.beginTransaction().remove(fragment).commit();
+        }
+        openFragment.show(fragmentManager, Fragment_.FOLLOWERS);
+    }
+
+    private void openDialog(String about_me) {
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+        android.app.Fragment fragment = fragmentManager.findFragmentByTag(Constants.ABOUT_ME);
+        if (fragment != null) {
+            fragmentManager.beginTransaction().remove(fragment).commit();
+        }
+        AboutMeFragment detailsFragment = new AboutMeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.ABOUT_ME, about_me);
+        detailsFragment.setArguments(bundle);
+        detailsFragment.show(fragmentManager, Constants.ABOUT_ME);
+    }
+
+    public void showSoftKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        view.requestFocus();
+        inputMethodManager.showSoftInput(view, 0);
+    }
+
+    private void hideKeyboard() {
+        View view = getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    protected void setAboutMe(String about) {
+        aboutText.setText(about);
     }
 
     private class TabPagerAdapter extends FragmentStatePagerAdapter {
@@ -243,37 +312,6 @@ public class PortfolioMainActivity extends AppCompatActivity implements View.OnC
                     return "Images";
             }
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        new GetPortfolio().execute();
-        setImage();
-    }
-
-    public void changeDp() {
-/*
-        profilePhoto.invalidate();
-        imageView.invalidate();
-        profilePhoto.setImageDrawable(null);
-        imageView.setBackgroundDrawable(null);*/
-
-        Bitmap myBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_avtar_square);
-        if (new File(Preferences.get(Constants.LOCAL_PATH)).exists()) {
-            myBitmap = BitmapFactory.decodeFile(Preferences.get(Constants.LOCAL_PATH));
-        }
-        Bitmap blurredBitmap = BlurBuilder.blur(PortfolioMainActivity.this, myBitmap);
-        imageView.setBackgroundDrawable(new BitmapDrawable(getResources(), blurredBitmap));
-
-        Picasso.with(getApplicationContext())
-                .load(new File(Preferences.get(Constants.LOCAL_PATH)))
-                .transform(new CircleTransformMain())
-                .memoryPolicy(MemoryPolicy.NO_CACHE)
-                .placeholder(R.drawable.ic_avtar)
-                .error(R.drawable.ic_avtar)
-                .into(profilePhoto);
-
     }
 
     private class GetPortfolio extends AsyncTask<Void, Void, Integer> {
@@ -352,45 +390,5 @@ public class PortfolioMainActivity extends AppCompatActivity implements View.OnC
             followerCountText.setText(profileMap.get(Constants.FOLLOWER_COUNT));
             followingCountText.setText(profileMap.get(Constants.FOLLOWING_COUNT));
         }
-    }
-
-    private void openFragment(DialogFragment openFragment) {
-        android.app.FragmentManager fragmentManager = getFragmentManager();
-        android.app.Fragment fragment = fragmentManager.findFragmentByTag(Fragment_.FOLLOWERS);
-        if (fragment != null) {
-            fragmentManager.beginTransaction().remove(fragment).commit();
-        }
-        openFragment.show(fragmentManager, Fragment_.FOLLOWERS);
-    }
-
-    private void openDialog(String about_me) {
-        android.app.FragmentManager fragmentManager = getFragmentManager();
-        android.app.Fragment fragment = fragmentManager.findFragmentByTag(Constants.ABOUT_ME);
-        if (fragment != null) {
-            fragmentManager.beginTransaction().remove(fragment).commit();
-        }
-        AboutMeFragment detailsFragment = new AboutMeFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(Constants.ABOUT_ME, about_me);
-        detailsFragment.setArguments(bundle);
-        detailsFragment.show(fragmentManager, Constants.ABOUT_ME);
-    }
-
-    public void showSoftKeyboard(View view) {
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        view.requestFocus();
-        inputMethodManager.showSoftInput(view, 0);
-    }
-
-    private void hideKeyboard() {
-        View view = getCurrentFocus();
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
-
-    protected void setAboutMe(String about) {
-        aboutText.setText(about);
     }
 }

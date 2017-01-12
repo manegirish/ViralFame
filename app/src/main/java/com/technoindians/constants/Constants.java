@@ -11,6 +11,7 @@ package com.technoindians.constants;
 public class Constants {
 
     public static final String FIRST_NAME = "fname";
+    public static final String CHANGE_IN_PHOTO = "photo_changed";
     public static final String LAST_NAME = "lname";
     public static final String EMAIL = "email";
     public static final String PASSWORD = "password";
@@ -25,11 +26,12 @@ public class Constants {
     public static final String SKILL = "skill";
     public static final String TIMEZONE = "tz";
     public static final String USER_ID = "user_id";
+    public static final String FRIEND_ID = "friend_id";
     public static final String USER_TYPE = "user_type";
     public static final String LOGIN = "login";
     public static final String ACTION = "action";
     public static final String TITLE = "title";
-    public static final String COMPANY = "company";
+    public static final String PUSH_VAL = "push_val";
     public static final String DESCRIPTION = "description";
     public static final String ID = "id";
     public static final String _ID = "_id";
@@ -57,7 +59,8 @@ public class Constants {
     public static final String COMMENT = "comment";
     public static final String MEDIA_DURATION = "media_duration";
     public static final String MEDIA_SIZE = "media_size";
-    public static final String PORTFOLIO = "portfolio";
+    public static final String KEYWORD = "keyword";
+    public static final String FACEBOOK = "facebook";
     public static final String FOLLOW_ID = "follow_id";
     public static final String LOCAL_PATH = "local_path";
     public static final String PATH = "path";

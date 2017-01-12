@@ -16,7 +16,7 @@
             android:id="@+id/users_list_item_icon"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:src="@drawable/ic_avtar" />
+            android:src="@drawable/ic_avatar" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -49,13 +49,13 @@
         android:id="@+id/users_list_item_warning"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:textColor="@color/black_45"
-        android:gravity="center"
         android:layout_marginTop="10dp"
+        android:clickable="false"
+        android:gravity="center"
         android:padding="25dp"
         android:text="@string/app_name"
-        android:clickable="false"
+        android:textColor="@color/black_45"
+        android:textSize="14sp"
+        android:textStyle="bold"
         android:visibility="gone"/>
 </LinearLayout>

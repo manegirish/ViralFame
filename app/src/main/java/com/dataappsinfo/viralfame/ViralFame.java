@@ -22,6 +22,7 @@ import com.android.volley.toolbox.Volley;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.technoindians.library.BitmapCache;
+import com.technoindians.network.ConnectivityReceiver;
 
 /**
  * @author
@@ -33,15 +34,19 @@ import com.technoindians.library.BitmapCache;
 
 public class ViralFame extends Application {
     public static final String TAG = ViralFame.class.getSimpleName();
+    private static ViralFame mInstance;
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
-    private static ViralFame mInstance;
 
-/*   @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
+    public static synchronized ViralFame getInstance() {
+        return mInstance;
+    }
 
-    }*/
+    /*   @Override
+        protected void attachBaseContext(Context base) {
+            super.attachBaseContext(base);
+
+        }*/
     @Override
     public void onCreate() {
         super.onCreate();
@@ -55,9 +60,6 @@ public class ViralFame extends Application {
         super.attachBaseContext(base);
 
         MultiDex.install(this);
-    }
-    public static synchronized ViralFame getInstance() {
-        return mInstance;
     }
 
     public RequestQueue getRequestQueue() {
@@ -75,6 +77,10 @@ public class ViralFame extends Application {
                     new BitmapCache());
         }
         return this.mImageLoader;
+    }
+
+    public void setConnectivityListener(ConnectivityReceiver.ConnectivityReceiverListener listener) {
+        ConnectivityReceiver.connectivityReceiverListener = listener;
     }
 
     public <T> void addToRequestQueue(Request<T> req, String tag) {

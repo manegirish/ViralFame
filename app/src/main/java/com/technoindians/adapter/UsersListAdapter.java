@@ -87,8 +87,8 @@ public class UsersListAdapter extends ArrayAdapter<Friends_> {
         Picasso.with(activity.getApplicationContext())
                 .load(Urls.DOMAIN + friends_.getImages())
                 .transform(new CircleTransformMain())
-                .placeholder(R.drawable.ic_avtar)
-                .error(R.drawable.ic_avtar)
+                .placeholder(R.drawable.ic_avatar)
+                .error(R.drawable.ic_avatar)
                 .into(holder.icon);
 
         return view;

@@ -13,6 +13,7 @@ public class Warnings {
     public static final String SLOW_NETWORK_WARNING = "Slow Internet Connection";
     public static final String INTERNAL_ERROR_WARNING = "Internal Error Occurred";
     public static final String NETWORK_ERROR_WARNING = "Network Problem Occurred";
+    public static final String NO_INTERNET = "No Internet connection available";
     public static final String SUCCESSFUL = "Successful";
     public static final String ACTION_FAILED = "Action Failed";
     public static final String ERROR_IN_DELETE = "Error Occurred in Deleting";

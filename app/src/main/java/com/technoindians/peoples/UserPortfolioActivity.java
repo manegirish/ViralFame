@@ -65,25 +65,33 @@ import okhttp3.RequestBody;
 public class UserPortfolioActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG =  UserPortfolioActivity.class.getSimpleName();
-
-    private Toolbar toolbar;
-    private ImageView imageView;
-    private String friend_id, friend_name, friend_photo, friend_skill;
-    private HashMap<String, String> profileMap;
-    private String is_follow = "3";
+    public static UserPortfolioActivity userPortfolioActivity;
     ImageView backButton, profilePhoto;
     TextView nameText, followButton, skillText, aboutTag, followerCountText, followingCountText;
     TextView aboutText;
     RelativeLayout profilePicLayout,editLayout;
     LinearLayout followerButton, followingButton;
+    ImageLoader.ImageListener imageListener = new ImageLoader.ImageListener() {
+        @Override
+        public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+            response.getBitmap();
+        }
 
+        @Override
+        public void onErrorResponse(VolleyError error) {
+
+        }
+    };
+    private Toolbar toolbar;
+    private ImageView imageView;
+    private String friend_id, friend_name, friend_photo, friend_skill;
+    private HashMap<String, String> profileMap;
+    private String is_follow = "3";
     private CollapsingToolbarLayout collapsingToolbar;
     private TabPagerAdapter tabPagerAdapter;
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
     private ShowLoader showLoader;
-    public static UserPortfolioActivity userPortfolioActivity;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,7 +196,6 @@ public class UserPortfolioActivity extends AppCompatActivity implements View.OnC
         overridePendingTransition(R.anim.animation_left_to_right, R.anim.animation_right_to_left);
     }
 
-
     private void setToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
@@ -196,29 +203,8 @@ public class UserPortfolioActivity extends AppCompatActivity implements View.OnC
         }
     }
 
-    private class DownPhoto extends AsyncTask<String, Void, Void> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-                   }
-        @Override
-        protected Void doInBackground(String... params) {
-            String file_name = FileCheck.getFileName(params[0]);
-            try {
-                ImageDownloader.downloadImage(Urls.DOMAIN + params[0], file_name, false, getApplicationContext(), 2);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-        }
-    }
-
     public void updateImage(){
-        Bitmap myBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_avtar_square);
+        Bitmap myBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_avatar_square);
         String local_image = DirectoryList.PROFILE + FileCheck.getFileName(friend_photo);
         if (new File(local_image).exists()) {
             myBitmap = BitmapFactory.decodeFile(local_image);
@@ -230,8 +216,8 @@ public class UserPortfolioActivity extends AppCompatActivity implements View.OnC
                 .load(new File(local_image))
                 .transform(new CircleTransformMain())
                 .memoryPolicy(MemoryPolicy.NO_CACHE)
-                .placeholder(R.drawable.ic_avtar)
-                .error(R.drawable.ic_avtar)
+                .placeholder(R.drawable.ic_avatar)
+                .error(R.drawable.ic_avatar)
                 .into(profilePhoto);
 
         profilePhoto.invalidate();
@@ -251,17 +237,6 @@ public class UserPortfolioActivity extends AppCompatActivity implements View.OnC
         new GetPortfolio().execute();
     }
 
-    ImageLoader.ImageListener imageListener = new ImageLoader.ImageListener() {
-        @Override
-        public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-            response.getBitmap();
-        }
-
-        @Override
-        public void onErrorResponse(VolleyError error) {
-
-        }
-    };
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -286,6 +261,45 @@ public class UserPortfolioActivity extends AppCompatActivity implements View.OnC
                 toggleFollow();*/
                 new Operations().execute();
                 break;
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        setData();
+    }
+
+    private void openFragment(DialogFragment openFragment) {
+        android.app.FragmentManager fragmentManager = getFragmentManager();
+        android.app.Fragment fragment = fragmentManager.findFragmentByTag(Fragment_.FOLLOWERS);
+        if (fragment != null) {
+            fragmentManager.beginTransaction().remove(fragment).commit();
+        }
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.USER_ID, friend_id);
+        openFragment.setArguments(bundle);
+        openFragment.show(fragmentManager, Fragment_.FOLLOWERS);
+    }
+
+    private class DownPhoto extends AsyncTask<String, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+                   }
+        @Override
+        protected Void doInBackground(String... params) {
+            String file_name = FileCheck.getFileName(params[0]);
+            try {
+                ImageDownloader.downloadImage(Urls.DOMAIN + params[0], file_name, false, getApplicationContext(), 2);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
         }
     }
 
@@ -326,12 +340,6 @@ public class UserPortfolioActivity extends AppCompatActivity implements View.OnC
                     return "Images";
             }
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        setData();
     }
 
     private class GetPortfolio extends AsyncTask<Void, Void, Integer> {
@@ -434,17 +442,5 @@ public class UserPortfolioActivity extends AppCompatActivity implements View.OnC
                     break;
             }
         }
-    }
-
-    private void openFragment(DialogFragment openFragment) {
-        android.app.FragmentManager fragmentManager = getFragmentManager();
-        android.app.Fragment fragment = fragmentManager.findFragmentByTag(Fragment_.FOLLOWERS);
-        if (fragment != null) {
-            fragmentManager.beginTransaction().remove(fragment).commit();
-        }
-        Bundle bundle = new Bundle();
-        bundle.putString(Constants.USER_ID, friend_id);
-        openFragment.setArguments(bundle);
-        openFragment.show(fragmentManager, Fragment_.FOLLOWERS);
     }
 }

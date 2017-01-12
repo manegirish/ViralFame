@@ -10,8 +10,7 @@ package com.technoindians.network;
 public class Urls {
 
     public static final String DOMAIN = "http://dataappsinfo.com/viral/";
-    ///public static final String DOMAIN = "http://technoindians.com/viral/";
-//http://technoindians.com/
+
     public static final String SIGN_UP_URL = "signup.php";
     public static final String LOGIN_URL = "login.php";
     public static final String LOGOUT_URL = "logout.php";
@@ -22,4 +21,6 @@ public class Urls {
     public static final String JOB_OPERATIONS = "job_operations.php";
     public static final String PORTFOLIO_OPERATIONS = "portfolio_oprations.php";
     public static final String GET_SKILLS = "get_skills.php";
+    public static final String SETTING = "setting.php";
+    public static final String SEARCH_RESULT = "search_results.php";
 }

@@ -10,6 +10,7 @@
 
 package com.dataappsinfo.viralfame;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +28,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -49,11 +51,12 @@ import java.security.NoSuchAlgorithmException;
 
 public class SplashActivity extends RuntimePermissionsActivity {
 
-    private String TAG = SplashActivity.class.getSimpleName();
+    private static final int REQUEST_PERMISSIONS = 20;
     int login = 0;
     Animation startAnimation;
     ImageView icon;
-    private static final int REQUEST_PERMISSIONS = 20;
+    TextView appName;
+    private String TAG = SplashActivity.class.getSimpleName();
     private BroadcastReceiver mRegistrationBroadcastReceiver;
 
     @Override
@@ -72,6 +75,7 @@ public class SplashActivity extends RuntimePermissionsActivity {
             login = Integer.parseInt(Preferences.get(Constants.LOGIN));
         }
 
+        appName = (TextView)findViewById(R.id.splash_app_name);
         icon = (ImageView) findViewById(R.id.ic_logo);
         startAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade_in);
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
@@ -97,18 +101,17 @@ public class SplashActivity extends RuntimePermissionsActivity {
         };
 
         try {
-            PackageInfo info = getPackageManager().getPackageInfo(
+            @SuppressLint
+                    ("PackageManagerGetSignatures") PackageInfo info = getPackageManager().getPackageInfo(
                     "com.dataappsinfo.viralfame",
                     PackageManager.GET_SIGNATURES);
             for (Signature signature : info.signatures) {
                 MessageDigest md = MessageDigest.getInstance("SHA");
                 md.update(signature.toByteArray());
-             //   Log.d("YourKeyHash :", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+                //   Log.d("YourKeyHash :", Base64.encodeToString(md.digest(), Base64.DEFAULT));
                 Log.e(TAG,"YourKeyHash: "+Base64.encodeToString(md.digest(), Base64.DEFAULT));
             }
-        } catch (PackageManager.NameNotFoundException e) {
-
-        } catch (NoSuchAlgorithmException e) {
+        } catch (PackageManager.NameNotFoundException | NoSuchAlgorithmException ignored) {
 
         }
 
@@ -146,10 +149,10 @@ public class SplashActivity extends RuntimePermissionsActivity {
 
         Log.e(TAG, "Firebase reg id: " + regId);
 
-    //    if (!TextUtils.isEmpty(regId))
-         //   txtRegId.setText("Firebase Reg Id: " + regId);
-     //   else
-         //   txtRegId.setText("Firebase Reg Id is not received yet!");
+        //    if (!TextUtils.isEmpty(regId))
+        //   txtRegId.setText("Firebase Reg Id: " + regId);
+        //   else
+        //   txtRegId.setText("Firebase Reg Id is not received yet!");
     }
 
     @Override

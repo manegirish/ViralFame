@@ -44,4 +44,6 @@ public class Actions_ {
     public static final String ACCEPT_APPLICATION = "accept_application";
     public static final String REJECT_APPLICATION = "reject_application";
 
+    public static final String PUSH_ON_OFF = "push_on_off";
+    public static final String FORGOT_PASSWORD = "forgot_password";
 }

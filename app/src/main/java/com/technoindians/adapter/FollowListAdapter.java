@@ -52,6 +52,29 @@ public class FollowListAdapter extends ArrayAdapter<Follow> {
     private ArrayList<Follow> likeList = null;
     private ArrayList<Follow> list;
     private Activity activity;
+    View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int position = (Integer) v.getTag();
+            if (v.getId() == R.id.liked_list_item_follow) {
+                new Operations(likeList.get(position).getUserId(),
+                        position).execute();
+            } else {
+                Bundle nextAnimation = ActivityOptions.makeCustomAnimation
+                        (activity.getApplicationContext(), R.anim.animation_one, R.anim.animation_two).toBundle();
+
+                Intent profileIntent = new Intent(activity.getApplicationContext(), UserPortfolioActivity.class);
+                profileIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                Log.e(TAG, "user_id: " + likeList.get(position).getUserId());
+                profileIntent.putExtra(Constants.USER_ID, likeList.get(position).getUserId());
+                profileIntent.putExtra(Constants.PROFILE_PIC, likeList.get(position).getPhoto());
+                profileIntent.putExtra(Constants.NAME, likeList.get(position).getName());
+                profileIntent.putExtra(Constants.SKILL, likeList.get(position).getSkill());
+                profileIntent.putExtra(Constants.IS_FOLLOW, likeList.get(position).getIsFollow());
+                activity.startActivity(profileIntent, nextAnimation);
+            }
+        }
+    };
 
     public FollowListAdapter(Activity activity, ArrayList<Follow> likeList) {
         super(activity, 0, likeList);
@@ -100,7 +123,7 @@ public class FollowListAdapter extends ArrayAdapter<Follow> {
         holder.icon.setTag(position);
 
         if (Integer.parseInt(follow.getIsFollow()) == 1) {
-            holder.follow.setText(activity.getApplicationContext().getResources().getString(R.string.un_follow));
+            holder.follow.setText(activity.getApplicationContext().getResources().getString(R.string.unfollow));
         } else {
             holder.follow.setText(activity.getApplicationContext().getResources().getString(R.string.follow));
         }
@@ -123,8 +146,8 @@ public class FollowListAdapter extends ArrayAdapter<Follow> {
         Picasso.with(activity.getApplicationContext())
                 .load(Urls.DOMAIN + follow.getPhoto())
                 .transform(new CircleTransformMain())
-                .placeholder(R.drawable.ic_avtar)
-                .error(R.drawable.ic_avtar)
+                .placeholder(R.drawable.ic_avatar)
+                .error(R.drawable.ic_avatar)
                 .into(holder.icon);
 
         holder.follow.setOnClickListener(onClickListener);
@@ -139,29 +162,25 @@ public class FollowListAdapter extends ArrayAdapter<Follow> {
         return likeList.get(position);
     }
 
-    View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            int position = (Integer) v.getTag();
-            if (v.getId() == R.id.liked_list_item_follow) {
-                new Operations(likeList.get(position).getUserId(),
-                        position).execute();
-            } else {
-                Bundle nextAnimation = ActivityOptions.makeCustomAnimation
-                        (activity.getApplicationContext(), R.anim.animation_one, R.anim.animation_two).toBundle();
-
-                Intent profileIntent = new Intent(activity.getApplicationContext(), UserPortfolioActivity.class);
-                profileIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                Log.e(TAG, "user_id: " + likeList.get(position).getUserId());
-                profileIntent.putExtra(Constants.USER_ID, likeList.get(position).getUserId());
-                profileIntent.putExtra(Constants.PROFILE_PIC, likeList.get(position).getPhoto());
-                profileIntent.putExtra(Constants.NAME, likeList.get(position).getName());
-                profileIntent.putExtra(Constants.SKILL, likeList.get(position).getSkill());
-                profileIntent.putExtra(Constants.IS_FOLLOW, likeList.get(position).getIsFollow());
-                activity.startActivity(profileIntent, nextAnimation);
+    public void filter(String charText) {
+        charText = charText.toLowerCase(Locale.getDefault());
+        likeList.clear();
+        if (charText.length() == 0) {
+            likeList.addAll(list);
+        } else {
+            for (Follow wp : list) {
+                if (wp.getName().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    likeList.add(wp);
+                }
             }
         }
-    };
+        if (likeList == null || likeList.size() <= 0) {
+            Follow follow = new Follow();
+            follow.setStatus(2);
+            likeList.add(follow);
+        }
+        notifyDataSetChanged();
+    }
 
     private class Operations extends AsyncTask<Void, Void, Integer> {
 
@@ -231,26 +250,6 @@ public class FollowListAdapter extends ArrayAdapter<Follow> {
                     break;
             }
         }
-    }
-
-    public void filter(String charText) {
-        charText = charText.toLowerCase(Locale.getDefault());
-        likeList.clear();
-        if (charText.length() == 0) {
-            likeList.addAll(list);
-        } else {
-            for (Follow wp : list) {
-                if (wp.getName().toLowerCase(Locale.getDefault()).contains(charText)) {
-                    likeList.add(wp);
-                }
-            }
-        }
-        if (likeList == null || likeList.size() <= 0) {
-            Follow follow = new Follow();
-            follow.setStatus(2);
-            likeList.add(follow);
-        }
-        notifyDataSetChanged();
     }
 
     private class ViewHolder {

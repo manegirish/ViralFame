@@ -19,7 +19,7 @@
             android:layout_height="50dp"
             android:layout_alignParentLeft="true"
             android:layout_margin="5dp"
-            android:src="@drawable/ic_avtar" />
+            android:src="@drawable/ic_avatar" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -83,13 +83,13 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
+            android:background="@color/white"
             android:gravity="start|center_vertical"
+            android:padding="7dp"
             android:text="@string/dummy_text"
             android:textColor="@android:color/black"
             android:textSize="14sp"
-            android:visibility="gone"
-            android:background="@color/white"
-            android:padding="7dp"/>
+            android:visibility="gone"/>
 
         <RelativeLayout
             android:id="@+id/wall_feed_item_image_layout"
@@ -123,37 +123,37 @@
             android:id="@+id/wall_feed_item_audio_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:background="@android:color/transparent"
+            android:orientation="vertical"
             android:visibility="gone">
 
             <technoindians.key.emoji.custom.EmojiTextView
                 android:id="@+id/wall_post_media_post_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="start|top"
-                android:padding="7dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
+                android:background="@color/white"
+                android:gravity="start|top"
+                android:padding="7dp"
                 android:text="@string/dummy_text"
                 android:textColor="@color/black_95"
                 android:textSize="14sp"
-                android:textStyle="normal"
-                android:background="@color/white"/>
+                android:textStyle="normal"/>
 
             <View
+                android:id="@+id/wall_feed_item_top_view"
                 android:layout_width="match_parent"
                 android:layout_height="0.1dp"
-                android:background="@color/grey_e6"
-                android:id="@+id/wall_feed_item_top_view"/>
+                android:background="@color/grey_e6"/>
 
             <LinearLayout
                 android:id="@+id/wall_post_media_audio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/transparent_grey_border_layout"
                 android:layout_marginLeft="2dp"
                 android:layout_marginRight="2dp"
+                android:background="@drawable/transparent_grey_border_layout"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -210,10 +210,10 @@
         </LinearLayout>
     </LinearLayout>
     <View
+        android:id="@+id/wall_feed_item_bottom_view"
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
-        android:background="@color/grey_e6"
-        android:id="@+id/wall_feed_item_bottom_view"/>
+        android:background="@color/grey_e6"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"

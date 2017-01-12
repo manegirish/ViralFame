@@ -28,7 +28,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="-10dp"
             android:layout_toRightOf="@+id/activity_toolbar_photo_back"
-            android:src="@drawable/ic_avtar" />
+            android:src="@drawable/ic_avatar" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -40,6 +40,7 @@
             android:paddingLeft="10dp">
 
             <TextView
+                android:id="@+id/activity_toolbar_photo_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"
@@ -47,19 +48,18 @@
                 android:text="@string/dummy_name"
                 android:textColor="@color/white"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                android:id="@+id/activity_toolbar_photo_name" />
+                android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/activity_toolbar_photo_skill"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="-1dp"
                 android:gravity="start"
                 android:singleLine="true"
                 android:text="@string/dummy_role"
                 android:textColor="@color/white"
-                android:textSize="12sp"
-                android:layout_marginTop="-1dp"
-                android:id="@+id/activity_toolbar_photo_skill" />
+                android:textSize="12sp" />
         </LinearLayout>
     </RelativeLayout>
 </android.support.v7.widget.Toolbar>

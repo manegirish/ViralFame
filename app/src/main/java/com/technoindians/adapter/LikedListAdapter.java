@@ -43,6 +43,17 @@ public class LikedListAdapter extends ArrayAdapter<Liked_> {
     private static final String TAG = LikedListAdapter.class.getSimpleName();
 
     private ArrayList<Liked_> likeList = null;
+    View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int position = (Integer) v.getTag();
+            switch (v.getId()) {
+                case R.id.liked_list_item_follow:
+                    new FollowUnfollow(likeList.get(position).getUserId(), position).execute();
+                    break;
+            }
+        }
+    };
     private ArrayList<Liked_> list;
     private Activity activity;
 
@@ -78,7 +89,7 @@ public class LikedListAdapter extends ArrayAdapter<Liked_> {
 
         holder.follow.setTag(position);
         if (Integer.parseInt(liked_.getIsFollow()) == 1) {
-            holder.follow.setText(activity.getApplicationContext().getResources().getString(R.string.un_follow));
+            holder.follow.setText(activity.getApplicationContext().getResources().getString(R.string.unfollow));
         } else {
             holder.follow.setText(activity.getApplicationContext().getResources().getString(R.string.follow));
         }
@@ -102,24 +113,35 @@ public class LikedListAdapter extends ArrayAdapter<Liked_> {
         Picasso.with(activity.getApplicationContext())
                 .load(Urls.DOMAIN + liked_.getProfile_pic())
                 .transform(new CircleTransformMain())
-                .placeholder(R.drawable.ic_avtar)
-                .error(R.drawable.ic_avtar)
+                .placeholder(R.drawable.ic_avatar)
+                .error(R.drawable.ic_avatar)
                 .into(holder.icon);
 
         return view;
     }
 
-    View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            int position = (Integer) v.getTag();
-            switch (v.getId()) {
-                case R.id.liked_list_item_follow:
-                    new FollowUnfollow(likeList.get(position).getUserId(), position).execute();
-                    break;
+    public void filter(String charText) {
+        charText = charText.toLowerCase(Locale.getDefault());
+        likeList.clear();
+        if (charText.length() == 0) {
+            likeList.addAll(list);
+        } else {
+            for (Liked_ wp : list) {
+                if (wp.getName().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    likeList.add(wp);
+                }
             }
         }
-    };
+        notifyDataSetChanged();
+    }
+
+    private void updateList(int position, int type) {
+        Liked_ liked_ = likeList.get(position);
+        likeList.remove(position);
+        liked_.setIsFollow("" + type);
+        likeList.add(position, liked_);
+        notifyDataSetChanged();
+    }
 
     private class FollowUnfollow extends AsyncTask<Void, Void, Integer> {
 
@@ -187,29 +209,6 @@ public class LikedListAdapter extends ArrayAdapter<Liked_> {
                     break;
             }
         }
-    }
-
-    public void filter(String charText) {
-        charText = charText.toLowerCase(Locale.getDefault());
-        likeList.clear();
-        if (charText.length() == 0) {
-            likeList.addAll(list);
-        } else {
-            for (Liked_ wp : list) {
-                if (wp.getName().toLowerCase(Locale.getDefault()).contains(charText)) {
-                    likeList.add(wp);
-                }
-            }
-        }
-        notifyDataSetChanged();
-    }
-
-    private void updateList(int position, int type) {
-        Liked_ liked_ = likeList.get(position);
-        likeList.remove(position);
-        liked_.setIsFollow("" + type);
-        likeList.add(position, liked_);
-        notifyDataSetChanged();
     }
 
     private class ViewHolder {

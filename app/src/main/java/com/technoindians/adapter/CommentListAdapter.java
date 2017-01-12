@@ -66,8 +66,8 @@ public class CommentListAdapter extends ArrayAdapter<Comment_> {
                 .resize(100, 100)
                 .onlyScaleDown()
                 .transform(new CircleTransformMain())
-                .placeholder(R.drawable.ic_avtar)
-                .error(R.drawable.ic_avtar)
+                .placeholder(R.drawable.ic_avatar)
+                .error(R.drawable.ic_avatar)
                 .into(holder.postImage);
         return view;
     }
