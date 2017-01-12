@@ -31,9 +31,11 @@ import com.github.curioustechizen.ago.RelativeTimeTextView;
 import com.technoindians.constants.Actions_;
 import com.technoindians.constants.Constants;
 import com.technoindians.constants.Warnings;
+import com.technoindians.network.CheckInternet;
 import com.technoindians.network.MakeCall;
 import com.technoindians.network.Urls;
 import com.technoindians.opportunities.Jobs_;
+import com.technoindians.pops.ShowSnack;
 import com.technoindians.pops.ShowToast;
 import com.technoindians.preferences.Preferences;
 
@@ -58,6 +60,28 @@ public class ReceivedJobListAdapter extends ArrayAdapter<Jobs_> {
     private ArrayList<Jobs_> jobList = null;
     private ArrayList<Jobs_> list;
     private Activity activity;
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int position = (Integer) v.getTag();
+            if (CheckInternet.check()) {
+                int apply_status = Integer.parseInt(jobList.get(position).getApply());
+                if (apply_status == 0) {
+                    new Operation(position, Actions_.APPLY_JOB).execute();
+                }
+                if (apply_status == 1) {
+                    confirmationDialog(position, 1,
+                            activity.getApplicationContext().getResources().getString(R.string.warning_job_apply_remove));
+                }
+
+                if (apply_status == 2) {
+
+                }
+            }else {
+                ShowSnack.noInternet(v);
+            }
+        }
+    };
 
     public ReceivedJobListAdapter(Activity activity, ArrayList<Jobs_> jobList) {
         super(activity, 0, jobList);
@@ -154,40 +178,6 @@ public class ReceivedJobListAdapter extends ArrayAdapter<Jobs_> {
         }
     }
 
-    View.OnClickListener onClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            int position = (Integer) v.getTag();
-            switch (v.getId()) {
-                case R.id.opportunity_list_item_menu:
-                    showStatusPopup(position, v);
-                    break;
-                case R.id.opportunity_list_apply:
-
-                    break;
-            }
-        }
-    };
-    View.OnClickListener onClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            int position = (Integer) v.getTag();
-            //ShowToast.toast(activity.getApplicationContext(), "position : " + position);
-            int apply_status = Integer.parseInt(jobList.get(position).getApply());
-            if (apply_status == 0) {
-                new Operation(position, Actions_.APPLY_JOB).execute();
-            }
-            if (apply_status == 1) {
-                confirmationDialog(position, 1,
-                        activity.getApplicationContext().getResources().getString(R.string.warning_job_apply_remove));
-            }
-
-            if (apply_status == 2) {
-
-            }
-        }
-    };
-
     private void confirmationDialog(final int position, final int type, final String titleText) {
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -226,6 +216,51 @@ public class ReceivedJobListAdapter extends ArrayAdapter<Jobs_> {
             }
         });
         dialog.show();
+    }
+
+    public void filterJobs(String charText) {
+        charText = charText.toLowerCase(Locale.getDefault());
+        jobList.clear();
+        if (charText.length() == 0) {
+            jobList.addAll(list);
+        } else {
+            for (Jobs_ wp : list) {
+                if (wp.getTitle().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    jobList.add(wp);
+                }
+            }
+        }
+        if (jobList == null || jobList.size() <= 0) {
+            Jobs_ jobs_ = new Jobs_();
+            jobs_.setStatus(2);
+            jobList.add(jobs_);
+        }
+        notifyDataSetChanged();
+    }
+
+    private void showStatusPopup(final int position, View view) {
+        PopupMenu popup = new PopupMenu(activity, view);
+        popup.getMenuInflater().inflate(R.menu.job_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.edit_job:
+                        return true;
+                    case R.id.remove_job:
+                        confirmationDialog(position, 2,
+                                activity.getApplicationContext().getResources().getString(R.string.warning_job_delete));
+                        break;
+                }
+                return true;
+            }
+        });
+        popup.show();
+    }
+
+    static class ViewHolder {
+        TextView titleText, nameText, skillText, descriptionText, companyText, applyText, warningText;
+        RelativeTimeTextView timeText;
+        LinearLayout mainLayout;
     }
 
     private class Operation extends AsyncTask<Void, Void, Integer> {
@@ -306,51 +341,5 @@ public class ReceivedJobListAdapter extends ArrayAdapter<Jobs_> {
             }
 
         }
-    }
-
-    public void filterJobs(String charText) {
-        charText = charText.toLowerCase(Locale.getDefault());
-        jobList.clear();
-        if (charText.length() == 0) {
-            jobList.addAll(list);
-        } else {
-            for (Jobs_ wp : list) {
-                if (wp.getTitle().toLowerCase(Locale.getDefault()).contains(charText)) {
-                    jobList.add(wp);
-                }
-            }
-        }
-        if (jobList == null || jobList.size() <= 0) {
-            Jobs_ jobs_ = new Jobs_();
-            jobs_.setStatus(2);
-            jobList.add(jobs_);
-        }
-        notifyDataSetChanged();
-    }
-
-    private void showStatusPopup(final int position, View view) {
-        PopupMenu popup = new PopupMenu(activity, view);
-        popup.getMenuInflater().inflate(R.menu.job_menu, popup.getMenu());
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.edit_job:
-                        return true;
-                    case R.id.remove_job:
-                        confirmationDialog(position, 2,
-                                activity.getApplicationContext().getResources().getString(R.string.warning_job_delete));
-                        break;
-                }
-                return true;
-            }
-        });
-        popup.show();
-    }
-
-
-    static class ViewHolder {
-        TextView titleText, nameText, skillText, descriptionText, companyText, applyText, warningText;
-        RelativeTimeTextView timeText;
-        LinearLayout mainLayout;
     }
 }

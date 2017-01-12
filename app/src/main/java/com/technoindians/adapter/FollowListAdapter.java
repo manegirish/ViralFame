@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +20,13 @@ import com.squareup.picasso.Picasso;
 import com.technoindians.constants.Actions_;
 import com.technoindians.constants.Constants;
 import com.technoindians.constants.Warnings;
+import com.technoindians.network.CheckInternet;
 import com.technoindians.network.JsonArrays_;
 import com.technoindians.network.MakeCall;
 import com.technoindians.network.Urls;
 import com.technoindians.peoples.Follow;
 import com.technoindians.peoples.UserPortfolioActivity;
+import com.technoindians.pops.ShowSnack;
 import com.technoindians.pops.ShowToast;
 import com.technoindians.preferences.Preferences;
 import com.technoindians.views.CircleTransformMain;
@@ -52,26 +53,29 @@ public class FollowListAdapter extends ArrayAdapter<Follow> {
     private ArrayList<Follow> likeList = null;
     private ArrayList<Follow> list;
     private Activity activity;
-    View.OnClickListener onClickListener = new View.OnClickListener() {
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             int position = (Integer) v.getTag();
-            if (v.getId() == R.id.liked_list_item_follow) {
-                new Operations(likeList.get(position).getUserId(),
-                        position).execute();
-            } else {
-                Bundle nextAnimation = ActivityOptions.makeCustomAnimation
-                        (activity.getApplicationContext(), R.anim.animation_one, R.anim.animation_two).toBundle();
+            if (CheckInternet.check()) {
+                if (v.getId() == R.id.liked_list_item_follow) {
+                    new Operations(likeList.get(position).getUserId(),
+                            position).execute();
+                } else {
+                    Bundle nextAnimation = ActivityOptions.makeCustomAnimation
+                            (activity.getApplicationContext(), R.anim.animation_one, R.anim.animation_two).toBundle();
 
-                Intent profileIntent = new Intent(activity.getApplicationContext(), UserPortfolioActivity.class);
-                profileIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                Log.e(TAG, "user_id: " + likeList.get(position).getUserId());
-                profileIntent.putExtra(Constants.USER_ID, likeList.get(position).getUserId());
-                profileIntent.putExtra(Constants.PROFILE_PIC, likeList.get(position).getPhoto());
-                profileIntent.putExtra(Constants.NAME, likeList.get(position).getName());
-                profileIntent.putExtra(Constants.SKILL, likeList.get(position).getSkill());
-                profileIntent.putExtra(Constants.IS_FOLLOW, likeList.get(position).getIsFollow());
-                activity.startActivity(profileIntent, nextAnimation);
+                    Intent profileIntent = new Intent(activity.getApplicationContext(), UserPortfolioActivity.class);
+                    profileIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    profileIntent.putExtra(Constants.USER_ID, likeList.get(position).getUserId());
+                    profileIntent.putExtra(Constants.PROFILE_PIC, likeList.get(position).getPhoto());
+                    profileIntent.putExtra(Constants.NAME, likeList.get(position).getName());
+                    profileIntent.putExtra(Constants.SKILL, likeList.get(position).getSkill());
+                    profileIntent.putExtra(Constants.IS_FOLLOW, likeList.get(position).getIsFollow());
+                    activity.startActivity(profileIntent, nextAnimation);
+                }
+            } else {
+                ShowSnack.noInternet(v);
             }
         }
     };
@@ -187,7 +191,7 @@ public class FollowListAdapter extends ArrayAdapter<Follow> {
         String follow_id;
         int position;
 
-        public Operations(String follow_id, int position) {
+        Operations(String follow_id, int position) {
             this.follow_id = follow_id;
             this.position = position;
         }

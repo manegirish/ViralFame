@@ -15,9 +15,11 @@ import com.dataappsinfo.viralfame.R;
 import com.squareup.picasso.Picasso;
 import com.technoindians.constants.Actions_;
 import com.technoindians.constants.Constants;
+import com.technoindians.network.CheckInternet;
 import com.technoindians.network.JsonArrays_;
 import com.technoindians.network.MakeCall;
 import com.technoindians.network.Urls;
+import com.technoindians.pops.ShowSnack;
 import com.technoindians.pops.ShowToast;
 import com.technoindians.preferences.Preferences;
 import com.technoindians.views.CircleTransformMain;
@@ -43,19 +45,24 @@ public class LikedListAdapter extends ArrayAdapter<Liked_> {
     private static final String TAG = LikedListAdapter.class.getSimpleName();
 
     private ArrayList<Liked_> likeList = null;
-    View.OnClickListener onClickListener = new View.OnClickListener() {
+    private ArrayList<Liked_> list;
+    private Activity activity;
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             int position = (Integer) v.getTag();
             switch (v.getId()) {
                 case R.id.liked_list_item_follow:
-                    new FollowUnfollow(likeList.get(position).getUserId(), position).execute();
+                    if (CheckInternet.check()) {
+                        new FollowUnfollow(likeList.get(position).getUserId(), position).execute();
+                    } else {
+                        ShowSnack.noInternet(v);
+                    }
+
                     break;
             }
         }
     };
-    private ArrayList<Liked_> list;
-    private Activity activity;
 
     public LikedListAdapter(Activity activity, ArrayList<Liked_> likeList) {
         super(activity, 0, likeList);
@@ -89,9 +96,9 @@ public class LikedListAdapter extends ArrayAdapter<Liked_> {
 
         holder.follow.setTag(position);
         if (Integer.parseInt(liked_.getIsFollow()) == 1) {
-            holder.follow.setText(activity.getApplicationContext().getResources().getString(R.string.unfollow));
+            holder.follow.setText("Unfollow");
         } else {
-            holder.follow.setText(activity.getApplicationContext().getResources().getString(R.string.follow));
+            holder.follow.setText("Follow");
         }
         if (Integer.parseInt(liked_.getUserType()) == 2) {
             holder.nameText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_verify_user, 0, 0, 0);

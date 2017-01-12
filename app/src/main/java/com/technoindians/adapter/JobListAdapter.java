@@ -15,8 +15,10 @@ import android.widget.TextView;
 import com.dataappsinfo.viralfame.R;
 import com.github.curioustechizen.ago.RelativeTimeTextView;
 import com.technoindians.constants.Warnings;
+import com.technoindians.network.CheckInternet;
 import com.technoindians.opportunities.Jobs_;
 import com.technoindians.opportunities.SentListFragment;
+import com.technoindians.pops.ShowSnack;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -32,6 +34,21 @@ public class JobListAdapter extends ArrayAdapter<Jobs_> {
     private ArrayList<Jobs_> jobList = null;
     private ArrayList<Jobs_> list;
     private Activity activity;
+    private View.OnClickListener onClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int position = (Integer) v.getTag();
+            if (CheckInternet.check()) {
+                switch (v.getId()) {
+                    case R.id.opportunity_list_item_menu:
+                        showStatusPopup(position, v);
+                        break;
+                }
+            }else {
+                ShowSnack.noInternet(v);
+            }
+        }
+    };
 
     public JobListAdapter(Activity activity, ArrayList<Jobs_> jobList) {
         super(activity, 0, jobList);
@@ -116,18 +133,6 @@ public class JobListAdapter extends ArrayAdapter<Jobs_> {
 
         return view;
     }
-
-    View.OnClickListener onClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            int position = (Integer) v.getTag();
-            switch (v.getId()) {
-                case R.id.opportunity_list_item_menu:
-                    showStatusPopup(position, v);
-                    break;
-            }
-        }
-    };
 
     public void filterJobs(String charText) {
         charText = charText.toLowerCase(Locale.getDefault());
