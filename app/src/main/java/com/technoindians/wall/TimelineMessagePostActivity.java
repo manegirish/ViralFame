@@ -69,17 +69,15 @@ public class TimelineMessagePostActivity extends Activity implements View.OnClic
         EmojiGridviewImageAdapter.EmojiClickInterface {
 
     private static final String TAG = TimelineMessagePostActivity.class.getSimpleName();
-
+    TextView postButton;
+    ImageView backButton, smileyButton, removeButton;
+    Spinner spinner;
+    LinearLayout galleryButton, cameraButton, videoButton, audioButton;
     private String fileUrl = null;
     private String uploadUrl = "";
     private int postType = 0;
     private int messageType = 0;
     private boolean isKeyboard = false;
-
-    TextView postButton;
-    ImageView backButton, smileyButton, removeButton;
-    Spinner spinner;
-    LinearLayout galleryButton, cameraButton, videoButton, audioButton;
     private TextView audioName, audioSize, audioTime, sendButton;
     private ImageView thumbnail;
     private LinearLayout audioLayout, iconFooter, footerLayout;
@@ -169,7 +167,6 @@ public class TimelineMessagePostActivity extends Activity implements View.OnClic
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 postType = position + 1;
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 postType = 0;
@@ -227,9 +224,7 @@ public class TimelineMessagePostActivity extends Activity implements View.OnClic
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                // Update Height
                 int value = (Integer) valueAnimator.getAnimatedValue();
-
                 ViewGroup.LayoutParams layoutParams = footerLayout
                         .getLayoutParams();
                 layoutParams.height = value;
@@ -351,6 +346,85 @@ public class TimelineMessagePostActivity extends Activity implements View.OnClic
         }
     }
 
+    private void uploadFile(String filePath, int intentType) {
+        File file = new File(filePath);
+        int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
+
+        if (FileCheck.size(file_size) == null) {
+            ShowToast.toast(getApplicationContext(), "Max file size allowed 25 MB");
+        } else {
+            new Upload(filePath, intentType, file_size).execute();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case Constants.INTENT_IMAGE:
+                    String imagePath = Utils.getPath(getApplicationContext(), data.getData());
+                    if (CheckFileType.imageFile(imagePath) == 1) {
+                        uploadFile(imagePath, Constants.INTENT_IMAGE);
+                    } else {
+                        ShowToast.toast(getApplicationContext(), "Please Select Valid Image File");
+                    }
+                    break;
+                case Constants.INTENT_VIDEO:
+                    String videoPath = Utils.getPath(getApplicationContext(), data.getData());
+                    if (CheckFileType.videoFile(videoPath) == 1) {
+                        uploadFile(videoPath, Constants.INTENT_VIDEO);
+                    } else {
+                        ShowToast.toast(getApplicationContext(), "Please Select Valid Video File");
+                    }
+                    break;
+
+                case Constants.INTENT_AUDIO:
+                    String audioPath = Utils.getPath(getApplicationContext(), data.getData());
+
+                    if (CheckFileType.audioFile(audioPath) == 1) {
+                        uploadFile(audioPath, Constants.INTENT_AUDIO);
+                    } else {
+                        ShowToast.toast(getApplicationContext(), "Please Select Valid Audio File");
+                    }
+                    break;
+                case Constants.INTENT_CAMERA:
+                    if (fileUrl != null) {
+                        uploadFile(fileUrl, Constants.INTENT_CAMERA);
+                    }
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void getClickedEmoji(int gridviewItemPosition) {
+        smileyKeyBoard.getClickedEmoji(gridviewItemPosition);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (SmileyKeyBoard.isKeyboardVisibile()) {
+            SmileyKeyBoard.dismissKeyboard();
+            return;
+        }
+        if (isKeyboard) {
+            hideKeyboard();
+            return;
+        }
+        super.onBackPressed();
+        overridePendingTransition(R.anim.animation_left_to_right, R.anim.animation_right_to_left);
+    }
+
+    private void hideKeyboard() {
+        isKeyboard = false;
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
     private class Upload extends AsyncTask<Void, Void, Integer> {
         String filePath;
         int intentType;
@@ -451,63 +525,6 @@ public class TimelineMessagePostActivity extends Activity implements View.OnClic
         }
     }
 
-    private void uploadFile(String filePath, int intentType) {
-        File file = new File(filePath);
-        int file_size = Integer.parseInt(String.valueOf(file.length() / 1024));
-
-        if (FileCheck.size(file_size) == null) {
-            ShowToast.toast(getApplicationContext(), "Max file size allowed 25 MB");
-        } else {
-            new Upload(filePath, intentType, file_size).execute();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case Constants.INTENT_IMAGE:
-                    String imagePath = Utils.getPath(getApplicationContext(), data.getData());
-                    if (CheckFileType.imageFile(imagePath) == 1) {
-                        uploadFile(imagePath, Constants.INTENT_IMAGE);
-                    } else {
-                        ShowToast.toast(getApplicationContext(), "Please Select Valid Image File");
-                    }
-                    break;
-                case Constants.INTENT_VIDEO:
-                    String videoPath = Utils.getPath(getApplicationContext(), data.getData());
-                    if (CheckFileType.videoFile(videoPath) == 1) {
-                        uploadFile(videoPath, Constants.INTENT_VIDEO);
-                    } else {
-                        ShowToast.toast(getApplicationContext(), "Please Select Valid Video File");
-                    }
-                    break;
-
-                case Constants.INTENT_AUDIO:
-                    String audioPath = Utils.getPath(getApplicationContext(), data.getData());
-
-                    if (CheckFileType.audioFile(audioPath) == 1) {
-                        uploadFile(audioPath, Constants.INTENT_AUDIO);
-                    } else {
-                        ShowToast.toast(getApplicationContext(), "Please Select Valid Audio File");
-                    }
-                    break;
-                case Constants.INTENT_CAMERA:
-                    if (fileUrl != null) {
-                        uploadFile(fileUrl, Constants.INTENT_CAMERA);
-                    }
-                    break;
-            }
-        }
-    }
-
-
-    @Override
-    public void getClickedEmoji(int gridviewItemPosition) {
-        smileyKeyBoard.getClickedEmoji(gridviewItemPosition);
-    }
-
     private class MakePost extends AsyncTask<Void, Void, Integer> {
 
         String post_text, media_file, media_type, shared_to, post_type;
@@ -589,29 +606,6 @@ public class TimelineMessagePostActivity extends Activity implements View.OnClic
                     break;
             }
             showLoader.dismissPostingDialog();
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (SmileyKeyBoard.isKeyboardVisibile()) {
-            SmileyKeyBoard.dismissKeyboard();
-            return;
-        }
-        if (isKeyboard) {
-            hideKeyboard();
-            return;
-        }
-        super.onBackPressed();
-        overridePendingTransition(R.anim.animation_left_to_right, R.anim.animation_right_to_left);
-    }
-
-    private void hideKeyboard() {
-        isKeyboard = false;
-        View view = this.getCurrentFocus();
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 }
