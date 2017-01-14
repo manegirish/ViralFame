@@ -241,6 +241,9 @@ public class PortfolioMainActivity extends AppCompatActivity implements View.OnC
         if (fragment != null) {
             fragmentManager.beginTransaction().remove(fragment).commit();
         }
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.USER_ID, Preferences.get(Constants.USER_ID));
+        openFragment.setArguments(bundle);
         openFragment.show(fragmentManager, Fragment_.FOLLOWERS);
     }
 

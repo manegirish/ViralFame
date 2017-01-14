@@ -253,12 +253,6 @@ public class UserPortfolioActivity extends AppCompatActivity implements View.OnC
                     }
                 break;
             case R.id.portfolio_profile_follow:
-/*                if (is_follow.equalsIgnoreCase("1")){
-                    is_follow = "0";
-                }else {
-                    is_follow = "1";
-                }
-                toggleFollow();*/
                 new Operations().execute();
                 break;
         }
