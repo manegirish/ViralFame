@@ -1,7 +1,0 @@
-<resources>
-
-    <dimen name="emoji_size">35dp</dimen>
-    <dimen name="in_message_emoji_size">35dp</dimen>
-    <dimen name="sticker_size">64dp</dimen>
-
-</resources>
