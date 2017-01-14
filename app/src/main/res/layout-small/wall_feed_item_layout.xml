@@ -77,7 +77,7 @@
         android:background="@android:color/transparent"
         android:orientation="vertical">
 
-        <technoindians.key.emoji.custom.EmojiTextView
+        <hani.momanii.supernova_emoji_library.Helper.EmojiconTextView
             android:id="@+id/wall_feed_item_feed_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -104,7 +104,7 @@
                 android:maxHeight="150dp"
                 android:minHeight="100dp" />
 
-            <technoindians.key.emoji.custom.EmojiTextView
+            <hani.momanii.supernova_emoji_library.Helper.EmojiconTextView
                 android:id="@+id/wall_feed_item_post_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -127,7 +127,7 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <technoindians.key.emoji.custom.EmojiTextView
+            <hani.momanii.supernova_emoji_library.Helper.EmojiconTextView
                 android:id="@+id/wall_post_media_post_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

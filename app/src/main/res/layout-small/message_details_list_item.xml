@@ -9,32 +9,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:background="@drawable/my_message_rounded_layout"
-        android:padding="5dp"
         android:layout_margin="10dp"
-        android:orientation="vertical">
+        android:background="@drawable/my_message_rounded_layout"
+        android:orientation="vertical"
+        android:padding="5dp">
 
-        <technoindians.key.emoji.custom.EmojiTextView
+        <hani.momanii.supernova_emoji_library.Helper.EmojiconTextView
+            android:id="@+id/message_details_my_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="start|top"
+            android:maxWidth="220dp"
             android:text="@string/dummy_text"
             android:textColor="@color/black_95"
-            android:textSize="14sp"
-            android:maxWidth="220dp"
-            android:id="@+id/message_details_my_message" />
+            android:textSize="14sp" />
         <com.github.curioustechizen.ago.RelativeTimeTextView
             android:id="@+id/message_details_my_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="-4dp"
             android:gravity="start|top"
+            android:maxWidth="220dp"
             android:text="@string/dummy_time_1"
             android:textColor="@color/black_45"
             android:textSize="12sp"
-            android:textStyle="normal"
-            android:layout_gravity="end"
-            android:maxWidth="220dp"
-            android:layout_marginTop="-4dp"/>
+            android:textStyle="normal"/>
     </LinearLayout>
 
     <LinearLayout
@@ -42,31 +42,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        android:background="@drawable/from_message_rounded_layout"
-        android:padding="5dp"
         android:layout_margin="10dp"
-        android:orientation="vertical">
+        android:background="@drawable/from_message_rounded_layout"
+        android:orientation="vertical"
+        android:padding="5dp">
 
-        <technoindians.key.emoji.custom.EmojiTextView
+        <hani.momanii.supernova_emoji_library.Helper.EmojiconTextView
+            android:id="@+id/message_details_from_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="start|top"
+            android:maxWidth="220dp"
             android:text="@string/dummy_text"
             android:textColor="@color/black_95"
-            android:textSize="14sp"
-            android:maxWidth="220dp"
-            android:id="@+id/message_details_from_message" />
+            android:textSize="14sp" />
         <com.github.curioustechizen.ago.RelativeTimeTextView
             android:id="@+id/message_details_from_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="-4dp"
             android:gravity="start|top"
+            android:maxWidth="220dp"
             android:text="@string/dummy_time_1"
             android:textColor="@color/black_45"
             android:textSize="12sp"
-            android:textStyle="normal"
-            android:layout_gravity="end"
-            android:maxWidth="220dp"
-            android:layout_marginTop="-4dp"/>
+            android:textStyle="normal"/>
     </LinearLayout>
 </LinearLayout>

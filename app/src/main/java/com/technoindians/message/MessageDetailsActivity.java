@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -38,10 +37,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
+import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
-import technoindians.key.emoji.SmileyKeyBoard;
-import technoindians.key.emoji.adapter.EmojiGridviewImageAdapter;
+
 
 /**
  * @author Girish Mane <girishmane8692@gmail.com>
@@ -49,27 +49,24 @@ import technoindians.key.emoji.adapter.EmojiGridviewImageAdapter;
  *         Last modified 15/08/2016
  */
 
-public class MessageDetailsActivity extends AppCompatActivity implements View.OnClickListener,
-        EmojiGridviewImageAdapter.EmojiClickInterface {
+public class MessageDetailsActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static final String TAG = MessageDetailsActivity.class.getSimpleName();
+    ImageView sendButton, smileyButton,backButton;
     AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
         }
     };
-    private ImageView backButton, profilePhoto;
+    private ImageView profilePhoto;
     private TextView nameText, skillText, warningText;
-    private EditText messageBox;
-    private ImageView sendButton, smileyButton;
+    private EmojiconEditText messageBox;
     private ListView listView;
     private String name, skill, profile_pic,friend_id;
     private ShowLoader showLoader;
     private ArrayList<Details_> replyList;
-    private RelativeLayout chatFooter;
     private ReplyListAdapter replyListAdapter;
-    private SmileyKeyBoard smiliKeyBoard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,18 +109,28 @@ public class MessageDetailsActivity extends AppCompatActivity implements View.On
 
         warningText = (TextView) findViewById(R.id.message_details_list_warning);
 
-        messageBox = (EditText) findViewById(R.id.message_details_message_box);
+        messageBox = (EmojiconEditText) findViewById(R.id.message_details_message_box);
         listView = (ListView) findViewById(R.id.message_details_list_view);
         listView.setOnItemClickListener(onItemClickListener);
 
         replyListAdapter = new ReplyListAdapter(MessageDetailsActivity.this, replyList);
         listView.setAdapter(replyListAdapter);
 
-        smiliKeyBoard = new SmileyKeyBoard();
-        smiliKeyBoard.enable(this, this, R.id.reply_message_footer_for_emoticons, messageBox);
-        chatFooter = (RelativeLayout) findViewById(R.id.message_details_bottom_layout);
-        smiliKeyBoard.checkKeyboardHeight(chatFooter);
-        smiliKeyBoard.enableFooterView(messageBox);
+        RelativeLayout rootView = (RelativeLayout)findViewById(R.id.message_details_layout);
+
+        EmojIconActions emojIconActions = new EmojIconActions(this,rootView,messageBox,smileyButton);
+        emojIconActions.ShowEmojIcon();
+        emojIconActions.setKeyboardListener(new EmojIconActions.KeyboardListener() {
+            @Override
+            public void onKeyboardOpen() {
+                //Log.e("Keyboard","open");
+            }
+
+            @Override
+            public void onKeyboardClose() {
+               //Log.e("Keyboard","close");
+            }
+        });
 
         setData();
     }
@@ -137,11 +144,6 @@ public class MessageDetailsActivity extends AppCompatActivity implements View.On
                 .placeholder(R.drawable.ic_avatar)
                 .error(R.drawable.ic_avatar)
                 .into(profilePhoto);
-    }
-
-    @Override
-    public void getClickedEmoji(int gridviewItemPosition) {
-        smiliKeyBoard.getClickedEmoji(gridviewItemPosition);
     }
 
     @Override
@@ -173,39 +175,23 @@ public class MessageDetailsActivity extends AppCompatActivity implements View.On
         }
     }
 
-/*
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(Constants.ID,message_id);
-        outState.putSerializable(JsonArrays_.MESSAGE_DETAILS,replyList);
-    }
-*/
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.activity_toolbar_photo_back:
-                SmileyKeyBoard.dismissKeyboard();
                 onBackPressed();
                 break;
             case R.id.message_details_send:
                 hideKeyboard();
-                SmileyKeyBoard.dismissKeyboard();
                 String message = messageBox.getText().toString().trim();
                 if (isValidMessage(message) == 1) {
                     new SendMessage().execute(message);
                 }
                 break;
             case R.id.message_details_smiley:
-                smiliKeyBoard.showKeyboard(chatFooter);
                 break;
             case R.id.activity_toolbar_photo:
+                hideKeyboard();
                 Bundle nextAnimation = ActivityOptions.makeCustomAnimation
                         (getApplicationContext(), R.anim.animation_one,R.anim.animation_two).toBundle();
                 Intent profileIntent = new Intent(getApplicationContext(), UserPortfolioActivity.class);

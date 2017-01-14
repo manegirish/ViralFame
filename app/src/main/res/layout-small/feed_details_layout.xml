@@ -48,29 +48,29 @@
                 android:id="@+id/feed_details_audio_play"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/ic_play"
+                android:layout_alignParentLeft="true"
                 android:padding="5dp"
-                android:layout_alignParentLeft="true"/>
+                android:src="@drawable/ic_play"/>
 
             <SeekBar
                 android:id="@+id/feed_details_audio_seek"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:progressDrawable="@drawable/audio_player_progress"
-                android:thumb="@drawable/ic_seek_p"
                 android:layout_toLeftOf="@+id/feed_details_audio_stop"
                 android:layout_toRightOf="@+id/feed_details_audio_play"
-                android:splitTrack="false" />
+                android:progressDrawable="@drawable/audio_player_progress"
+                android:splitTrack="false"
+                android:thumb="@drawable/ic_seek_p" />
 
             <ImageView
                 android:id="@+id/feed_details_audio_stop"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/ic_stop"
+                android:layout_alignParentRight="true"
                 android:padding="7dp"
-                android:visibility="gone"
-                android:layout_alignParentRight="true"/>
+                android:src="@drawable/ic_stop"
+                android:visibility="gone"/>
         </RelativeLayout>
     </RelativeLayout>
 
@@ -94,7 +94,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
 
-        <technoindians.key.emoji.custom.EmojiTextView
+        <hani.momanii.supernova_emoji_library.Helper.EmojiconTextView
             android:id="@+id/feed_details_tag"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

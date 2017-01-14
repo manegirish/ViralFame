@@ -41,9 +41,9 @@ import com.technoindians.wall.WallCommentDialogFragment;
 
 import org.json.JSONObject;
 
+import hani.momanii.supernova_emoji_library.Helper.EmojiconTextView;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
-import technoindians.key.emoji.custom.EmojiTextView;
 
 /**
  * Created by Girish on 11-01-2017.
@@ -58,7 +58,6 @@ public class WallFeedAdapter extends CursorAdapter {
     private RetrieveOperation retrieveOperation;
     private UpdateOperations updateOperations;
 
-    private Cursor originalCursor;
     private View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -120,7 +119,6 @@ public class WallFeedAdapter extends CursorAdapter {
 
     public WallFeedAdapter(Activity activity, Cursor cursor) {
         super(activity, cursor);
-        this.originalCursor = cursor;
         this.activity = activity;
         this.context = activity.getApplicationContext();
         this.retrieveOperation = new RetrieveOperation(context);
@@ -144,9 +142,9 @@ public class WallFeedAdapter extends CursorAdapter {
         TextView audioTime = (TextView) view.findViewById(R.id.wall_post_media_audio_duration);
         TextView skillText = (TextView) view.findViewById(R.id.wall_feed_item_role);
 
-        EmojiTextView postText = (EmojiTextView) view.findViewById(R.id.wall_feed_item_post_text);
-        EmojiTextView audioText = (EmojiTextView) view.findViewById(R.id.wall_post_media_post_text);
-        EmojiTextView feedText = (EmojiTextView) view.findViewById(R.id.wall_feed_item_feed_text);
+        EmojiconTextView postText = (EmojiconTextView) view.findViewById(R.id.wall_feed_item_post_text);
+        EmojiconTextView audioText = (EmojiconTextView) view.findViewById(R.id.wall_post_media_post_text);
+        EmojiconTextView feedText = (EmojiconTextView) view.findViewById(R.id.wall_feed_item_feed_text);
 
         NetworkImageView postImage = (NetworkImageView) view.findViewById(R.id.wall_feed_item_image);
 
@@ -263,25 +261,25 @@ public class WallFeedAdapter extends CursorAdapter {
         }
     }
 
-    private void setMessage(EmojiTextView feedText, View topView, View bottomView, Cursor cursor) {
-        feedText.setEmojiText(cursor.getString(cursor.getColumnIndex(Constants.POST_TEXT)));
+    private void setMessage(EmojiconTextView feedText, View topView, View bottomView, Cursor cursor) {
+        feedText.setText(cursor.getString(cursor.getColumnIndex(Constants.POST_TEXT)));
         topView.setVisibility(View.GONE);
         bottomView.setVisibility(View.VISIBLE);
     }
 
-    private void setImage(EmojiTextView postText, View topView, View bottomView, Cursor cursor) {
-        postText.setEmojiText(cursor.getString(cursor.getColumnIndex(Constants.POST_TEXT)));
+    private void setImage(EmojiconTextView postText, View topView, View bottomView, Cursor cursor) {
+        postText.setText(cursor.getString(cursor.getColumnIndex(Constants.POST_TEXT)));
         topView.setVisibility(View.GONE);
         bottomView.setVisibility(View.GONE);
     }
 
-    private void setAudio(EmojiTextView audioText, ImageView mediaIcon, TextView audioSize,
+    private void setAudio(EmojiconTextView audioText, ImageView mediaIcon, TextView audioSize,
                           TextView audioName, TextView audioTime, View topView, View bottomView, Cursor cursor) {
         topView.setVisibility(View.GONE);
         bottomView.setVisibility(View.GONE);
 
         mediaIcon.setImageResource(R.drawable.ic_audio_y);
-        audioText.setEmojiText(cursor.getString(cursor.getColumnIndex(Constants.POST_TEXT)));
+        audioText.setText(cursor.getString(cursor.getColumnIndex(Constants.POST_TEXT)));
         audioSize.setText(FileCheck.getFileSize(Long.parseLong(cursor.getString(cursor.getColumnIndex(Constants.MEDIA_SIZE)))));
         audioName.setText(FileCheck.getFileName(cursor.getString(cursor.getColumnIndex(Constants.MEDIA_FILE))));
         String time = retrieveOperation.getFeedItem(Constants.MEDIA_DURATION, cursor.getString(cursor.getColumnIndex(Constants._ID)));
@@ -291,13 +289,13 @@ public class WallFeedAdapter extends CursorAdapter {
         audioTime.setText(time);
     }
 
-    private void setVideo(EmojiTextView audioText, ImageView mediaIcon, TextView audioSize,
+    private void setVideo(EmojiconTextView audioText, ImageView mediaIcon, TextView audioSize,
                           TextView audioName, TextView audioTime, View topView, View bottomView, Cursor cursor) {
         topView.setVisibility(View.GONE);
         bottomView.setVisibility(View.GONE);
 
         mediaIcon.setImageResource(R.drawable.ic_video_play);
-        audioText.setEmojiText(cursor.getString(cursor.getColumnIndex(Constants.POST_TEXT)));
+        audioText.setText(cursor.getString(cursor.getColumnIndex(Constants.POST_TEXT)));
         audioSize.setText(FileCheck.getFileSize(Long.parseLong(cursor.getString(cursor.getColumnIndex(Constants.MEDIA_SIZE)))));
         audioName.setText(FileCheck.getFileName(cursor.getString(cursor.getColumnIndex(Constants.MEDIA_FILE))));
         String time = retrieveOperation.getFeedItem(Constants.MEDIA_DURATION, cursor.getString(cursor.getColumnIndex(Constants._ID)));

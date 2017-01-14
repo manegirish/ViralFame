@@ -46,10 +46,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
+import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
-import technoindians.key.emoji.SmileyKeyBoard;
-import technoindians.key.emoji.adapter.EmojiGridviewImageAdapter;
 
 /**
  * @author Girish Mane <girishmane8692@gmail.com>
@@ -57,13 +57,13 @@ import technoindians.key.emoji.adapter.EmojiGridviewImageAdapter;
  *         Last modified 27/10/2016
  */
 
-public class CreateMessageActivity extends AppCompatActivity implements View.OnClickListener,
-        EmojiGridviewImageAdapter.EmojiClickInterface {
+public class CreateMessageActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static final String TAG = CreateMessageActivity.class.getSimpleName();
     ImageView searchButton, backButton;
     TextView titleText, warningText, nameText;
-    EditText searchBox, messageBox;
+    EditText searchBox;
+    EmojiconEditText messageBox;
     ImageView sendButton, smileyButton;
     ListView listView;
     LinearLayout footerLayout;
@@ -71,12 +71,20 @@ public class CreateMessageActivity extends AppCompatActivity implements View.OnC
     private boolean openFooter = false;
     private ArrayList<Friends_> friendList;
     private String friend_id;
-    private RelativeLayout chatFooter;
-    private static boolean hidden = true;
 
     private UsersListAdapter usersListAdapter;
+    AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            if (usersListAdapter.getItem(position).getUser_id() != null) {
+                openFooter = true;
+                footerLayout.setVisibility(View.VISIBLE);
+                nameText.setText(friendList.get(position).getName());
+                friend_id = friendList.get(position).getUser_id();
+            }
+        }
+    };
     private ShowLoader showLoader;
-    private SmileyKeyBoard smiliKeyBoard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +117,7 @@ public class CreateMessageActivity extends AppCompatActivity implements View.OnC
 
         warningText = (TextView) findViewById(R.id.create_message_list_warning);
 
-        messageBox = (EditText) findViewById(R.id.create_message_box);
+        messageBox = (EmojiconEditText) findViewById(R.id.create_message_box);
         listView = (ListView) findViewById(R.id.create_message_list_view);
         listView.setOnItemClickListener(onItemClickListener);
 
@@ -133,35 +141,32 @@ public class CreateMessageActivity extends AppCompatActivity implements View.OnC
             public void beforeTextChanged(CharSequence arg0, int arg1, int arg2,
                                           int arg3) {
             }
-
             @Override
             public void afterTextChanged(Editable arg0) {
             }
         });
 
-        smiliKeyBoard = new SmileyKeyBoard();
-        smiliKeyBoard.enable(this, this, R.id.message_footer_for_emoticons, messageBox);
-        chatFooter = (RelativeLayout) findViewById(R.id.create_message_bottom_layout);
-        smiliKeyBoard.checkKeyboardHeight(chatFooter);
-        smiliKeyBoard.enableFooterView(messageBox);
-    }
-
-    AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            if (usersListAdapter.getItem(position).getUser_id() != null) {
-                openFooter = true;
-                footerLayout.setVisibility(View.VISIBLE);
-                nameText.setText(friendList.get(position).getName());
-                friend_id = friendList.get(position).getUser_id();
+        RelativeLayout rootView = (RelativeLayout)findViewById(R.id.root_view);
+        EmojIconActions emojIconActions = new EmojIconActions(this,rootView,messageBox,smileyButton);
+        emojIconActions.ShowEmojIcon();
+        emojIconActions.setKeyboardListener(new EmojIconActions.KeyboardListener() {
+            @Override
+            public void onKeyboardOpen() {
+                //Log.e("Keyboard","open");
             }
-        }
-    };
+
+            @Override
+            public void onKeyboardClose() {
+                //Log.e("Keyboard","close");
+            }
+        });
+
+    }
 
     @Override
     public void onBackPressed() {
         hideKeyboard();
-        if (openFooter == true) {
+        if (openFooter) {
             openFooter = false;
             footerLayout.setVisibility(View.GONE);
         } else {
@@ -172,7 +177,7 @@ public class CreateMessageActivity extends AppCompatActivity implements View.OnC
     }
 
     private void toggleSearch() {
-        if (openSearch == false) {
+        if (!openSearch) {
             openSearch = true;
             searchBox.setVisibility(View.VISIBLE);
             titleText.setVisibility(View.GONE);
@@ -199,8 +204,52 @@ public class CreateMessageActivity extends AppCompatActivity implements View.OnC
     }
 
     @Override
-    public void getClickedEmoji(int gridviewItemPosition) {
-        smiliKeyBoard.getClickedEmoji(gridviewItemPosition);
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.activity_toolbar_search_button:
+                toggleSearch();
+                break;
+            case R.id.activity_toolbar_search_back:
+                hideKeyboard();
+                if (openSearch) {
+                    toggleSearch();
+                } else {
+                    onBackPressed();
+                }
+                break;
+            case R.id.create_message_send:
+                hideKeyboard();
+                String message = messageBox.getText().toString().trim();
+                if (friend_id != null) {
+                    if (isValidMessage(message) == 1) {
+                        new SendMessage().execute(message);
+                    }
+                }
+                break;
+            case R.id.create_message_smiley:
+
+                break;
+        }
+    }
+
+    private int isValidMessage(String message) {
+        if (message == null || message.length() <= 0) {
+            messageBox.setError(Warnings.INVALID_DATA);
+            return 0;
+        }
+        if (message.length() > 250) {
+            messageBox.setError(Warnings.MESSAGE_MAXIMUM_CHAR);
+            return 0;
+        }
+        return 1;
+    }
+
+    private void hideKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     private class GetFriends extends AsyncTask<Void, Void, Integer> {
@@ -342,57 +391,6 @@ public class CreateMessageActivity extends AppCompatActivity implements View.OnC
                     break;
             }
             showLoader.dismissSendingDialog();
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.activity_toolbar_search_button:
-                toggleSearch();
-                break;
-            case R.id.activity_toolbar_search_back:
-                hideKeyboard();
-                SmileyKeyBoard.dismissKeyboard();
-                if (openSearch == true) {
-                    toggleSearch();
-                } else {
-                    onBackPressed();
-                }
-                break;
-            case R.id.create_message_send:
-                hideKeyboard();
-                SmileyKeyBoard.dismissKeyboard();
-                String message = messageBox.getText().toString().trim();
-                if (friend_id != null) {
-                    if (isValidMessage(message) == 1) {
-                        new SendMessage().execute(message);
-                    }
-                }
-                break;
-            case R.id.create_message_smiley:
-                smiliKeyBoard.showKeyboard(chatFooter);
-                break;
-        }
-    }
-
-    private int isValidMessage(String message) {
-        if (message == null || message.length() <= 0) {
-            messageBox.setError(Warnings.INVALID_DATA);
-            return 0;
-        }
-        if (message.length() > 250) {
-            messageBox.setError(Warnings.MESSAGE_MAXIMUM_CHAR);
-            return 0;
-        }
-        return 1;
-    }
-
-    private void hideKeyboard() {
-        View view = this.getCurrentFocus();
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 }

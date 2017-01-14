@@ -14,7 +14,8 @@ import com.technoindians.message.Details_;
 
 import java.util.ArrayList;
 
-import technoindians.key.emoji.custom.EmojiTextView;
+import hani.momanii.supernova_emoji_library.Helper.EmojiconTextView;
+
 
 /**
  * @author
@@ -45,9 +46,9 @@ public class ReplyListAdapter extends ArrayAdapter<Details_> {
             view = layoutInflater.inflate(R.layout.message_details_list_item, parrent, false);
             holder = new ViewHolder();
 
-            holder.fromMessage = (EmojiTextView) view.findViewById(R.id.message_details_from_message);
+            holder.fromMessage = (EmojiconTextView) view.findViewById(R.id.message_details_from_message);
             holder.fromTime = (RelativeTimeTextView) view.findViewById(R.id.message_details_from_time);
-            holder.myMessage = (EmojiTextView) view.findViewById(R.id.message_details_my_message);
+            holder.myMessage = (EmojiconTextView) view.findViewById(R.id.message_details_my_message);
             holder.myTime = (RelativeTimeTextView) view.findViewById(R.id.message_details_my_time);
 
             holder.myLayout = (LinearLayout) view.findViewById(R.id.message_details_my_layout);
@@ -73,7 +74,7 @@ public class ReplyListAdapter extends ArrayAdapter<Details_> {
         holder.myLayout.setVisibility(View.VISIBLE);
         holder.fromLayout.setVisibility(View.GONE);
 
-        holder.myMessage.setEmojiText(myDetails.getDescription());
+        holder.myMessage.setText(myDetails.getDescription());
         long time = Long.parseLong(myDetails.getDate());
         //Log.e("setMy()","time -> "+time);
         if (time < 1000000000000L) {
@@ -86,7 +87,7 @@ public class ReplyListAdapter extends ArrayAdapter<Details_> {
         holder.myLayout.setVisibility(View.GONE);
         holder.fromLayout.setVisibility(View.VISIBLE);
 
-        holder.fromMessage.setEmojiText(fromDetails.getDescription());
+        holder.fromMessage.setText(fromDetails.getDescription());
         long time = Long.parseLong(fromDetails.getDate());
         //Log.e("setFrom()","time -> "+time);
         if (time < 1000000000000L) {
@@ -96,7 +97,7 @@ public class ReplyListAdapter extends ArrayAdapter<Details_> {
     }
 
     private class ViewHolder {
-        EmojiTextView myMessage, fromMessage;
+        EmojiconTextView myMessage, fromMessage;
         RelativeTimeTextView myTime, fromTime;
         LinearLayout myLayout, fromLayout;
     }

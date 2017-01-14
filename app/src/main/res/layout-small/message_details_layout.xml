@@ -1,9 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/message_details_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="vertical"
-    android:id="@+id/message_details_layout">
+    android:orientation="vertical">
 
     <include layout="@layout/activity_toolbar_photo" />
 
@@ -15,8 +15,8 @@
         android:layout_below="@+id/activity_toolbar_search_layout"
         android:background="@color/black_ee"
         android:divider="@android:color/transparent"
-        android:stackFromBottom="true"
-        android:dividerHeight="0dp" />
+        android:dividerHeight="0dp"
+        android:stackFromBottom="true" />
     <LinearLayout
         android:id="@+id/message_details_footer"
         android:layout_width="match_parent"
@@ -51,7 +51,7 @@
                 android:padding="12dp"
                 android:src="@drawable/ic_smiley_g" />
 
-            <EditText
+            <hani.momanii.supernova_emoji_library.Helper.EmojiconEditText
                 android:id="@+id/message_details_message_box"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -61,12 +61,12 @@
                 android:background="@drawable/white_rounded_edit_text"
                 android:hint="@string/message_hint"
                 android:maxHeight="110dp"
+                android:maxLength="250"
                 android:minHeight="40dp"
                 android:padding="7dp"
                 android:textColor="@color/black_95"
                 android:textColorHint="@color/black_75"
                 android:textSize="14sp"
-                android:maxLength="250"
                 android:textStyle="normal" />
         </RelativeLayout>
 
@@ -91,7 +91,7 @@
         android:text="@string/app_name"
         android:textColor="@color/black_95"
         android:textSize="18sp"
-        android:visibility="gone"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="gone" />
 
 </RelativeLayout>

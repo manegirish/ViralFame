@@ -57,9 +57,9 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 
+import hani.momanii.supernova_emoji_library.Helper.EmojiconTextView;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
-import technoindians.key.emoji.custom.EmojiTextView;
 
 /**
  * Created by girish on 12/8/16.
@@ -67,27 +67,43 @@ import technoindians.key.emoji.custom.EmojiTextView;
 
 public class FeedDetailsActivity extends Activity implements View.OnClickListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnBufferingUpdateListener {
 
-    private String TAG = FeedDetailsActivity.class.getSimpleName();
+    private static final int DOWNLOAD_THREAD_POOL_SIZE = 4;
     static MediaPlayer mPlayer;
+    private final Handler handler = new Handler();
+    VideoView vidView;
+    PopupWindow changeStatusPopUp;
+    Point p;
+    DownloadStatusListenerV1 downloadStatusListenerV1 = new DownloadStatusListenerV1() {
+        @Override
+        public void onDownloadComplete(DownloadRequest downloadRequest) {
+            ShowToast.toast(getApplicationContext(), "Download finished");
+        }
+
+        @Override
+        public void onDownloadFailed(DownloadRequest downloadRequest, int errorCode, String errorMessage) {
+
+        }
+
+        @Override
+        public void onProgress(DownloadRequest downloadRequest, long totalBytes, long downloadedBytes, int progress) {
+            Log.e("onProgress", "downloadedBytes -> " + downloadedBytes + " totalBytes -> " + totalBytes + " progress -> " + progress);
+        }
+    };
+    private String TAG = FeedDetailsActivity.class.getSimpleName();
     private String media_path = null;
     private int media_type;
     private String wall_id;
     private TextView like, comment;
-    private EmojiTextView tagText;
+    private EmojiconTextView tagText;
     private ImageView backButton, menuButton;
     private RelativeLayout audioLayout, videoLayout;
     private ImageView feedImage, playButton, stopButton;
-    VideoView vidView;
     private int is_like = 0, likeCount = 0, commentCount = 0;
-    PopupWindow changeStatusPopUp;
     private ShowLoader showLoader;
-    Point p;
     private ThinDownloadManager downloadManager;
-    private static final int DOWNLOAD_THREAD_POOL_SIZE = 4;
     private boolean isPlaying = false;
     private int duration;
     private SeekBar seekBarProgress;
-    private final Handler handler = new Handler();
     private FragmentManager fragmentManager;
 
     @Override
@@ -108,7 +124,7 @@ public class FeedDetailsActivity extends Activity implements View.OnClickListene
         }
 
         feedImage = (ImageView) findViewById(R.id.feed_details_image);
-        tagText = (EmojiTextView) findViewById(R.id.feed_details_tag);
+        tagText = (EmojiconTextView) findViewById(R.id.feed_details_tag);
         vidView = (VideoView) findViewById(R.id.myVideo);
         like = (TextView) findViewById(R.id.feed_details_like);
         like.setOnClickListener(this);
@@ -169,7 +185,7 @@ public class FeedDetailsActivity extends Activity implements View.OnClickListene
     }
 
     private void loadData(String postText, int commentCount) {
-        tagText.setEmojiText(postText);
+        tagText.setText(postText);
         like.setTextColor(getApplicationContext().getResources()
                 .getColor(R.color.white));
         if (likeCount > 0) {
@@ -192,79 +208,6 @@ public class FeedDetailsActivity extends Activity implements View.OnClickListene
             like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_like_p, 0, 0, 0);
         } else {
             like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_like_g, 0, 0, 0);
-        }
-    }
-
-
-    private class GetFeed extends AsyncTask<Void, Void, Integer> {
-        String post_text;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            showLoader.sendLoadingDialog();
-        }
-
-        @Override
-        protected Integer doInBackground(Void... params) {
-
-            int result = 12;
-            RequestBody requestBody = new FormBody.Builder()
-                    .add(Constants.USER_ID, Preferences.get(Constants.USER_ID))
-                    .add(Constants.TIMEZONE, Preferences.get(Constants.TIMEZONE))
-                    .add(Constants.ACTION, Actions_.POST_DETAILS)
-                    .add(Constants.ID, wall_id)
-                    .build();
-            try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody,TAG);
-                if (response != null) {
-                    JSONObject jsonObject = new JSONObject(response);
-                    if (jsonObject.has(JsonArrays_.POST_DETAILS)) {
-                        JSONArray jsonArray = jsonObject.getJSONArray(JsonArrays_.POST_DETAILS);
-                        JSONObject detailsObject = jsonArray.getJSONObject(0);
-                        result = detailsObject.getInt(Constants.STATUS);
-                        if (result == 1) {
-                            likeCount = detailsObject.getInt(Constants.TOTAL_LIKES);
-                            commentCount = detailsObject.getInt(Constants.TOTAL_COMMENTS);
-                            is_like = detailsObject.getInt(Constants.IS_LIKE);
-                            post_text = detailsObject.getString(Constants.POST_TEXT);
-                        }
-                    } else {
-                        result = 11;
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                result = 11;
-            }
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
-            showLoader.dismissLoadingDialog();
-            switch (integer) {
-                case 0:
-                    ShowToast.internalErrorToast(getApplicationContext());
-                    onBackPressed();
-                    break;
-                case 1:
-                    loadData(post_text, commentCount);
-                    break;
-                case 2:
-                    ShowToast.noData(getApplicationContext());
-                    onBackPressed();
-                    break;
-                case 11:
-                    ShowToast.internalErrorToast(getApplicationContext());
-                    onBackPressed();
-                    break;
-                case 12:
-                    ShowToast.networkProblemToast(getApplicationContext());
-                    onBackPressed();
-                    break;
-            }
         }
     }
 
@@ -333,61 +276,6 @@ public class FeedDetailsActivity extends Activity implements View.OnClickListene
         bundle.putString(Constants.ID, wall_id);
         detailsFragment.setArguments(bundle);
         detailsFragment.show(fragmentManager, Constants.COMMENT);
-    }
-
-    private class Operations extends AsyncTask<Void, Void, Integer> {
-        int result = 11;
-        int type = 0;
-
-        @Override
-        protected Integer doInBackground(Void... params) {
-            RequestBody requestBody = new FormBody.Builder()
-                    .add(Constants.USER_ID, Preferences.get(Constants.USER_ID))
-                    .add(Constants.ID, wall_id)
-                    .add(Constants.ACTION, Actions_.LIKE_UNLIKE)
-                    .build();
-            try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody,TAG);
-                if (response != null) {
-                    JSONObject jsonObject = new JSONObject(response);
-                    if (jsonObject.has(JsonArrays_.COMMENT)) {
-                        JSONObject responseObject = jsonObject.getJSONObject(JsonArrays_.COMMENT);
-                        result = responseObject.getInt(Constants.STATUS);
-                        type = responseObject.getInt(Constants.TYPE);
-                    } else {
-                        result = 12;
-                    }
-                } else {
-                    result = 12;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                result = 11;
-            }
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
-            switch (integer) {
-                case 0:
-                    ShowToast.actionFailed(getApplicationContext());
-                    break;
-                case 1:
-                    toggleLike(type);
-                    break;
-                case 2:
-                    ShowToast.actionFailed(getApplicationContext());
-                    break;
-                case 11:
-                    ShowToast.networkProblemToast(getApplicationContext());
-                    break;
-                case 12:
-                    ShowToast.internalErrorToast(getApplicationContext());
-                    break;
-            }
-        }
     }
 
     private void toggleLike(int type) {
@@ -491,23 +379,6 @@ public class FeedDetailsActivity extends Activity implements View.OnClickListene
                 .setStatusListener(downloadStatusListenerV1);
         downloadManager.add(downloadRequest);
     }
-
-    DownloadStatusListenerV1 downloadStatusListenerV1 = new DownloadStatusListenerV1() {
-        @Override
-        public void onDownloadComplete(DownloadRequest downloadRequest) {
-            ShowToast.toast(getApplicationContext(), "Download finished");
-        }
-
-        @Override
-        public void onDownloadFailed(DownloadRequest downloadRequest, int errorCode, String errorMessage) {
-
-        }
-
-        @Override
-        public void onProgress(DownloadRequest downloadRequest, long totalBytes, long downloadedBytes, int progress) {
-            Log.e("onProgress", "downloadedBytes -> " + downloadedBytes + " totalBytes -> " + totalBytes + " progress -> " + progress);
-        }
-    };
 
     private void primarySeekBarProgressUpdater() {
         Log.e("Seek Progress Update", "duration => " + duration);
@@ -668,6 +539,133 @@ public class FeedDetailsActivity extends Activity implements View.OnClickListene
             case R.id.feed_details_audio_stop:
                 stopPlayer();
                 break;
+        }
+    }
+
+    private class GetFeed extends AsyncTask<Void, Void, Integer> {
+        String post_text;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            showLoader.sendLoadingDialog();
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+
+            int result = 12;
+            RequestBody requestBody = new FormBody.Builder()
+                    .add(Constants.USER_ID, Preferences.get(Constants.USER_ID))
+                    .add(Constants.TIMEZONE, Preferences.get(Constants.TIMEZONE))
+                    .add(Constants.ACTION, Actions_.POST_DETAILS)
+                    .add(Constants.ID, wall_id)
+                    .build();
+            try {
+                String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody,TAG);
+                if (response != null) {
+                    JSONObject jsonObject = new JSONObject(response);
+                    if (jsonObject.has(JsonArrays_.POST_DETAILS)) {
+                        JSONArray jsonArray = jsonObject.getJSONArray(JsonArrays_.POST_DETAILS);
+                        JSONObject detailsObject = jsonArray.getJSONObject(0);
+                        result = detailsObject.getInt(Constants.STATUS);
+                        if (result == 1) {
+                            likeCount = detailsObject.getInt(Constants.TOTAL_LIKES);
+                            commentCount = detailsObject.getInt(Constants.TOTAL_COMMENTS);
+                            is_like = detailsObject.getInt(Constants.IS_LIKE);
+                            post_text = detailsObject.getString(Constants.POST_TEXT);
+                        }
+                    } else {
+                        result = 11;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                result = 11;
+            }
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+            showLoader.dismissLoadingDialog();
+            switch (integer) {
+                case 0:
+                    ShowToast.internalErrorToast(getApplicationContext());
+                    onBackPressed();
+                    break;
+                case 1:
+                    loadData(post_text, commentCount);
+                    break;
+                case 2:
+                    ShowToast.noData(getApplicationContext());
+                    onBackPressed();
+                    break;
+                case 11:
+                    ShowToast.internalErrorToast(getApplicationContext());
+                    onBackPressed();
+                    break;
+                case 12:
+                    ShowToast.networkProblemToast(getApplicationContext());
+                    onBackPressed();
+                    break;
+            }
+        }
+    }
+
+    private class Operations extends AsyncTask<Void, Void, Integer> {
+        int result = 11;
+        int type = 0;
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            RequestBody requestBody = new FormBody.Builder()
+                    .add(Constants.USER_ID, Preferences.get(Constants.USER_ID))
+                    .add(Constants.ID, wall_id)
+                    .add(Constants.ACTION, Actions_.LIKE_UNLIKE)
+                    .build();
+            try {
+                String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody,TAG);
+                if (response != null) {
+                    JSONObject jsonObject = new JSONObject(response);
+                    if (jsonObject.has(JsonArrays_.COMMENT)) {
+                        JSONObject responseObject = jsonObject.getJSONObject(JsonArrays_.COMMENT);
+                        result = responseObject.getInt(Constants.STATUS);
+                        type = responseObject.getInt(Constants.TYPE);
+                    } else {
+                        result = 12;
+                    }
+                } else {
+                    result = 12;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                result = 11;
+            }
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+            switch (integer) {
+                case 0:
+                    ShowToast.actionFailed(getApplicationContext());
+                    break;
+                case 1:
+                    toggleLike(type);
+                    break;
+                case 2:
+                    ShowToast.actionFailed(getApplicationContext());
+                    break;
+                case 11:
+                    ShowToast.networkProblemToast(getApplicationContext());
+                    break;
+                case 12:
+                    ShowToast.internalErrorToast(getApplicationContext());
+                    break;
+            }
         }
     }
 }

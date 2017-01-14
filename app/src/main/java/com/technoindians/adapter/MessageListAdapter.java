@@ -21,7 +21,8 @@ import com.technoindians.views.CircleTransformMain;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import technoindians.key.emoji.custom.EmojiTextView;
+import hani.momanii.supernova_emoji_library.Helper.EmojiconTextView;
+
 
 /**
  * @author
@@ -60,7 +61,7 @@ public class MessageListAdapter extends ArrayAdapter<Message_>
            	view=layoutInflater.inflate(R.layout.message_list_item, parrent, false);
            	holder=new ViewHolder();
 
-            holder.messageText = (EmojiTextView) view.findViewById(R.id.message_list_item_message);
+            holder.messageText = (EmojiconTextView) view.findViewById(R.id.message_list_item_message);
 			holder.timeText = (RelativeTimeTextView)view.findViewById(R.id.message_list_item_time);
 			holder.nameText = (TextView)view.findViewById(R.id.message_list_item_name);
 			holder.countText = (TextView)view.findViewById(R.id.message_list_item_count);
@@ -88,7 +89,7 @@ public class MessageListAdapter extends ArrayAdapter<Message_>
 			time *= 1000;
 		}
 
-        holder.messageText.setEmojiText(messages_.getMessage());
+        holder.messageText.setText(messages_.getMessage());
 		holder.timeText.setReferenceTime(time);
         holder.nameText.setText(messages_.getName());
 		int read = Integer.parseInt(messages_.getRead());
@@ -148,7 +149,7 @@ public class MessageListAdapter extends ArrayAdapter<Message_>
 
 	static class ViewHolder {
 		TextView nameText,countText,warningText;
-		EmojiTextView messageText;
+		EmojiconTextView messageText;
 		RelativeTimeTextView timeText;
         LinearLayout mainLayout;
 		ImageView icon;

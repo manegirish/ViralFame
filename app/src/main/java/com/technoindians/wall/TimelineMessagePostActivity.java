@@ -3,7 +3,6 @@ package com.technoindians.wall;
 import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -15,7 +14,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Video.Thumbnails;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -23,7 +21,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -44,7 +41,6 @@ import com.technoindians.network.MakeCall;
 import com.technoindians.network.Urls;
 import com.technoindians.pops.ShowToast;
 import com.technoindians.preferences.Preferences;
-import com.technoindians.views.SoftKeyboard;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,10 +49,10 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.HashMap;
 
+import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
+import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
-import technoindians.key.emoji.SmileyKeyBoard;
-import technoindians.key.emoji.adapter.EmojiGridviewImageAdapter;
 
 /**
  * @author
@@ -65,8 +61,7 @@ import technoindians.key.emoji.adapter.EmojiGridviewImageAdapter;
  * Last Modified 11/01/2017
  */
 
-public class TimelineMessagePostActivity extends Activity implements View.OnClickListener,
-        EmojiGridviewImageAdapter.EmojiClickInterface {
+public class TimelineMessagePostActivity extends Activity implements View.OnClickListener{
 
     private static final String TAG = TimelineMessagePostActivity.class.getSimpleName();
     TextView postButton;
@@ -81,12 +76,11 @@ public class TimelineMessagePostActivity extends Activity implements View.OnClic
     private TextView audioName, audioSize, audioTime, sendButton;
     private ImageView thumbnail;
     private LinearLayout audioLayout, iconFooter, footerLayout;
-    private EditText messageBox;
+    private EmojiconEditText messageBox;
     private RelativeLayout mediaLayout;
 
-    private RelativeLayout chatFooter;
+    private EmojIconActions emojIconActions;
     private ShowLoader showLoader;
-    private SmileyKeyBoard smileyKeyBoard;
     private ValueAnimator valueAnimator;
 
     @Override
@@ -106,7 +100,7 @@ public class TimelineMessagePostActivity extends Activity implements View.OnClic
         backButton = (ImageView) findViewById(R.id.create_wall_post_back);
         backButton.setOnClickListener(this);
 
-        messageBox = (EditText) findViewById(R.id.create_wall_post_box);
+        messageBox = (EmojiconEditText) findViewById(R.id.create_wall_post_box);
 
         iconFooter = (LinearLayout) findViewById(R.id.create_wall_icon_footer);
         iconFooter.setVisibility(View.GONE);
@@ -175,14 +169,21 @@ public class TimelineMessagePostActivity extends Activity implements View.OnClic
 
         smileyButton = (ImageView) findViewById(R.id.create_wall_post_smiley);
         smileyButton.setOnClickListener(this);
-
-        smileyKeyBoard = new SmileyKeyBoard();
-        smileyKeyBoard.enable(this, this, R.id.footer_for_emoticons, messageBox);
-        chatFooter = (RelativeLayout) findViewById(R.id.relativeBottomArea);
-        smileyKeyBoard.checkKeyboardHeight(chatFooter);
-        smileyKeyBoard.enableFooterView(messageBox);
-
-        softKey();
+        RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.create_wall_post_layout);
+        emojIconActions=new EmojIconActions(this,mainLayout,messageBox,smileyButton);
+        emojIconActions.ShowEmojIcon();
+        emojIconActions.setKeyboardListener(new EmojIconActions.KeyboardListener() {
+            @Override
+            public void onKeyboardOpen() {
+                isKeyboard = true;
+                setFooter();
+            }
+            @Override
+            public void onKeyboardClose() {
+                isKeyboard = false;
+                setFooter();
+            }
+        });
         setFooter();
     }
 
@@ -249,6 +250,7 @@ public class TimelineMessagePostActivity extends Activity implements View.OnClic
         });
     }
 
+/*
     private void softKey() {
         RelativeLayout mainLayout = (RelativeLayout) findViewById(R.id.create_wall_post_layout); // You must use your root layout
         InputMethodManager im = (InputMethodManager) getSystemService(Service.INPUT_METHOD_SERVICE);
@@ -271,6 +273,7 @@ public class TimelineMessagePostActivity extends Activity implements View.OnClic
             }
         });
     }
+*/
 
     @Override
     public void onClick(View v) {
@@ -279,7 +282,6 @@ public class TimelineMessagePostActivity extends Activity implements View.OnClic
 
                 break;
             case R.id.create_wall_icon_footer:
-                SmileyKeyBoard.dismissKeyboard();
                 if (isKeyboard) {
                     hideKeyboard();
                 }
@@ -341,7 +343,7 @@ public class TimelineMessagePostActivity extends Activity implements View.OnClic
                 startActivityForResult(musicIntent, Constants.INTENT_AUDIO);
                 break;
             case R.id.create_wall_post_smiley:
-                smileyKeyBoard.showKeyboard(chatFooter);
+
                 break;
         }
     }
@@ -397,17 +399,10 @@ public class TimelineMessagePostActivity extends Activity implements View.OnClic
         }
     }
 
-    @Override
-    public void getClickedEmoji(int gridviewItemPosition) {
-        smileyKeyBoard.getClickedEmoji(gridviewItemPosition);
-    }
+
 
     @Override
     public void onBackPressed() {
-        if (SmileyKeyBoard.isKeyboardVisibile()) {
-            SmileyKeyBoard.dismissKeyboard();
-            return;
-        }
         if (isKeyboard) {
             hideKeyboard();
             return;
