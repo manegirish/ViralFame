@@ -48,7 +48,7 @@ import okhttp3.RequestBody;
  */
 public class WallFeedFragment extends Fragment implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
-    private static final String  TAG = WallFeedFragment.class.getSimpleName();
+    private static final String TAG = WallFeedFragment.class.getSimpleName();
 
     private ListView feedListView;
     private TextView warningText, postText;
@@ -81,6 +81,9 @@ public class WallFeedFragment extends Fragment implements View.OnClickListener, 
 
         postText = (TextView) view.findViewById(R.id.wall_feed_message_box);
         postText.setOnClickListener(this);
+
+        wallFeedAdapter = new WallFeedAdapter(activity, feedCursor);
+        feedListView.setAdapter(wallFeedAdapter);
 
         return view;
     }
@@ -126,7 +129,7 @@ public class WallFeedFragment extends Fragment implements View.OnClickListener, 
         @Override
         protected Integer doInBackground(Void... params) {
             feedCursor = retrieveOperation.fetchFeed();
-            if (feedCursor != null) {
+            if (feedCursor != null && feedCursor.getCount() > 0) {
                 return 1;
             }
             return 0;
@@ -139,9 +142,11 @@ public class WallFeedFragment extends Fragment implements View.OnClickListener, 
                 warningText.setVisibility(View.GONE);
                 feedListView.setVisibility(View.VISIBLE);
 
-                wallFeedAdapter = new WallFeedAdapter(activity, feedCursor);
-                feedListView.setAdapter(wallFeedAdapter);
+                feedCursor = retrieveOperation.fetchFeed();
+                wallFeedAdapter.changeCursor(feedCursor);
+                wallFeedAdapter.notifyDataSetChanged();
             } else {
+                onRefresh();
                 setWarning(Warnings.NO_DATA, R.drawable.ic_no_data);
             }
         }
@@ -216,7 +221,7 @@ public class WallFeedFragment extends Fragment implements View.OnClickListener, 
                     .build();
 
             try {
-                response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody,TAG);
+                response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody, TAG);
                 result = Wall_.feedResult(response);
             } catch (Exception e) {
                 result = 11;
@@ -239,6 +244,8 @@ public class WallFeedFragment extends Fragment implements View.OnClickListener, 
                     break;
                 case 1:
                     if (response != null) {
+                        warningText.setVisibility(View.GONE);
+                        feedListView.setVisibility(View.VISIBLE);
                         Wall_.parseFeed(response, activity.getApplicationContext());
                         feedCursor = retrieveOperation.fetchFeed();
                         wallFeedAdapter.changeCursor(feedCursor);
