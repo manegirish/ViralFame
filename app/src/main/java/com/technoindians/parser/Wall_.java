@@ -37,7 +37,7 @@ public class Wall_ {
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(response);
-            if (jsonObject != null) {
+            if (response != null) {
                 if (jsonObject.has(JsonArrays_.POST)) {
                     JSONArray jsonArray = jsonObject.getJSONArray(JsonArrays_.POST);
                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -87,7 +87,7 @@ public class Wall_ {
                             feed_.setFollow(is_follow);
 
                             insertOperations.insertFeed(id, user_id, name, type, post_text, media_type, media_file, media_size,
-                                    total_comments, total_likes, is_like, date_of_post, last_updated, profile_pic, skills,is_follow);
+                                    total_comments, total_likes, is_like, date_of_post, last_updated, profile_pic, skills, is_follow);
 
                             feedList.add(feed_);
                         }
@@ -311,4 +311,24 @@ public class Wall_ {
         }
         return feedList;
     }
+
+    public static int operationParser(String response, String jsonName) {
+        int result = 12;
+        if (response != null) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                if (jsonObject.has(jsonName)) {
+                    JSONArray jsonArray = jsonObject.getJSONArray(jsonName);
+                    JSONObject object = jsonArray.getJSONObject(0);
+                    result = object.getInt(Constants.STATUS);
+                } else {
+                    result = 11;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+
 }

@@ -14,6 +14,7 @@ public class Constants {
     public static final String CHANGE_IN_PHOTO = "photo_changed";
     public static final String LAST_NAME = "lname";
     public static final String EMAIL = "email";
+    public static final String GOOGLE = "google";
     public static final String PASSWORD = "password";
     public static final String MOBILE_NO = "mobile_no";
     public static final String GENDER = "gender";

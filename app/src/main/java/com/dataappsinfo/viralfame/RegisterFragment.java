@@ -204,7 +204,8 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public void removeFragment() {
+    public void removeFragment(int i) {
+        Log.e(TAG, "position: " + i);
         getFragmentManager().popBackStack();
     }
 
@@ -296,7 +297,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 }
                 break;
             case R.id.registration_close:
-                removeFragment();
+                removeFragment(1);
                 break;
             case R.id.registration_button:
                 String f_name = firstBox.getText().toString().trim();
@@ -308,7 +309,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                 String confirm_password = confirmBox.getText().toString().trim();
                 if (CheckInternet.check()) {
                     loginCall(f_name, l_name, email, number, city, password, confirm_password);
-                }else {
+                } else {
                     ShowSnack.noInternet(v);
                 }
                 break;
@@ -387,29 +388,48 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
         return 0;
     }
 
+    private void setFacebook() {
+        firstBox.setText(Preferences.get(Constants.FIRST_NAME));
+        lastBox.setText(Preferences.get(Constants.LAST_NAME));
+        if (Preferences.contains(Constants.CITY)) {
+            cityBox.setText(Preferences.get(Constants.CITY));
+        }
+        emailBox.setText(Preferences.get(Constants.EMAIL));
+        Log.e("RegisterFragment", "" + Preferences.get(Constants.GENDER));
+        if (Preferences.get(Constants.GENDER).equalsIgnoreCase("male")) {
+            genderSpinner.setSelection(0);
+            gender = "Male";
+        } else {
+            gender = "Female";
+            genderSpinner.setSelection(1);
+        }
+    }
+
+
+    private void setGoogle() {
+        firstBox.setText(Preferences.get(Constants.FIRST_NAME));
+        lastBox.setText(Preferences.get(Constants.LAST_NAME));
+        emailBox.setText(Preferences.get(Constants.EMAIL));
+    }
+
     @Override
     public void onStart() {
         super.onStart();
-        if (!CheckInternet.check()){
+        if (!CheckInternet.check()) {
             ShowToast.noNetwork(activity.getApplicationContext());
-            removeFragment();
+            removeFragment(2);
             return;
         }
-        if (Preferences.contains(Constants.FACEBOOK) && Preferences.get(Constants.FACEBOOK) != null) {
-            firstBox.setText(Preferences.get(Constants.FIRST_NAME));
-            lastBox.setText(Preferences.get(Constants.LAST_NAME));
-            cityBox.setText(Preferences.get(Constants.CITY));
-            emailBox.setText(Preferences.get(Constants.EMAIL));
-            Log.e("RegisterFragment", "" + Preferences.get(Constants.GENDER));
-            if (Preferences.get(Constants.GENDER).equalsIgnoreCase("male")) {
-                genderSpinner.setSelection(0);
-                gender = "Male";
-            } else {
-                gender = "Female";
-                genderSpinner.setSelection(1);
-            }
-        }
         new GetSkills().execute();
+        if (Preferences.contains(Constants.FACEBOOK) && Preferences.get(Constants.FACEBOOK) != null) {
+            setFacebook();
+            return;
+        }
+        if (Preferences.contains(Constants.GOOGLE) && Preferences.get(Constants.GOOGLE) != null) {
+            setGoogle();
+            return;
+        }
+
     }
 
     private class RegisterCall extends AsyncTask<Void, Void, Integer> {
@@ -489,7 +509,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
                     break;
                 case 1:
                     ShowToast.toast(getActivity().getApplicationContext(), Warnings.SUCCESSFUL);
-                    removeFragment();
+                    removeFragment(3);
                     break;
                 case 2:
                     ShowToast.toast(getActivity().getApplicationContext(), "Invalid data");

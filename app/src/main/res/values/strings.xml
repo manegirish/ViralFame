@@ -37,6 +37,7 @@
     <string name="Audio">Audio</string>
     <string name="notifications">Notifications</string>
     <string name="about_me">About Me</string>
+    <string name="spam">Spam</string>
 
     <string name="title_hint">Enter title here....</string>
     <string name="description_hint">Enter description here.....</string>

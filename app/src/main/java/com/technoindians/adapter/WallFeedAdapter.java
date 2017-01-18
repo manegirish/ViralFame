@@ -2,29 +2,39 @@ package com.technoindians.adapter;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.CursorAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
+import com.dataappsinfo.viralfame.LoginFragment;
 import com.dataappsinfo.viralfame.R;
 import com.dataappsinfo.viralfame.ViralFame;
 import com.squareup.picasso.Picasso;
 import com.technoindians.constants.Actions_;
 import com.technoindians.constants.Constants;
 import com.technoindians.database.RetrieveOperation;
+import com.technoindians.database.TableList;
 import com.technoindians.database.UpdateOperations;
 import com.technoindians.library.FileCheck;
 import com.technoindians.library.TimeConverter;
@@ -35,11 +45,15 @@ import com.technoindians.peoples.UserPortfolioActivity;
 import com.technoindians.pops.ShowToast;
 import com.technoindians.portfolio.FeedDetailsActivity;
 import com.technoindians.preferences.Preferences;
+import com.technoindians.validation.LoginValidation_;
 import com.technoindians.views.CircleTransformMain;
 import com.technoindians.views.NetworkImageView;
 import com.technoindians.wall.WallCommentDialogFragment;
+import com.technoindians.wall.WallOperations_;
 
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import hani.momanii.supernova_emoji_library.Helper.EmojiconTextView;
 import okhttp3.FormBody;
@@ -70,6 +84,9 @@ public class WallFeedAdapter extends CursorAdapter {
             }
             selectedCursor.moveToFirst();
             switch (v.getId()) {
+                case R.id.wall_feed_item_menu:
+                    showStatusPopup(selectedCursor, v);
+                    break;
                 case R.id.wall_feed_item_comment:
                     openCommentDialog(id);
                     break;
@@ -150,6 +167,7 @@ public class WallFeedAdapter extends CursorAdapter {
 
         ImageView profilePhoto = (ImageView) view.findViewById(R.id.wall_feed_item_photo);
         ImageView mediaIcon = (ImageView) view.findViewById(R.id.wall_post_media_audio_icon);
+        RelativeLayout menuIcon = (RelativeLayout) view.findViewById(R.id.wall_feed_item_menu);
 
         LinearLayout audioLayout = (LinearLayout) view.findViewById(R.id.wall_feed_item_audio_layout);
         LinearLayout audioIconLayout = (LinearLayout) view.findViewById(R.id.wall_post_media_audio);
@@ -178,8 +196,10 @@ public class WallFeedAdapter extends CursorAdapter {
         commentText.setText(total_comments);
         nameText.setText(name);
 
+        menuIcon.setTag(id);
         postImage.setTag(id);
         postImage.setOnClickListener(onClickListener);
+        menuIcon.setOnClickListener(onClickListener);
 
         String time = TimeConverter.getWallTime(Long.parseLong(last_updated));
         if (time == null || time.length() <= 0) {
@@ -220,7 +240,7 @@ public class WallFeedAdapter extends CursorAdapter {
                     .getColor(R.color.black_65));
             commentText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_comment_g, 0, 0, 0);
         }
-        //Log.e("FLA", "Profile_pic => " + Urls.DOMAIN + feed_.getProfile_pic());
+
         Picasso.with(context)
                 .load(Urls.DOMAIN + profile_pic)
                 .resize(100, 100)
@@ -260,6 +280,119 @@ public class WallFeedAdapter extends CursorAdapter {
                 break;
         }
     }
+
+    private void showStatusPopup(Cursor selectedCursor, View view) {
+        final PopupMenu popup = new PopupMenu(activity, view);
+        if (selectedCursor == null) {
+            getCursor().requery();
+            notifyDataSetChanged();
+            return;
+        }
+
+        String user_id = selectedCursor.getString(selectedCursor.getColumnIndex(Constants.USER_ID));
+        Log.d(TAG, "friend_id: " + user_id + "\nuser_id: " + Preferences.get(Constants.USER_ID));
+        final String _id = selectedCursor.getString(selectedCursor.getColumnIndex(Constants._ID));
+        if (user_id.equalsIgnoreCase(Preferences.get(Constants.USER_ID))) {
+            popup.getMenuInflater().inflate(R.menu.feed_menu_admin, popup.getMenu());
+        } else {
+            popup.getMenuInflater().inflate(R.menu.feed_menu_user, popup.getMenu());
+        }
+
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.feed_menu_delete:
+                        deleteConfirmation(1, _id);
+                        break;
+                    case R.id.feed_menu_spam:
+                        deleteConfirmation(3, _id);
+                        break;
+                    case R.id.feed_menu_remove:
+                        deleteConfirmation(2, _id);
+                        break;
+                }
+                popup.dismiss();
+                return true;
+            }
+        });
+        popup.show();
+    }
+
+    private void deleteConfirmation(final int type, final String _id) {
+        //1-delete;2-remove;3-spam
+        final UpdateOperations updateOperations = new UpdateOperations(activity.getApplicationContext());
+        final Dialog dialog = new Dialog(activity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.confirmation_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        TextView title, warning;
+        Button fwdAccept, fwdDecline;
+        title = (TextView) dialog.findViewById(R.id.confirmation_dialog_title);
+        if (type == 1) {
+            title.setText("Delete Timeline Post!");
+        }
+        if (type == 2) {
+            title.setText("Remove Timeline Post!");
+        }
+        if (type == 3) {
+            title.setText("Spam Timeline Post!");
+        }
+        warning = (TextView) dialog.findViewById(R.id.confirmation_dialog_description);
+        if (type == 1) {
+            warning.setText("Are you sure to delete timeline post?");
+        }
+        if (type == 2) {
+            warning.setText("Are you sure to remove timeline post?");
+        }
+        if (type == 3) {
+            warning.setText("Are you sure to spam timeline post?");
+        }
+
+        fwdAccept = (Button) dialog.findViewById(R.id.confirmation_dialog_ok_button);
+        final EditText numberBox = (EditText) dialog.findViewById(R.id.confirmation_dialog_number_box);
+        numberBox.setVisibility(View.GONE);
+
+        fwdAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (type == 1) {
+                    int result = WallOperations_.delete(_id);
+                    if (result == 1) {
+                        updateOperations.deleteRecord(TableList.TABLE_WALL_FEED, Constants._ID, _id);
+                        getCursor().requery();
+                        notifyDataSetChanged();
+                    }
+                }
+                if (type == 2) {
+                    WallOperations_.remove(_id);
+                    updateOperations.deleteRecord(TableList.TABLE_WALL_FEED, Constants._ID, _id);
+                    getCursor().requery();
+                    notifyDataSetChanged();
+                }
+                if (type == 3) {
+                    int spam_result = WallOperations_.spam(_id);
+                    if (spam_result == 1) {
+                        updateOperations.deleteRecord(TableList.TABLE_WALL_FEED, Constants._ID, _id);
+                        getCursor().requery();
+                        notifyDataSetChanged();
+                    }
+                }
+                dialog.dismiss();
+
+            }
+        });
+
+        fwdDecline = (Button) dialog.findViewById(R.id.confirmation_dialog_cancel_button);
+        fwdDecline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setCancelable(true);
+        dialog.show();
+    }
+
 
     private void setMessage(EmojiconTextView feedText, View topView, View bottomView, Cursor cursor) {
         feedText.setText(cursor.getString(cursor.getColumnIndex(Constants.POST_TEXT)));

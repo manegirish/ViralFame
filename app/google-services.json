@@ -15,25 +15,17 @@
       },
       "oauth_client": [
         {
-          "client_id": "966559394739-3ej46nvkcvq584tth0qr996i4ejq4bbl.apps.googleusercontent.com",
+          "client_id": "966559394739-c4t1g3hotqkai7kqt2hsk3hoq421qpdn.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.dataappsinfo.viralfame",
-            "certificate_hash": "6BEBEEEC493F7913DBB0E515585BF6DAB79A658B"
+            "certificate_hash": "ACBE24C5D1C51092BCD1FA99D7E0488CBCECB06F"
           }
-        },
-        {
-          "client_id": "966559394739-chb2iv0ninmq0jkmmas7q3ln33jn6kfv.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "966559394739-hmv00enrl497ap9lcst92emoq3ug6c1p.apps.googleusercontent.com",
-          "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCIjztqMcs-OmwcT0h_upWrN4sorFkCS3M"
+          "current_key": "AIzaSyAG7DT5g8fHEgMu_CP8IZ1PEiFLKksydEc"
         }
       ],
       "services": {
@@ -42,12 +34,7 @@
         },
         "appinvite_service": {
           "status": 2,
-          "other_platform_oauth_client": [
-            {
-              "client_id": "966559394739-chb2iv0ninmq0jkmmas7q3ln33jn6kfv.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         },
         "ads_service": {
           "status": 2

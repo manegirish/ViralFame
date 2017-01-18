@@ -17,7 +17,7 @@
             android:id="@+id/wall_feed_item_photo"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_margin="5dp"
             android:src="@drawable/ic_avatar" />
 
@@ -25,8 +25,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="2dp"
-            android:layout_toLeftOf="@+id/wall_feed_item_time"
-            android:layout_toRightOf="@+id/wall_feed_item_photo"
+            android:layout_toEndOf="@+id/wall_feed_item_photo"
+            android:layout_toStartOf="@+id/wall_feed_item_time_layout"
             android:gravity="center_vertical|start"
             android:orientation="vertical"
             android:padding="2dp">
@@ -56,19 +56,48 @@
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/wall_feed_item_time"
+        <RelativeLayout
+            android:id="@+id/wall_feed_item_time_layout"
             android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_gravity="top|end"
-            android:gravity="end|top"
-            android:padding="5dp"
-            android:singleLine="true"
-            android:text="@string/dummy_time_1"
-            android:textColor="@color/black_65"
-            android:textSize="12sp"
-            android:textStyle="normal" />
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true">
+
+            <TextView
+                android:id="@+id/wall_feed_item_time"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@+id/wall_feed_item_menu"
+                android:gravity="end|top"
+                android:padding="5dp"
+                android:layout_marginTop="5dp"
+                android:singleLine="true"
+                android:text="@string/dummy_time_1"
+                android:textColor="@color/black_65"
+                android:textSize="12sp"
+                android:textStyle="normal" />
+
+            <RelativeLayout
+                android:id="@+id/wall_feed_item_menu"
+                android:layout_width="20dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:gravity="start|center_vertical"
+                    android:paddingBottom="10dp"
+                    android:paddingTop="7dp"
+                    android:paddingEnd="7dp"
+                    android:src="@drawable/ic_menu_dots_g" />
+            </RelativeLayout>
+        </RelativeLayout>
+
     </RelativeLayout>
 
     <LinearLayout
@@ -89,7 +118,7 @@
             android:text="@string/dummy_text"
             android:textColor="@android:color/black"
             android:textSize="14sp"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <RelativeLayout
             android:id="@+id/wall_feed_item_image_layout"
@@ -139,13 +168,13 @@
                 android:text="@string/dummy_text"
                 android:textColor="@color/black_95"
                 android:textSize="14sp"
-                android:textStyle="normal"/>
+                android:textStyle="normal" />
 
             <View
                 android:id="@+id/wall_feed_item_top_view"
                 android:layout_width="match_parent"
                 android:layout_height="0.1dp"
-                android:background="@color/grey_e6"/>
+                android:background="@color/grey_e6" />
 
             <LinearLayout
                 android:id="@+id/wall_post_media_audio"
@@ -209,11 +238,13 @@
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+
     <View
         android:id="@+id/wall_feed_item_bottom_view"
         android:layout_width="match_parent"
         android:layout_height="0.1dp"
-        android:background="@color/grey_e6"/>
+        android:background="@color/grey_e6" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -225,9 +256,9 @@
             android:id="@+id/wall_feed_item_like"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginLeft="15dp"
-            android:drawableLeft="@drawable/ic_like_g"
+            android:layout_marginStart="15dp"
             android:drawablePadding="10dp"
+            android:drawableStart="@drawable/ic_like_g"
             android:gravity="start|center_vertical"
             android:text="Like"
             android:textColor="@color/black_65" />
@@ -236,11 +267,13 @@
             android:id="@+id/wall_feed_item_comment"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginLeft="15dp"
-            android:drawableLeft="@drawable/ic_comment_g"
+            android:layout_marginStart="15dp"
             android:drawablePadding="10dp"
+            android:drawableStart="@drawable/ic_comment_g"
             android:gravity="start|center_vertical"
             android:text="Comments"
             android:textColor="@color/black_65" />
+
+
     </LinearLayout>
 </LinearLayout>

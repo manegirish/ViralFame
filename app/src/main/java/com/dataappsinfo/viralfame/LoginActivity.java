@@ -69,9 +69,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         GoogleApiClient.OnConnectionFailedListener, ConnectivityReceiver.ConnectivityReceiverListener {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
-    private static final int RC_SIGN_IN = 007;
-    TextView loginButton,registerButton;
-    RelativeLayout facebookButton,googleButton;
+    private static final int RC_SIGN_IN = 9001;
+    TextView loginButton, registerButton;
+    RelativeLayout facebookButton, googleButton;
     CallbackManager callbackManager;
     AccessToken accessToken;
     Profile profile;
@@ -102,12 +102,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         googleButton.setOnClickListener(this);
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestProfile()
                 .requestScopes(new Scope(Scopes.PLUS_LOGIN))
-                .requestEmail()
+                .requestScopes(new Scope(Scopes.PLUS_ME))
                 .build();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(LoginActivity.this, this)
+                .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .addApi(Plus.API)
                 .build();
@@ -120,7 +121,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.e(TAG, "onSuccess : " + loginResult.getAccessToken().getToken());
-
                 GraphRequest request = GraphRequest.newMeRequest(
                         accessToken,
                         new GraphRequest.GraphJSONObjectCallback() {
@@ -129,6 +129,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     JSONObject object,
                                     GraphResponse response) {
                                 try {
+                                    Log.e(TAG,"object: "+object.toString());
                                     getFacebookProfile(object);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -180,20 +181,33 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         String fb_id = profile.getId();
 
         String fb_pic = profile.getProfilePictureUri(256, 256).toString();
-        String location = object.getString("location");
+        if (object.has("location")) {
+            String location = object.getString("location");
+            JSONObject jsonObject = new JSONObject(location);
+            Preferences.save(Constants.CITY, jsonObject.getString("name"));
+        }
         String email = object.getString(Constants.EMAIL);
         String gender = object.getString(Constants.GENDER);
-        JSONObject jsonObject = new JSONObject(location);
+
         Preferences.save(Constants.FIRST_NAME, first_name);
         Preferences.save(Constants.LAST_NAME, last_name);
         Preferences.save(Constants.EMAIL, email);
         Preferences.save(Constants.GENDER, gender);
         Preferences.save(Constants.PROFILE_PHOTO, fb_pic);
-        Preferences.save(Constants.CITY, jsonObject.getString("name"));
         Preferences.save(Constants.FACEBOOK, fb_id);
         Log.e(TAG, "object: " + object);
         registerFragment("register");
     }
+
+
+    private void getGmailProfile(String first_name, String last_name, String email, String google_id) {
+        Preferences.save(Constants.FIRST_NAME, first_name);
+        Preferences.save(Constants.LAST_NAME, last_name);
+        Preferences.save(Constants.EMAIL, email);
+        Preferences.save(Constants.GOOGLE, google_id);
+        registerFragment("register");
+    }
+
 
     @Override
     public void onStop() {
@@ -274,31 +288,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void handleSignInResult(GoogleSignInResult result) {
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
-            // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-
             Log.e(TAG, "display name: " + acct.getDisplayName());
-
             String personName = acct.getDisplayName();
-            String personPhotoUrl = acct.getPhotoUrl().toString();
+            //    String personPhotoUrl = acct.getPhotoUrl().toString();
             String email = acct.getEmail();
             String id = acct.getId();
             String getFamilyName = acct.getFamilyName();
             String getGivenName = acct.getGivenName();
-
+            getGmailProfile(getGivenName, getFamilyName, email, id);
             Log.e(TAG, "Name: " + personName + ", email: " + email
-                    + ", Image: " + personPhotoUrl + ", id:" + id + ", getFamilyName: "
+                    + ", Image: " + ", id:" + id + ", getFamilyName: "
                     + getFamilyName + ", getGivenName:" + getGivenName + ", IdToken: " + acct.getIdToken());
-/*
-
-            Glide.with(getApplicationContext()).load(personPhotoUrl)
-                    .thumbnail(0.5f)
-                    .crossFade()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(imgProfilePic);
-*/
-
-            //    updateUI(true);
         } else {
             // Signed out, show unauthenticated UI.
             //   updateUI(false);
@@ -310,12 +311,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
+            Log.e(TAG, "1");
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
             if (!mGoogleApiClient.isConnecting()) {
+                Log.e(TAG, "2");
                 if (mGoogleApiClient.hasConnectedApi(Plus.API)) {
+                    Log.e(TAG, "3");
                     Person person = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-                    Log.i(TAG, "--------------------------------" + person.getUrls());
+                    //Plus.PeopleApi.getCurrentPerson(mGoogleApiClient)
                     Log.e(TAG, "Name: " + person.getName());
                     Log.e(TAG, "Display Name: " + person.getDisplayName());
                     Log.e(TAG, "Gender: " + person.getGender());
@@ -325,9 +329,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Log.e(TAG, "Current Location: " + person.getCurrentLocation());
                     Log.e(TAG, "Language: " + person.getLanguage());
                 } else {
+                    Log.e(TAG, "4");
                     ShowToast.toast(getApplicationContext(), "Failed to Connect");
                 }
             } else {
+                Log.e(TAG, "5");
                 ShowToast.toast(getApplicationContext(), "Failed to Connect");
             }
         }

@@ -82,8 +82,6 @@ public class WallFeedFragment extends Fragment implements View.OnClickListener, 
         postText = (TextView) view.findViewById(R.id.wall_feed_message_box);
         postText.setOnClickListener(this);
 
-        //feedListView.setOnScrollListener(this);
-
         return view;
     }
 
@@ -275,38 +273,4 @@ public class WallFeedFragment extends Fragment implements View.OnClickListener, 
             }
         }
     }
-
-    /*private class RefreshList extends AsyncTask<String, Void, Integer> {
-        ArrayList<Feed_> refreshList = null;
-
-        @Override
-        protected Integer doInBackground(String... params) {
-            refreshList = Wall_.parseFeed(params[0], activity.getApplicationContext());
-            Log.e(TAG, "refreshList size -> " + refreshList.size() + "list -> " + refreshList);
-            for (int i = 0; i < refreshList.size(); i++) {
-                if (isDuplicate(refreshList.get(i))) {
-                    refreshList.remove(i);
-                }
-            }
-            Log.e(TAG, "refreshList size -> " + refreshList.size() + "list -> " + refreshList);
-            if (refreshList != null && refreshList.size() > 0) {
-                refreshList.addAll(feedsList);
-                return 1;
-            }
-            return 0;
-        }
-
-        @Override
-        protected void onPostExecute(Integer integer) {
-            super.onPostExecute(integer);
-            if (integer == 1) {
-                feedListView.setVisibility(View.VISIBLE);
-                warningText.setVisibility(View.GONE);
-
-                wallFeedListAdapter.addAll(refreshList);
-                wallFeedListAdapter.notifyDataSetInvalidated();
-            }
-            swipeRefreshLayout.setRefreshing(false);
-        }
-    }*/
 }
