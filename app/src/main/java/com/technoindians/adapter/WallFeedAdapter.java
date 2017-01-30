@@ -99,6 +99,7 @@ public class WallFeedAdapter extends CursorAdapter {
                     imageIntent.putExtra(Constants.MEDIA_FILE, selectedCursor.getString(selectedCursor.getColumnIndex(Constants.MEDIA_FILE)));
                     imageIntent.putExtra(Constants.WALL_ID, id);
                     imageIntent.putExtra(Constants.MEDIA_TYPE, Constants.TYPE_IMAGE);
+                    imageIntent.putExtra(Constants.USER_ID, selectedCursor.getString(selectedCursor.getColumnIndex(Constants.USER_ID)));
                     activity.startActivity(imageIntent, nextAnimation);
                     break;
                 case R.id.wall_post_media_audio:
@@ -109,6 +110,7 @@ public class WallFeedAdapter extends CursorAdapter {
                         audioIntent.putExtra(Constants.MEDIA_FILE, selectedCursor.getString(selectedCursor.getColumnIndex(Constants.MEDIA_FILE)));
                         audioIntent.putExtra(Constants.WALL_ID, id);
                         audioIntent.putExtra(Constants.MEDIA_TYPE, Constants.TYPE_AUDIO);
+                        audioIntent.putExtra(Constants.USER_ID, selectedCursor.getString(selectedCursor.getColumnIndex(Constants.USER_ID)));
                         activity.startActivity(audioIntent, nextAnimation);
                     } else if (media_type == Constants.INTENT_VIDEO) {
                         Intent videoIntent = new Intent(context, FeedDetailsActivity.class);
@@ -116,6 +118,7 @@ public class WallFeedAdapter extends CursorAdapter {
                         videoIntent.putExtra(Constants.MEDIA_FILE, selectedCursor.getString(selectedCursor.getColumnIndex(Constants.MEDIA_FILE)));
                         videoIntent.putExtra(Constants.WALL_ID, id);
                         videoIntent.putExtra(Constants.MEDIA_TYPE, Constants.TYPE_VIDEO);
+                        videoIntent.putExtra(Constants.USER_ID, selectedCursor.getString(selectedCursor.getColumnIndex(Constants.USER_ID)));
                         activity.startActivity(videoIntent, nextAnimation);
                     }
                     break;

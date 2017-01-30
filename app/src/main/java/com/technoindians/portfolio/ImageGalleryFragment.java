@@ -95,6 +95,7 @@ public class ImageGalleryFragment extends Fragment {
                         detailsIntent.putExtra(Constants.MEDIA_FILE,imagesList.get(position).getPath());
                         detailsIntent.putExtra(Constants.WALL_ID,imagesList.get(position).getWallId());
                         detailsIntent.putExtra(Constants.MEDIA_TYPE,Constants.TYPE_IMAGE);
+                        detailsIntent.putExtra(Constants.USER_ID,imagesList.get(position).getUserId());
                         activity.startActivity(detailsIntent,nextAnimation);
                     }
                 })
@@ -168,7 +169,7 @@ public class ImageGalleryFragment extends Fragment {
     private class LoadData extends AsyncTask<String,Void,Void>{
         @Override
         protected Void doInBackground(String... params) {
-                imagesList = Portfolio_.galleryImage(params[0],JsonArrays_.GET_IMAGES);
+                imagesList = Portfolio_.galleryImage(user_id,params[0],JsonArrays_.GET_IMAGES);
             return null;
         }
 

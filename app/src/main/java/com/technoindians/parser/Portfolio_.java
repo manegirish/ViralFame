@@ -5,6 +5,7 @@ import android.util.Log;
 import com.technoindians.constants.Constants;
 import com.technoindians.network.JsonArrays_;
 import com.technoindians.portfolio.Images_;
+import com.technoindians.preferences.Preferences;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -62,27 +63,26 @@ public class Portfolio_ {
     return "NA";
     }
 
-    public static ArrayList<Images_> galleryImage(String response,String jsonName) {
+    public static ArrayList<Images_> galleryImage(String user_id,String response,String jsonName) {
         ArrayList<Images_> imagesList = new ArrayList<>();
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(response);
-            if (jsonObject != null) {
-                if (jsonObject.has(jsonName)) {
-                    JSONArray jsonArray = jsonObject.getJSONArray(jsonName);
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject responseObject = jsonArray.getJSONObject(i);
+            if (jsonObject.has(jsonName)) {
+                JSONArray jsonArray = jsonObject.getJSONArray(jsonName);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject responseObject = jsonArray.getJSONObject(i);
 
-                        String wall_id = responseObject.getString(Constants.WALL_ID);
-                        String path = responseObject.getString(Constants.PATH);
-                        String like_count = responseObject.getString(Constants.TOTAL_LIKES);
+                    String wall_id = responseObject.getString(Constants.WALL_ID);
+                    String path = responseObject.getString(Constants.PATH);
+                    String like_count = responseObject.getString(Constants.TOTAL_LIKES);
 
-                        Images_ images_ = new Images_();
-                        images_.setWallId(wall_id);
-                        images_.setPath(path);
-                        images_.setLikeCount(like_count);
-                        imagesList.add(images_);
-                    }
+                    Images_ images_ = new Images_();
+                    images_.setWallId(wall_id);
+                    images_.setPath(path);
+                    images_.setLikeCount(like_count);
+                    images_.setUserId(user_id);
+                    imagesList.add(images_);
                 }
             }
         } catch (JSONException e) {

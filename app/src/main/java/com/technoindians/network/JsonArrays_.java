@@ -42,5 +42,6 @@ public class JsonArrays_ {
     public static final String DELETE_POST = "delete_post";
     public static final String REMOVE_MSG = "remove_msg";
     public static final String SPAM_POST = "spam_post";
+    public static final String REMOVE_POST = "remove_post";
 }
 

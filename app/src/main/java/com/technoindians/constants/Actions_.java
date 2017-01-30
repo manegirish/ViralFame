@@ -1,10 +1,9 @@
 package com.technoindians.constants;
 
 /**
- * @author
- * Girish Mane <girishmane8692@gmail.com>
- * Created on 9/7/16
- * Last modified 18/01/2017
+ * @author Girish Mane <girishmane8692@gmail.com>
+ *         Created on 9/7/16
+ *         Last modified 18/01/2017
  */
 public class Actions_ {
 
@@ -45,6 +44,7 @@ public class Actions_ {
     public static final String ACCEPT_APPLICATION = "accept_application";
     public static final String REJECT_APPLICATION = "reject_application";
 
+    public static final String REMOVE_POST = "remove_post";
     public static final String PUSH_ON_OFF = "push_on_off";
     public static final String FORGOT_PASSWORD = "forgot_password";
     public static final String DELETE_POST = "delete_post";

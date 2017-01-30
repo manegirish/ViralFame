@@ -94,6 +94,7 @@ public class VideoGalleryFragment extends Fragment {
                         detailsIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         detailsIntent.putExtra(Constants.MEDIA_FILE,imagesList.get(position).getPath());
                         detailsIntent.putExtra(Constants.WALL_ID,imagesList.get(position).getWallId());
+                        detailsIntent.putExtra(Constants.USER_ID,imagesList.get(position).getUserId());
                         detailsIntent.putExtra(Constants.MEDIA_TYPE,Constants.TYPE_VIDEO);
                         activity.startActivity(detailsIntent,nextAnimation);
                 }
@@ -166,7 +167,7 @@ public class VideoGalleryFragment extends Fragment {
     private class LoadData extends AsyncTask<String,Void,Void>{
         @Override
         protected Void doInBackground(String... params) {
-                imagesList = Portfolio_.galleryImage(params[0],JsonArrays_.GET_VIDEOS);
+                imagesList = Portfolio_.galleryImage(user_id,params[0],JsonArrays_.GET_VIDEOS);
             return null;
         }
 

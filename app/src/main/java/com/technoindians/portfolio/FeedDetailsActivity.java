@@ -1,6 +1,7 @@
 package com.technoindians.portfolio;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.ClipData;
@@ -9,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -20,6 +22,9 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
@@ -34,6 +39,8 @@ import com.squareup.picasso.Picasso;
 import com.technoindians.constants.Actions_;
 import com.technoindians.constants.Constants;
 import com.technoindians.constants.Warnings;
+import com.technoindians.database.TableList;
+import com.technoindians.database.UpdateOperations;
 import com.technoindians.directory.DirectoryList;
 import com.technoindians.library.CheckUserType;
 import com.technoindians.library.FileCheck;
@@ -45,6 +52,7 @@ import com.technoindians.network.Urls;
 import com.technoindians.pops.ShowToast;
 import com.technoindians.preferences.Preferences;
 import com.technoindians.wall.WallCommentDialogFragment;
+import com.technoindians.wall.WallOperations_;
 import com.thin.downloadmanager.DefaultRetryPolicy;
 import com.thin.downloadmanager.DownloadRequest;
 import com.thin.downloadmanager.DownloadStatusListenerV1;
@@ -65,7 +73,26 @@ import okhttp3.RequestBody;
  * Created by girish on 12/8/16.
  */
 
-public class FeedDetailsActivity extends Activity implements View.OnClickListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnBufferingUpdateListener {
+public class FeedDetailsActivity extends Activity implements View.OnClickListener,
+        MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener,
+        MediaPlayer.OnBufferingUpdateListener {
+
+    private String TAG = FeedDetailsActivity.class.getSimpleName();
+    private String media_path = null;
+    private int media_type;
+    private String wall_id;
+    private TextView like, comment;
+    private EmojiconTextView tagText;
+    ImageView backButton, menuButton;
+    RelativeLayout audioLayout, videoLayout;
+
+    private ImageView feedImage, playButton, stopButton;
+    private int is_like = 0, likeCount = 0, commentCount = 0;
+    private ShowLoader showLoader;
+    private boolean isPlaying = false, isDelete = false;
+    private int duration;
+    private SeekBar seekBarProgress;
+    private FragmentManager fragmentManager;
 
     private static final int DOWNLOAD_THREAD_POOL_SIZE = 4;
     static MediaPlayer mPlayer;
@@ -73,6 +100,7 @@ public class FeedDetailsActivity extends Activity implements View.OnClickListene
     VideoView vidView;
     PopupWindow changeStatusPopUp;
     Point p;
+
     DownloadStatusListenerV1 downloadStatusListenerV1 = new DownloadStatusListenerV1() {
         @Override
         public void onDownloadComplete(DownloadRequest downloadRequest) {
@@ -89,22 +117,6 @@ public class FeedDetailsActivity extends Activity implements View.OnClickListene
             Log.e("onProgress", "downloadedBytes -> " + downloadedBytes + " totalBytes -> " + totalBytes + " progress -> " + progress);
         }
     };
-    private String TAG = FeedDetailsActivity.class.getSimpleName();
-    private String media_path = null;
-    private int media_type;
-    private String wall_id;
-    private TextView like, comment;
-    private EmojiconTextView tagText;
-    private ImageView backButton, menuButton;
-    private RelativeLayout audioLayout, videoLayout;
-    private ImageView feedImage, playButton, stopButton;
-    private int is_like = 0, likeCount = 0, commentCount = 0;
-    private ShowLoader showLoader;
-    private ThinDownloadManager downloadManager;
-    private boolean isPlaying = false;
-    private int duration;
-    private SeekBar seekBarProgress;
-    private FragmentManager fragmentManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -121,6 +133,11 @@ public class FeedDetailsActivity extends Activity implements View.OnClickListene
             media_path = intent.getStringExtra(Constants.MEDIA_FILE);
             media_type = Integer.parseInt(intent.getStringExtra(Constants.MEDIA_TYPE));
             wall_id = intent.getStringExtra(Constants.WALL_ID);
+            if (intent.hasExtra(Constants.USER_ID)) {
+                if (intent.getStringExtra(Constants.USER_ID).equalsIgnoreCase(Preferences.get(Constants.USER_ID))) {
+                    isDelete = true;
+                }
+            }
         }
 
         feedImage = (ImageView) findViewById(R.id.feed_details_image);
@@ -189,11 +206,11 @@ public class FeedDetailsActivity extends Activity implements View.OnClickListene
         like.setTextColor(getApplicationContext().getResources()
                 .getColor(R.color.white));
         if (likeCount > 0) {
-            like.setText("" + likeCount);
+            like.setText("" + likeCount + "");
         }
 
         if (commentCount > 0) {
-            comment.setText("" + commentCount);
+            comment.setText("" + commentCount + "");
             comment.setTextColor(getApplicationContext().getResources()
                     .getColor(R.color.white));
             comment.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_comment_p, 0, 0, 0);
@@ -211,46 +228,6 @@ public class FeedDetailsActivity extends Activity implements View.OnClickListene
         }
     }
 
-/*
-    private class GetSize extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                run(Urls.DOMAIN + media_path);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-    }
-
-    public void run(String url) throws Exception {
-        final OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-
-                Headers responseHeaders = response.headers();
-                for (int i = 0, size = responseHeaders.size(); i < size; i++) {
-                    if (responseHeaders.name(i).equalsIgnoreCase("Content-Length")) {
-                        String size_string = FileCheck.getFileSize(Long.parseLong(responseHeaders.value(i)));
-                    }
-                }
-            }
-        });
-    }
-*/
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -260,13 +237,98 @@ public class FeedDetailsActivity extends Activity implements View.OnClickListene
         }
     }
 
-    private boolean removeDialog(){
+    private boolean removeDialog() {
         Fragment fragment = fragmentManager.findFragmentByTag(Constants.COMMENT);
         if (fragment != null) {
             fragmentManager.beginTransaction().remove(fragment).commit();
             return true;
         }
         return false;
+    }
+
+    public void spamFeed(View view) {
+        deleteConfirmation(3);
+    }
+
+    public void deleteFeed(View view) {
+        if (isDelete) {
+            deleteConfirmation(3);
+        } else {
+
+            deleteConfirmation(2);
+        }
+    }
+
+    private void deleteConfirmation(final int type) {
+        //1-delete;2-remove;3-spam
+        final UpdateOperations updateOperations = new UpdateOperations(getApplicationContext());
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.confirmation_dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        TextView title, warning;
+        Button fwdAccept, fwdDecline;
+        title = (TextView) dialog.findViewById(R.id.confirmation_dialog_title);
+        if (type == 1) {
+            title.setText("Delete Timeline Post!");
+        }
+        if (type == 2) {
+            title.setText("Remove Timeline Post!");
+        }
+        if (type == 3) {
+            title.setText("Spam Timeline Post!");
+        }
+        warning = (TextView) dialog.findViewById(R.id.confirmation_dialog_description);
+        if (type == 1) {
+            warning.setText("Are you sure to delete timeline post?");
+        }
+        if (type == 2) {
+            warning.setText("Are you sure to remove timeline post?");
+        }
+        if (type == 3) {
+            warning.setText("Are you sure to spam timeline post?");
+        }
+
+        fwdAccept = (Button) dialog.findViewById(R.id.confirmation_dialog_ok_button);
+        final EditText numberBox = (EditText) dialog.findViewById(R.id.confirmation_dialog_number_box);
+        numberBox.setVisibility(View.GONE);
+
+        fwdAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (type == 1) {
+                    int result = WallOperations_.delete(wall_id);
+                    if (result == 1) {
+                        updateOperations.deleteRecord(TableList.TABLE_WALL_FEED, Constants._ID, wall_id);
+                        onBackPressed();
+                    }
+                }
+                if (type == 2) {
+                    WallOperations_.remove(wall_id);
+                    updateOperations.deleteRecord(TableList.TABLE_WALL_FEED, Constants._ID, wall_id);
+                    onBackPressed();
+                }
+                if (type == 3) {
+                    int spam_result = WallOperations_.spam(wall_id);
+                    if (spam_result == 1) {
+                        updateOperations.deleteRecord(TableList.TABLE_WALL_FEED, Constants._ID, wall_id);
+                        onBackPressed();
+                    }
+                }
+                dialog.dismiss();
+
+            }
+        });
+
+        fwdDecline = (Button) dialog.findViewById(R.id.confirmation_dialog_cancel_button);
+        fwdDecline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setCancelable(true);
+        dialog.show();
     }
 
     private void openCommentDialog() {
@@ -294,18 +356,24 @@ public class FeedDetailsActivity extends Activity implements View.OnClickListene
             like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_like_p, 0, 0, 0);
         }
         if (likeCount > 0) {
-            like.setText("" + likeCount);
+            like.setText("" + likeCount + "");
             like.setTextColor(getApplicationContext().getResources()
                     .getColor(R.color.white));
         }
-        Log.e("toggleLike after", "is_like -> " + is_like + " likeCount -> " + likeCount + "type -> " + type);
     }
 
     private void showStatusPopup(final Activity context, Point p) {
-        // Inflate the popup_layout.xml
-        //LinearLayout viewGroup = (LinearLayout) context.findViewById(R.id.feed_details_menu_layout);
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layout = layoutInflater.inflate(R.layout.feed_details_menu, null);
+        if (isDelete) {
+            TextView removeText = (TextView) layout.findViewById(R.id.feed_details_menu_remove_text);
+            removeText.setText(getApplicationContext().getResources().getString(R.string.delete));
+            ImageView removeIcon = (ImageView) layout.findViewById(R.id.feed_details_menu_remove_icon);
+            removeIcon.setImageResource(R.drawable.ic_delete_ca_g);
+
+            LinearLayout spamLayout = (LinearLayout) layout.findViewById(R.id.feed_details_menu_spam);
+            spamLayout.setVisibility(View.GONE);
+        }
         // Creating the PopupWindow
         changeStatusPopUp = new PopupWindow(context);
         changeStatusPopUp.setContentView(layout);
@@ -323,7 +391,7 @@ public class FeedDetailsActivity extends Activity implements View.OnClickListene
     }
 
     public void saveFile(View view) {
-        if (CheckUserType.isGuest()){
+        if (CheckUserType.isGuest()) {
             ShowToast.toast(getApplicationContext(), Warnings.GUEST_LOGIN);
             return;
         }
@@ -340,12 +408,12 @@ public class FeedDetailsActivity extends Activity implements View.OnClickListene
     }
 
     public void copyLink(View view) {
-        if (CheckUserType.isGuest()){
+        if (CheckUserType.isGuest()) {
             ShowToast.toast(getApplicationContext(), Warnings.GUEST_LOGIN);
             return;
         }
         String url = Urls.DOMAIN + media_path;
-        Log.e("copyLink", " url -> " + url+"\n UrlShorten -> "+ UrlShorten.get(url));
+        Log.e("copyLink", " url -> " + url + "\n UrlShorten -> " + UrlShorten.get(url));
         ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText(Constants.MEDIA_FILE, UrlShorten.get(url));
         clipboard.setPrimaryClip(clip);
@@ -369,7 +437,7 @@ public class FeedDetailsActivity extends Activity implements View.OnClickListene
     private void throwDownload(String path, String destination, String context) {
 
         RetryPolicy retryPolicy = new DefaultRetryPolicy();
-        downloadManager = new ThinDownloadManager(DOWNLOAD_THREAD_POOL_SIZE);
+        ThinDownloadManager downloadManager = new ThinDownloadManager(DOWNLOAD_THREAD_POOL_SIZE);
         DownloadRequest downloadRequest = new DownloadRequest(Uri.parse(path))
                 .setRetryPolicy(retryPolicy)
                 .setDestinationURI(Uri.parse(destination))
@@ -415,20 +483,14 @@ public class FeedDetailsActivity extends Activity implements View.OnClickListene
         seekBarProgress.setProgress(0);
         try {
             mPlayer.setDataSource(Urls.DOMAIN + media_path);
-        } catch (IllegalArgumentException e) {
-            ShowToast.toast(getApplicationContext(), "You might not set the URI correctly!");
-        } catch (SecurityException e) {
-            ShowToast.toast(getApplicationContext(), "You might not set the URI correctly!");
-        } catch (IllegalStateException e) {
+        } catch (IllegalArgumentException | IllegalStateException | SecurityException e) {
             ShowToast.toast(getApplicationContext(), "You might not set the URI correctly!");
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
             mPlayer.prepare();
-        } catch (IllegalStateException e) {
-            ShowToast.toast(getApplicationContext(), "You might not set the URI correctly!");
-        } catch (IOException e) {
+        } catch (IllegalStateException | IOException e) {
             ShowToast.toast(getApplicationContext(), "You might not set the URI correctly!");
         }
         duration = mPlayer.getDuration();
@@ -523,7 +585,7 @@ public class FeedDetailsActivity extends Activity implements View.OnClickListene
                 }
                 break;
             case R.id.feed_details_audio_play:
-                if (isPlaying == false) {
+                if (!isPlaying) {
                     isPlaying = true;
                     if (mPlayer == null) {
                         preparePlayer();
@@ -562,7 +624,7 @@ public class FeedDetailsActivity extends Activity implements View.OnClickListene
                     .add(Constants.ID, wall_id)
                     .build();
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody,TAG);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody, TAG);
                 if (response != null) {
                     JSONObject jsonObject = new JSONObject(response);
                     if (jsonObject.has(JsonArrays_.POST_DETAILS)) {
@@ -626,7 +688,7 @@ public class FeedDetailsActivity extends Activity implements View.OnClickListene
                     .add(Constants.ACTION, Actions_.LIKE_UNLIKE)
                     .build();
             try {
-                String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody,TAG);
+                String response = MakeCall.post(Urls.DOMAIN + Urls.POST_OPERATIONS_URL, requestBody, TAG);
                 if (response != null) {
                     JSONObject jsonObject = new JSONObject(response);
                     if (jsonObject.has(JsonArrays_.COMMENT)) {

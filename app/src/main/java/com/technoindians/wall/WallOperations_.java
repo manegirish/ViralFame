@@ -42,6 +42,19 @@ public class WallOperations_ {
 
     public static int remove(String _id) {
 
+        RequestBody deleteBody = new FormBody.Builder()
+                .add(Constants.USER_ID, Preferences.get(Constants.USER_ID))
+                .add(Constants.TIMEZONE, Preferences.get(Constants.TIMEZONE))
+                .add(Constants.ID, _id)
+                .add(Constants.ACTION, Actions_.REMOVE_POST)
+                .build();
+        String url = Urls.DOMAIN + Urls.POST_OPERATIONS_URL;
+        try {
+            String response = new Operation(deleteBody, url).execute().get();
+            return Wall_.operationParser(response, JsonArrays_.REMOVE_POST);
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
         return 12;
     }
 
